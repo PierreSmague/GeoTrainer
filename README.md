@@ -36,10 +36,3 @@ This project is **collaborative**: contributions are welcome, provided they foll
 | `dev`           | Development branch. Integrates validated features.                  |
 | `feature/*`     | Development of new features (e.g., `feature/dashboard`).           |
 | `fix/*`         | Bug fixes (e.g., `fix/api-error`).                                   |
-
-### 🔄 Collaborative Workflow
-1. **Create a branch** from `dev`:
-   ```bash
-   git checkout dev
-   git pull origin dev
-   git checkout -b feature/my-feature
