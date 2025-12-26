@@ -1,0 +1,59 @@
+[gd_scene load_steps=7 format=3 uid="uid://b4o0d63bb7yhk"]
+
+[ext_resource type="Script" uid="uid://ladsbtunl21d" path="res://scripts/main_menu.gd" id="1_l6cm7"]
+[ext_resource type="Script" uid="uid://dvn04physdtnf" path="res://scripts/dashboard.gd" id="2_8ln24"]
+[ext_resource type="Script" uid="uid://b7bn5taswdjfw" path="res://scripts/tabs.gd" id="2_rtw2f"]
+[ext_resource type="Script" uid="uid://c62vws1bdkpq1" path="res://scripts/training.gd" id="3_rtw2f"]
+[ext_resource type="Script" uid="uid://djrsyg7npdgy7" path="res://scripts/ressources.gd" id="4_oa1go"]
+[ext_resource type="Script" uid="uid://i015iod328dl" path="res://scripts/stats.gd" id="5_tbmy8"]
+
+[node name="GeoTrainer" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = -2.0
+offset_right = 402.0
+offset_bottom = 58.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_l6cm7")
+
+[node name="Tabs" type="TabContainer" parent="."]
+layout_mode = 0
+offset_left = 1.0
+offset_top = 2.0
+offset_right = 1367.0
+offset_bottom = 710.0
+current_tab = 0
+script = ExtResource("2_rtw2f")
+
+[node name="Dashboard" type="Control" parent="Tabs"]
+layout_mode = 2
+script = ExtResource("2_8ln24")
+metadata/_tab_index = 0
+
+[node name="StartButton" type="Button" parent="Tabs/Dashboard"]
+layout_mode = 0
+offset_left = 106.0
+offset_top = 66.0
+offset_right = 221.0
+offset_bottom = 138.0
+
+[node name="Training" type="Control" parent="Tabs"]
+visible = false
+layout_mode = 2
+script = ExtResource("3_rtw2f")
+metadata/_tab_index = 1
+
+[node name="Ressources" type="Control" parent="Tabs"]
+visible = false
+layout_mode = 2
+script = ExtResource("4_oa1go")
+metadata/_tab_index = 2
+
+[node name="Stats" type="Control" parent="Tabs"]
+visible = false
+layout_mode = 2
+script = ExtResource("5_tbmy8")
+metadata/_tab_index = 3
