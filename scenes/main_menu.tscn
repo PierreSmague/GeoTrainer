@@ -1,26 +1,26 @@
-[gd_scene load_steps=11 format=3 uid="uid://b4o0d63bb7yhk"]
+[gd_scene load_steps=16 format=3 uid="uid://b4o0d63bb7yhk"]
 
 [ext_resource type="Script" uid="uid://ladsbtunl21d" path="res://scripts/main_menu.gd" id="1_l6cm7"]
-[ext_resource type="Script" uid="uid://dvn04physdtnf" path="res://scripts/dashboard.gd" id="2_8ln24"]
 [ext_resource type="Script" uid="uid://b7bn5taswdjfw" path="res://scripts/tabs.gd" id="2_rtw2f"]
-[ext_resource type="Script" uid="uid://c62vws1bdkpq1" path="res://scripts/training.gd" id="3_rtw2f"]
-[ext_resource type="Script" uid="uid://i015iod328dl" path="res://scripts/stats.gd" id="5_tbmy8"]
+[ext_resource type="Script" uid="uid://dei17583qvuml" path="res://scripts/analyse_games.gd" id="5_jk1qb"]
+[ext_resource type="Script" uid="uid://i015iod328dl" path="res://scripts/import_games.gd" id="5_tbmy8"]
+[ext_resource type="Script" uid="uid://dbrf0pdrmrefs" path="res://scripts/popup_analyze.gd" id="6_jk1qb"]
 [ext_resource type="Script" uid="uid://cbwvmm6no053s" path="res://scripts/connection_api.gd" id="6_oa1go"]
 [ext_resource type="Script" uid="uid://746mj0q7o37i" path="res://scripts/connection.gd" id="6_rtw2f"]
+[ext_resource type="Script" uid="uid://dp8q83sg7qjmw" path="res://scripts/duels.gd" id="8_tbmy8"]
+[ext_resource type="Script" uid="uid://bpss2m8qpqmwd" path="res://scripts/duels_elo.gd" id="9_jk1qb"]
+[ext_resource type="Script" uid="uid://cbnsxs8dl7l3y" path="res://scripts/solo.gd" id="10_5dd4i"]
+[ext_resource type="Script" uid="uid://c8b7s3peqx58t" path="res://scripts/duels_points.gd" id="10_lgwnu"]
+[ext_resource type="Script" uid="uid://badpqy7s7avw4" path="res://scripts/country_precision.gd" id="11_flqon"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_8ln24"]
 bg_color = Color(0.31311974, 0.61371267, 0.9381638, 1)
 
-[sub_resource type="GDScript" id="GDScript_oa1go"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_oa1go"]
+bg_color = Color(0.118500985, 0.6272197, 0.9727176, 1)
 
-[sub_resource type="GDScript" id="GDScript_8ln24"]
-script/source = "extends Control
-
-
-# Called when the node enters the scene tree for the first time.
-func _ready() -> void:
-	pass # Replace with function body.
-"
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_tbmy8"]
+bg_color = Color(0.17770422, 0.636676, 0.9153496, 1)
 
 [node name="GeoTrainer" type="Control"]
 layout_mode = 3
@@ -33,79 +33,297 @@ grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_l6cm7")
 
-[node name="Connection API" type="MarginContainer" parent="."]
+[node name="Connection API" type="VBoxContainer" parent="."]
 layout_mode = 1
 anchors_preset = -1
 anchor_bottom = 0.004
-offset_left = 1157.0
+offset_left = 1168.0
 offset_top = 3.0
-offset_right = 1358.0
-offset_bottom = 44.168
+offset_right = 1394.0
+offset_bottom = 103.56
 script = ExtResource("6_oa1go")
 
-[node name="Connection" type="Button" parent="Connection API"]
+[node name="AuthSlot" type="Control" parent="Connection API"]
 layout_mode = 2
+
+[node name="Connection" type="Button" parent="Connection API/AuthSlot"]
+layout_mode = 0
+offset_left = 76.0
+offset_top = 4.0
+offset_right = 232.0
+offset_bottom = 81.0
 theme_override_styles/normal = SubResource("StyleBoxFlat_8ln24")
 text = "Connection"
 script = ExtResource("6_rtw2f")
 
-[node name="Popup_ncfa" type="Popup" parent="Connection API/Connection"]
+[node name="Popup_ncfa" type="Popup" parent="Connection API/AuthSlot/Connection"]
 oversampling_override = 1.0
 initial_position = 2
 size = Vector2i(600, 200)
-visible = true
-script = SubResource("GDScript_oa1go")
 
-[node name="Label" type="Label" parent="Connection API/Connection/Popup_ncfa"]
+[node name="NCFA_message" type="Label" parent="Connection API/AuthSlot/Connection/Popup_ncfa"]
 offset_top = 10.0
 offset_right = 585.0
 offset_bottom = 52.0
 text = "Please enter your ncfa identifier"
 horizontal_alignment = 1
 
-[node name="LineEdit" type="LineEdit" parent="Connection API/Connection/Popup_ncfa"]
+[node name="NCFA_input" type="LineEdit" parent="Connection API/AuthSlot/Connection/Popup_ncfa"]
 offset_left = 30.0
 offset_top = 62.0
 offset_right = 575.0
 offset_bottom = 129.0
 alignment = 1
 
-[node name="Validate" type="Button" parent="Connection API/Connection/Popup_ncfa"]
+[node name="Validate" type="Button" parent="Connection API/AuthSlot/Connection/Popup_ncfa"]
 offset_left = 139.0
 offset_top = 145.0
 offset_right = 468.0
 offset_bottom = 183.0
 text = "Validate"
 
+[node name="API_v3_profile" type="HTTPRequest" parent="Connection API/AuthSlot"]
+
+[node name="Profile_infos" type="VBoxContainer" parent="Connection API/AuthSlot"]
+layout_mode = 0
+offset_top = 4.0
+offset_right = 230.0
+offset_bottom = 81.0
+
+[node name="Nick" type="Label" parent="Connection API/AuthSlot/Profile_infos"]
+layout_mode = 2
+horizontal_alignment = 2
+
+[node name="Level" type="Label" parent="Connection API/AuthSlot/Profile_infos"]
+layout_mode = 2
+horizontal_alignment = 2
+
+[node name="Country" type="Label" parent="Connection API/AuthSlot/Profile_infos"]
+layout_mode = 2
+horizontal_alignment = 2
+uppercase = true
+
+[node name="ImportGames" type="Button" parent="Connection API/AuthSlot"]
+layout_mode = 0
+offset_left = -85.0
+offset_top = 5.0
+offset_right = 58.0
+offset_bottom = 81.0
+theme_override_styles/normal = SubResource("StyleBoxFlat_oa1go")
+text = "Import games"
+script = ExtResource("5_tbmy8")
+
+[node name="DuelsCount" type="Label" parent="Connection API/AuthSlot/ImportGames"]
+layout_mode = 0
+offset_left = -279.0
+offset_top = 4.0
+offset_right = -11.0
+offset_bottom = 34.0
+horizontal_alignment = 2
+
+[node name="SoloCount" type="Label" parent="Connection API/AuthSlot/ImportGames"]
+layout_mode = 0
+offset_left = -273.0
+offset_top = 37.0
+offset_right = -11.0
+offset_bottom = 71.0
+horizontal_alignment = 2
+
+[node name="Tokens_duels_solo" type="HTTPRequest" parent="Connection API/AuthSlot"]
+
+[node name="AnalyzeGames" type="Button" parent="Connection API/AuthSlot"]
+layout_mode = 0
+offset_left = -85.0
+offset_top = 5.0
+offset_right = 58.0
+offset_bottom = 83.0
+theme_override_styles/normal = SubResource("StyleBoxFlat_tbmy8")
+text = "Analyse games"
+script = ExtResource("5_jk1qb")
+
+[node name="Popup_analyze" type="Popup" parent="Connection API/AuthSlot/AnalyzeGames"]
+oversampling_override = 1.0
+initial_position = 2
+size = Vector2i(420, 220)
+script = ExtResource("6_jk1qb")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Connection API/AuthSlot/AnalyzeGames/Popup_analyze"]
+offset_left = 16.0
+offset_right = 404.0
+offset_bottom = 219.0
+alignment = 1
+
+[node name="Title" type="Label" parent="Connection API/AuthSlot/AnalyzeGames/Popup_analyze/VBoxContainer"]
+layout_mode = 2
+text = "Select number of games to analyze"
+horizontal_alignment = 1
+
+[node name="DuelsSection" type="VBoxContainer" parent="Connection API/AuthSlot/AnalyzeGames/Popup_analyze/VBoxContainer"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="Connection API/AuthSlot/AnalyzeGames/Popup_analyze/VBoxContainer/DuelsSection"]
+layout_mode = 2
+text = "Duels:"
+horizontal_alignment = 1
+
+[node name="N_games_duels" type="HBoxContainer" parent="Connection API/AuthSlot/AnalyzeGames/Popup_analyze/VBoxContainer/DuelsSection"]
+layout_mode = 2
+alignment = 1
+
+[node name="N_chosen_duels" type="SpinBox" parent="Connection API/AuthSlot/AnalyzeGames/Popup_analyze/VBoxContainer/DuelsSection/N_games_duels"]
+layout_mode = 2
+alignment = 1
+
+[node name="N_total_duels" type="Label" parent="Connection API/AuthSlot/AnalyzeGames/Popup_analyze/VBoxContainer/DuelsSection/N_games_duels"]
+layout_mode = 2
+text = "Total: 0"
+
+[node name="SolosSection" type="VBoxContainer" parent="Connection API/AuthSlot/AnalyzeGames/Popup_analyze/VBoxContainer"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="Connection API/AuthSlot/AnalyzeGames/Popup_analyze/VBoxContainer/SolosSection"]
+layout_mode = 2
+text = "Solos:"
+horizontal_alignment = 1
+
+[node name="N_games_solos" type="HBoxContainer" parent="Connection API/AuthSlot/AnalyzeGames/Popup_analyze/VBoxContainer/SolosSection"]
+layout_mode = 2
+alignment = 1
+
+[node name="N_chosen_solos" type="SpinBox" parent="Connection API/AuthSlot/AnalyzeGames/Popup_analyze/VBoxContainer/SolosSection/N_games_solos"]
+layout_mode = 2
+alignment = 1
+
+[node name="N_total_solos" type="Label" parent="Connection API/AuthSlot/AnalyzeGames/Popup_analyze/VBoxContainer/SolosSection/N_games_solos"]
+layout_mode = 2
+text = "Total: 0"
+
+[node name="ButtonValidate" type="Button" parent="Connection API/AuthSlot/AnalyzeGames/Popup_analyze/VBoxContainer"]
+custom_minimum_size = Vector2(100, 50)
+layout_mode = 2
+text = "Load games"
+
+[node name="ProgressPopup" type="AcceptDialog" parent="Connection API/AuthSlot/AnalyzeGames"]
+oversampling_override = 1.0
+title = "Loading Games"
+size = Vector2i(400, 150)
+unresizable = true
+dialog_hide_on_ok = false
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Connection API/AuthSlot/AnalyzeGames/ProgressPopup"]
+offset_right = 40.0
+offset_bottom = 40.0
+theme_override_constants/separation = 10
+
+[node name="ProgressLabel" type="Label" parent="Connection API/AuthSlot/AnalyzeGames/ProgressPopup/VBoxContainer"]
+layout_mode = 2
+text = "Loading Games..."
+horizontal_alignment = 1
+
+[node name="ProgressBar" type="ProgressBar" parent="Connection API/AuthSlot/AnalyzeGames/ProgressPopup/VBoxContainer"]
+custom_minimum_size = Vector2(300, 30)
+layout_mode = 2
+
+[node name="ConfirmPopup" type="AcceptDialog" parent="Connection API/AuthSlot/AnalyzeGames"]
+title = "Loading Complete"
+ok_button_text = "OK"
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Connection API/AuthSlot/AnalyzeGames/ConfirmPopup"]
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="ConfirmLabel" type="Label" parent="Connection API/AuthSlot/AnalyzeGames/ConfirmPopup/VBoxContainer"]
+custom_minimum_size = Vector2(300, 30)
+layout_mode = 2
+horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 2
+
 [node name="Tabs" type="TabContainer" parent="."]
 layout_mode = 0
-offset_top = 40.0
-offset_right = 1365.0
-offset_bottom = 686.0
-current_tab = 0
+offset_left = -2.0
+offset_top = 60.0
+offset_right = 1400.0
+offset_bottom = 744.0
+current_tab = 3
 script = ExtResource("2_rtw2f")
 
 [node name="Dashboard" type="Control" parent="Tabs"]
+visible = false
 layout_mode = 2
-script = ExtResource("2_8ln24")
 metadata/_tab_index = 0
 
 [node name="Training" type="Control" parent="Tabs"]
 visible = false
 layout_mode = 2
-script = ExtResource("3_rtw2f")
 metadata/_tab_index = 1
 
 [node name="Ressources" type="Control" parent="Tabs"]
 visible = false
 layout_mode = 2
-script = SubResource("GDScript_8ln24")
 metadata/_tab_index = 2
 
-[node name="Stats" type="Control" parent="Tabs"]
-visible = false
+[node name="Stats" type="TabContainer" parent="Tabs"]
 layout_mode = 2
-script = ExtResource("5_tbmy8")
+current_tab = 0
 metadata/_tab_index = 3
 
-[connection signal="pressed" from="Connection API/Connection/Popup_ncfa/Validate" to="Connection API/Connection" method="_on_popup_validate"]
+[node name="Duels" type="TabContainer" parent="Tabs/Stats"]
+layout_mode = 2
+current_tab = 2
+script = ExtResource("8_tbmy8")
+metadata/_tab_index = 0
+
+[node name="ELO" type="Control" parent="Tabs/Stats/Duels"]
+visible = false
+layout_mode = 2
+script = ExtResource("9_jk1qb")
+metadata/_tab_index = 0
+
+[node name="Points" type="Control" parent="Tabs/Stats/Duels"]
+visible = false
+layout_mode = 2
+script = ExtResource("10_lgwnu")
+metadata/_tab_index = 1
+
+[node name="Country_Precision" type="Control" parent="Tabs/Stats/Duels"]
+layout_mode = 2
+script = ExtResource("11_flqon")
+metadata/_tab_index = 2
+
+[node name="ScrollContainer" type="ScrollContainer" parent="Tabs/Stats/Duels/Country_Precision"]
+layout_mode = 0
+offset_left = 61.0
+offset_top = 25.0
+offset_right = 1400.0
+offset_bottom = 591.0
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Tabs/Stats/Duels/Country_Precision/ScrollContainer"]
+layout_mode = 2
+
+[node name="Solo" type="TabContainer" parent="Tabs/Stats"]
+visible = false
+layout_mode = 2
+current_tab = 0
+script = ExtResource("10_5dd4i")
+metadata/_tab_index = 1
+
+[node name="Maps" type="Control" parent="Tabs/Stats/Solo"]
+layout_mode = 2
+metadata/_tab_index = 0
+
+[node name="ScrollContainer" type="ScrollContainer" parent="Tabs/Stats/Solo/Maps"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 61.0
+offset_top = 21.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Tabs/Stats/Solo/Maps/ScrollContainer"]
+layout_mode = 2
+
+[connection signal="pressed" from="Connection API/AuthSlot/Connection/Popup_ncfa/Validate" to="Connection API/AuthSlot/Connection" method="_on_popup_validate"]
+[connection signal="confirmed" from="Connection API/AuthSlot/AnalyzeGames/ConfirmPopup" to="Connection API/AuthSlot/AnalyzeGames" method="_on_confirm_ok_pressed"]
