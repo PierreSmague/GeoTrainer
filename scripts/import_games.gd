@@ -120,6 +120,30 @@ func _on_request_completed(result, response_code, headers, body):
 		_process_page()
 
 
+func _refresh_stats_display():
+	var root = get_tree().root
+	var stats_tab = _find_node_by_name(root, "AnalyzeGames")
+	if stats_tab:
+		_refresh_node_recursive(stats_tab)
+		print("Analyzer refreshed")
+
+func _refresh_node_recursive(node: Node) -> void:
+	if node.has_method("_refresh"):
+		node._refresh()
+	
+	for child in node.get_children():
+		_refresh_node_recursive(child)
+
+func _find_node_by_name(node: Node, node_name: String) -> Node:
+	if node.name == node_name:
+		return node
+	for child in node.get_children():
+		var result = _find_node_by_name(child, node_name)
+		if result:
+			return result
+	return null
+
+
 func _save_game_tokens():
 	# Save duels tokens
 	var duels_file := FileAccess.open(DUELS_FILE_PATH, FileAccess.WRITE)
@@ -136,7 +160,4 @@ func _save_game_tokens():
 	print("Saved %d duels and %d solo games" %
 		[game_tokens_duels.size(), game_tokens_solo.size()])
 	get_parent().get_parent()._refresh_ui()
-
-
-func _on_validate_pressed() -> void:
-	pass # Replace with function body.
+	_refresh_stats_display()
