@@ -5,18 +5,24 @@ const solo := "user://solo.json"
 const duels_detailed := "user://duels_detailed.json"
 const solo_detailed := "user://solo_detailed.json"
 const ncfa_path := "user://ncfa.txt"
+const profile := "user://profile.json"
+const countries_polygons := "res://misc/countries_polygon.json"
 
 var http_request: HTTPRequest
 var games_to_analyze: Array = []
 var current_index: int = 0
 var detailed_data: Array = []
 var ncfa_token: String = ""
+var player_id: String = ""
 var is_analyzing_duels: bool = true
 
 # Queue system for loading both types
 var duels_queue: Array = []
 var solos_queue: Array = []
 var total_games: int = 0
+
+# Country detection
+var country_geometries: Dictionary = {}
 
 @onready var progress_popup = $ProgressPopup
 @onready var progress_bar = $ProgressPopup/VBoxContainer/ProgressBar
@@ -26,6 +32,31 @@ var total_games: int = 0
 
 func _ready():
 	self.pressed.connect(_on_button_pressed)
+	_load_country_geometries()
+	_load_player_id()
+	
+func _refresh():
+	_load_country_geometries()
+	_load_player_id()
+
+func _load_country_geometries():
+	var file = FileAccess.open(countries_polygons, FileAccess.READ)
+	if not file:
+		push_error("Cannot open countries.polygon.json")
+		return
+	
+	country_geometries = JSON.parse_string(file.get_as_text())
+	file.close()
+	print("Loaded %d country geometries for detection" % country_geometries.size())
+
+func _load_player_id():
+	var file = FileAccess.open(profile, FileAccess.READ)
+	if file:
+		var profile_data = JSON.parse_string(file.get_as_text())
+		file.close()
+		if profile_data and profile_data["user"].has("id"):
+			player_id = profile_data["user"]["id"]
+			print("Player ID loaded: ", player_id)
 
 func _on_button_pressed():
 	var popup = $Popup_analyze
@@ -122,7 +153,13 @@ func _on_request_completed(result, response_code, headers, body):
 	var game_data = JSON.parse_string(json_string)
 	
 	if game_data:
-		detailed_data.append(game_data)
+		if is_analyzing_duels:
+			var optimized = _optimize_duel_data(game_data)
+			if optimized:
+				detailed_data.append(optimized)
+		else:
+			# For solo games, keep for now (to be optimized later if needed)
+			detailed_data.append(game_data)
 	else:
 		var game_type = "duel" if is_analyzing_duels else "solo"
 		push_warning("Impossible de parser le JSON du %s" % game_type)
@@ -130,6 +167,143 @@ func _on_request_completed(result, response_code, headers, body):
 	current_index += 1
 	_update_progress()
 	call_deferred("_fetch_next_game")
+
+func _optimize_duel_data(duel: Dictionary) -> Dictionary:
+	# Extract only essential information
+	var optimized = {
+		"gameId": duel["gameId"],
+		"mapName": duel["options"]["map"]["name"] if duel.has("options") and duel["options"].has("map") else "Unknown",
+		"isRated": duel["options"]["isRated"] if duel.has("options") else false,
+		"rounds": []
+	}
+	
+	# Find player and opponent guesses
+	var player_guesses = []
+	var opponent_guesses = []
+	var player_rating_after = null
+	
+	if duel.has("teams"):
+		for team in duel["teams"]:
+			if team.has("players"):
+				for player in team["players"]:
+					if player["playerId"] == player_id:
+						player_guesses = player["guesses"] if player.has("guesses") else []
+						# Extract ELO
+						if player.has("progressChange") and player["progressChange"] != null:
+							var progress = player["progressChange"]
+							if progress.has("rankedSystemProgress") and progress["rankedSystemProgress"] != null:
+								var ranked = progress["rankedSystemProgress"]
+								if ranked.has("ratingAfter"):
+									player_rating_after = ranked["ratingAfter"]
+					else:
+						opponent_guesses = player["guesses"] if player.has("guesses") else []
+	
+	# Add rating if available
+	if player_rating_after != null:
+		optimized["playerRatingAfter"] = player_rating_after
+	
+	# Process each round
+	if duel.has("rounds"):
+		for round in duel["rounds"]:
+			if not round.has("panorama"):
+				continue
+			
+			var round_num = round["roundNumber"]
+			var actual_country = round["panorama"]["countryCode"].to_upper()
+			var actual_lat = round["panorama"]["lat"]
+			var actual_lng = round["panorama"]["lng"]
+			
+			var round_data = {
+				"roundNumber": round_num,
+				"actualCountry": actual_country,
+				"actualLat": actual_lat,
+				"actualLng": actual_lng,
+				"player": {},
+				"opponent": {}
+			}
+			
+			# Find player's guess for this round
+			for guess in player_guesses:
+				if guess["roundNumber"] == round_num:
+					var guessed_country = _detect_country_from_coords(guess["lat"], guess["lng"])
+					var distance = _haversine_distance(actual_lat, actual_lng, guess["lat"], guess["lng"])
+					
+					round_data["player"] = {
+						"guessedCountry": guessed_country,
+						"score": guess["score"] if guess.has("score") else 0,
+						"distance": distance,
+						"lat": guess["lat"],
+						"lng": guess["lng"]
+					}
+					break
+			
+			# Find opponent's guess for this round
+			for guess in opponent_guesses:
+				if guess["roundNumber"] == round_num:
+					var guessed_country = _detect_country_from_coords(guess["lat"], guess["lng"])
+					var distance = _haversine_distance(actual_lat, actual_lng, guess["lat"], guess["lng"])
+					
+					round_data["opponent"] = {
+						"guessedCountry": guessed_country,
+						"score": guess["score"] if guess.has("score") else 0,
+						"distance": distance,
+						"lat": guess["lat"],
+						"lng": guess["lng"]
+					}
+					break
+			
+			optimized["rounds"].append(round_data)
+	
+	return optimized
+
+func _detect_country_from_coords(lat: float, lng: float) -> String:
+	# Check each country's geometry
+	for country_code in country_geometries.keys():
+		var geometry = country_geometries[country_code]
+		
+		if geometry["type"] == "Polygon":
+			if _point_in_polygon(lat, lng, geometry["coordinates"][0]):
+				return country_code
+		elif geometry["type"] == "MultiPolygon":
+			for polygon in geometry["coordinates"]:
+				if _point_in_polygon(lat, lng, polygon[0]):
+					return country_code
+	
+	return "UNKNOWN"
+
+func _point_in_polygon(lat: float, lng: float, polygon: Array) -> bool:
+	# Ray casting algorithm
+	var inside = false
+	var j = polygon.size() - 1
+	
+	for i in range(polygon.size()):
+		var xi = polygon[i][0]
+		var yi = polygon[i][1]
+		var xj = polygon[j][0]
+		var yj = polygon[j][1]
+		
+		var intersect = ((yi > lat) != (yj > lat)) and (lng < (xj - xi) * (lat - yi) / (yj - yi) + xi)
+		if intersect:
+			inside = !inside
+		
+		j = i
+	
+	return inside
+
+func _haversine_distance(lat1: float, lng1: float, lat2: float, lng2: float) -> float:
+	# Calculate distance in meters using Haversine formula
+	var R = 6371000.0  # Earth radius in meters
+	var phi1 = deg_to_rad(lat1)
+	var phi2 = deg_to_rad(lat2)
+	var delta_phi = deg_to_rad(lat2 - lat1)
+	var delta_lambda = deg_to_rad(lng2 - lng1)
+	
+	var a = sin(delta_phi / 2.0) * sin(delta_phi / 2.0) + \
+			cos(phi1) * cos(phi2) * \
+			sin(delta_lambda / 2.0) * sin(delta_lambda / 2.0)
+	var c = 2.0 * atan2(sqrt(a), sqrt(1.0 - a))
+	
+	return R * c
 
 func _update_progress():
 	progress_bar.value = current_index
@@ -174,18 +348,15 @@ func _show_completion_message():
 
 func _refresh_stats_display():
 	var root = get_tree().root
-	var stats_tab = _find_node_by_name(root, "Stats")
+	var stats_tab = _find_node_by_name(root, "Tabs")
 	if stats_tab:
 		_refresh_node_recursive(stats_tab)
 		print("Stats display refreshed")
 
-
 func _refresh_node_recursive(node: Node) -> void:
-	# Si le node sait se rafraîchir, on le fait
 	if node.has_method("_refresh"):
 		node._refresh()
-
-	# Parcours récursif
+	
 	for child in node.get_children():
 		_refresh_node_recursive(child)
 
@@ -225,5 +396,4 @@ func _load_first_n_games(file_path: String, n: int):
 
 func _on_confirm_ok_pressed():
 	confirm_popup.hide()
-	# Refresh stats to display updated graphs
 	_refresh_stats_display()

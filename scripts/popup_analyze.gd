@@ -16,6 +16,10 @@ func _ready():
 	_load_solos_count()
 	
 	button_validate.pressed.connect(_on_validate_pressed)
+	
+func _refresh():
+	_load_duels_count()
+	_load_solos_count()
 
 func _load_duels_count():
 	var file = FileAccess.open("user://duels.json", FileAccess.READ)

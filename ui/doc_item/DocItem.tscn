@@ -1,0 +1,79 @@
+[gd_scene load_steps=2 format=3 uid="uid://dc7kuoc6i172p"]
+
+[ext_resource type="Script" uid="uid://dwpt57qghjkrq" path="res://ui/doc_item/doc_item.gd" id="1_n4c05"]
+
+[node name="DocItem" type="GridContainer"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 0
+size_flags_vertical = 0
+script = ExtResource("1_n4c05")
+
+[node name="Control" type="Control" parent="."]
+custom_minimum_size = Vector2(50, 0)
+layout_mode = 2
+
+[node name="Title" type="LinkButton" parent="."]
+custom_minimum_size = Vector2(550, 0)
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 4
+text = "Nom du document"
+
+[node name="DifficultyStars" type="HBoxContainer" parent="."]
+custom_minimum_size = Vector2(150, 0)
+layout_mode = 2
+size_flags_horizontal = 0
+
+[node name="Label" type="Label" parent="DifficultyStars"]
+layout_mode = 2
+text = "★"
+
+[node name="Label2" type="Label" parent="DifficultyStars"]
+layout_mode = 2
+text = "★"
+
+[node name="Label3" type="Label" parent="DifficultyStars"]
+layout_mode = 2
+text = "★"
+
+[node name="Label4" type="Label" parent="DifficultyStars"]
+layout_mode = 2
+text = "★"
+
+[node name="Label5" type="Label" parent="DifficultyStars"]
+layout_mode = 2
+text = "★"
+
+[node name="UsefulnessStars" type="HBoxContainer" parent="."]
+custom_minimum_size = Vector2(250, 0)
+layout_mode = 2
+size_flags_horizontal = 0
+
+[node name="Label" type="Label" parent="UsefulnessStars"]
+layout_mode = 2
+text = "★"
+
+[node name="Label2" type="Label" parent="UsefulnessStars"]
+layout_mode = 2
+text = "★"
+
+[node name="Label3" type="Label" parent="UsefulnessStars"]
+layout_mode = 2
+text = "★"
+
+[node name="Label4" type="Label" parent="UsefulnessStars"]
+layout_mode = 2
+text = "★"
+
+[node name="Label5" type="Label" parent="UsefulnessStars"]
+layout_mode = 2
+text = "★"
+
+[node name="MapButton" type="Button" parent="."]
+layout_mode = 2
+size_flags_horizontal = 0
+text = "📍 Map"

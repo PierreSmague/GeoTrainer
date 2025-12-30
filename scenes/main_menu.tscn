@@ -1,4 +1,4 @@
-[gd_scene load_steps=16 format=3 uid="uid://b4o0d63bb7yhk"]
+[gd_scene load_steps=17 format=3 uid="uid://b4o0d63bb7yhk"]
 
 [ext_resource type="Script" uid="uid://ladsbtunl21d" path="res://scripts/main_menu.gd" id="1_l6cm7"]
 [ext_resource type="Script" uid="uid://b7bn5taswdjfw" path="res://scripts/tabs.gd" id="2_rtw2f"]
@@ -7,6 +7,7 @@
 [ext_resource type="Script" uid="uid://dbrf0pdrmrefs" path="res://scripts/popup_analyze.gd" id="6_jk1qb"]
 [ext_resource type="Script" uid="uid://cbwvmm6no053s" path="res://scripts/connection_api.gd" id="6_oa1go"]
 [ext_resource type="Script" uid="uid://746mj0q7o37i" path="res://scripts/connection.gd" id="6_rtw2f"]
+[ext_resource type="Script" uid="uid://cwrvgafi0vwwx" path="res://scripts/countries_ressources.gd" id="8_rcqid"]
 [ext_resource type="Script" uid="uid://dp8q83sg7qjmw" path="res://scripts/duels.gd" id="8_tbmy8"]
 [ext_resource type="Script" uid="uid://bpss2m8qpqmwd" path="res://scripts/duels_elo.gd" id="9_jk1qb"]
 [ext_resource type="Script" uid="uid://cbnsxs8dl7l3y" path="res://scripts/solo.gd" id="10_5dd4i"]
@@ -245,7 +246,7 @@ offset_left = -2.0
 offset_top = 60.0
 offset_right = 1400.0
 offset_bottom = 744.0
-current_tab = 3
+current_tab = 2
 script = ExtResource("2_rtw2f")
 
 [node name="Dashboard" type="Control" parent="Tabs"]
@@ -258,12 +259,3055 @@ visible = false
 layout_mode = 2
 metadata/_tab_index = 1
 
-[node name="Ressources" type="Control" parent="Tabs"]
-visible = false
+[node name="Ressources" type="TabContainer" parent="Tabs"]
 layout_mode = 2
+current_tab = 0
 metadata/_tab_index = 2
 
+[node name="World" type="TabContainer" parent="Tabs/Ressources"]
+layout_mode = 2
+current_tab = 0
+metadata/_tab_index = 0
+
+[node name="Beginner" type="ScrollContainer" parent="Tabs/Ressources/World"]
+layout_mode = 2
+horizontal_scroll_mode = 0
+script = ExtResource("8_rcqid")
+country_name = "Learnable - Beginner"
+metadata/_tab_index = 0
+
+[node name="Content" type="HBoxContainer" parent="Tabs/Ressources/World/Beginner"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="DocsColumn" type="VBoxContainer" parent="Tabs/Ressources/World/Beginner/Content"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 7.0
+
+[node name="Docs" type="Label" parent="Tabs/Ressources/World/Beginner/Content/DocsColumn"]
+layout_mode = 2
+text = "Documents (Difficulty/Usefulness)"
+horizontal_alignment = 1
+
+[node name="DocsList" type="VBoxContainer" parent="Tabs/Ressources/World/Beginner/Content/DocsColumn"]
+layout_mode = 2
+size_flags_vertical = 0
+
+[node name="Intermediate" type="ScrollContainer" parent="Tabs/Ressources/World"]
+visible = false
+layout_mode = 2
+horizontal_scroll_mode = 0
+script = ExtResource("8_rcqid")
+country_name = "Learnable - Intermediate"
+metadata/_tab_index = 1
+
+[node name="Content" type="HBoxContainer" parent="Tabs/Ressources/World/Intermediate"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="DocsColumn" type="VBoxContainer" parent="Tabs/Ressources/World/Intermediate/Content"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 7.0
+
+[node name="Docs" type="Label" parent="Tabs/Ressources/World/Intermediate/Content/DocsColumn"]
+layout_mode = 2
+text = "Documents (Difficulty/Usefulness)"
+horizontal_alignment = 1
+
+[node name="DocsList" type="VBoxContainer" parent="Tabs/Ressources/World/Intermediate/Content/DocsColumn"]
+layout_mode = 2
+size_flags_vertical = 0
+
+[node name="Advanced" type="ScrollContainer" parent="Tabs/Ressources/World"]
+visible = false
+layout_mode = 2
+horizontal_scroll_mode = 0
+script = ExtResource("8_rcqid")
+country_name = "Learnable - Advanced"
+metadata/_tab_index = 2
+
+[node name="Content" type="HBoxContainer" parent="Tabs/Ressources/World/Advanced"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="DocsColumn" type="VBoxContainer" parent="Tabs/Ressources/World/Advanced/Content"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 7.0
+
+[node name="Docs" type="Label" parent="Tabs/Ressources/World/Advanced/Content/DocsColumn"]
+layout_mode = 2
+text = "Documents (Difficulty/Usefulness)"
+horizontal_alignment = 1
+
+[node name="DocsList" type="VBoxContainer" parent="Tabs/Ressources/World/Advanced/Content/DocsColumn"]
+layout_mode = 2
+size_flags_vertical = 0
+
+[node name="Africa" type="ScrollContainer" parent="Tabs/Ressources/World"]
+visible = false
+layout_mode = 2
+horizontal_scroll_mode = 0
+script = ExtResource("8_rcqid")
+country_name = "Africa"
+metadata/_tab_index = 3
+
+[node name="Content" type="HBoxContainer" parent="Tabs/Ressources/World/Africa"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="DocsColumn" type="VBoxContainer" parent="Tabs/Ressources/World/Africa/Content"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 7.0
+
+[node name="Docs" type="Label" parent="Tabs/Ressources/World/Africa/Content/DocsColumn"]
+layout_mode = 2
+text = "Documents (Difficulty/Usefulness)"
+horizontal_alignment = 1
+
+[node name="DocsList" type="VBoxContainer" parent="Tabs/Ressources/World/Africa/Content/DocsColumn"]
+layout_mode = 2
+size_flags_vertical = 0
+
+[node name="Asia" type="ScrollContainer" parent="Tabs/Ressources/World"]
+visible = false
+layout_mode = 2
+horizontal_scroll_mode = 0
+script = ExtResource("8_rcqid")
+country_name = "Asia"
+metadata/_tab_index = 4
+
+[node name="Content" type="HBoxContainer" parent="Tabs/Ressources/World/Asia"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="DocsColumn" type="VBoxContainer" parent="Tabs/Ressources/World/Asia/Content"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 7.0
+
+[node name="Docs" type="Label" parent="Tabs/Ressources/World/Asia/Content/DocsColumn"]
+layout_mode = 2
+text = "Documents (Difficulty/Usefulness)"
+horizontal_alignment = 1
+
+[node name="DocsList" type="VBoxContainer" parent="Tabs/Ressources/World/Asia/Content/DocsColumn"]
+layout_mode = 2
+size_flags_vertical = 0
+
+[node name="Europe" type="ScrollContainer" parent="Tabs/Ressources/World"]
+visible = false
+layout_mode = 2
+horizontal_scroll_mode = 0
+script = ExtResource("8_rcqid")
+country_name = "Europe"
+metadata/_tab_index = 5
+
+[node name="Content" type="HBoxContainer" parent="Tabs/Ressources/World/Europe"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="DocsColumn" type="VBoxContainer" parent="Tabs/Ressources/World/Europe/Content"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 7.0
+
+[node name="Docs" type="Label" parent="Tabs/Ressources/World/Europe/Content/DocsColumn"]
+layout_mode = 2
+text = "Documents (Difficulty/Usefulness)"
+horizontal_alignment = 1
+
+[node name="DocsList" type="VBoxContainer" parent="Tabs/Ressources/World/Europe/Content/DocsColumn"]
+layout_mode = 2
+size_flags_vertical = 0
+
+[node name="Oceania" type="ScrollContainer" parent="Tabs/Ressources/World"]
+visible = false
+layout_mode = 2
+horizontal_scroll_mode = 0
+script = ExtResource("8_rcqid")
+country_name = "Oceania"
+metadata/_tab_index = 6
+
+[node name="Content" type="HBoxContainer" parent="Tabs/Ressources/World/Oceania"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="DocsColumn" type="VBoxContainer" parent="Tabs/Ressources/World/Oceania/Content"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 7.0
+
+[node name="Docs" type="Label" parent="Tabs/Ressources/World/Oceania/Content/DocsColumn"]
+layout_mode = 2
+text = "Documents (Difficulty/Usefulness)"
+horizontal_alignment = 1
+
+[node name="DocsList" type="VBoxContainer" parent="Tabs/Ressources/World/Oceania/Content/DocsColumn"]
+layout_mode = 2
+size_flags_vertical = 0
+
+[node name="South America" type="ScrollContainer" parent="Tabs/Ressources/World"]
+visible = false
+layout_mode = 2
+horizontal_scroll_mode = 0
+script = ExtResource("8_rcqid")
+country_name = "South America"
+metadata/_tab_index = 7
+
+[node name="Content" type="HBoxContainer" parent="Tabs/Ressources/World/South America"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="DocsColumn" type="VBoxContainer" parent="Tabs/Ressources/World/South America/Content"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 7.0
+
+[node name="Docs" type="Label" parent="Tabs/Ressources/World/South America/Content/DocsColumn"]
+layout_mode = 2
+text = "Documents (Difficulty/Usefulness)"
+horizontal_alignment = 1
+
+[node name="DocsList" type="VBoxContainer" parent="Tabs/Ressources/World/South America/Content/DocsColumn"]
+layout_mode = 2
+size_flags_vertical = 0
+
+[node name="Africa" type="TabContainer" parent="Tabs/Ressources"]
+visible = false
+layout_mode = 2
+current_tab = 0
+metadata/_tab_index = 1
+
+[node name="Botswana" type="ScrollContainer" parent="Tabs/Ressources/Africa"]
+layout_mode = 2
+horizontal_scroll_mode = 0
+script = ExtResource("8_rcqid")
+metadata/_tab_index = 0
+
+[node name="Content" type="HBoxContainer" parent="Tabs/Ressources/Africa/Botswana"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="DocsColumn" type="VBoxContainer" parent="Tabs/Ressources/Africa/Botswana/Content"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 7.0
+
+[node name="Docs" type="Label" parent="Tabs/Ressources/Africa/Botswana/Content/DocsColumn"]
+layout_mode = 2
+text = "Documents (Difficulty/Usefulness)"
+horizontal_alignment = 1
+
+[node name="DocsList" type="VBoxContainer" parent="Tabs/Ressources/Africa/Botswana/Content/DocsColumn"]
+layout_mode = 2
+size_flags_vertical = 0
+
+[node name="Eswatini" type="ScrollContainer" parent="Tabs/Ressources/Africa"]
+visible = false
+layout_mode = 2
+script = ExtResource("8_rcqid")
+country_name = "Eswatini"
+metadata/_tab_index = 1
+
+[node name="Content" type="HBoxContainer" parent="Tabs/Ressources/Africa/Eswatini"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="DocsColumn" type="VBoxContainer" parent="Tabs/Ressources/Africa/Eswatini/Content"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 7.0
+
+[node name="Docs" type="Label" parent="Tabs/Ressources/Africa/Eswatini/Content/DocsColumn"]
+layout_mode = 2
+text = "Documents (Difficulty/Usefulness)"
+horizontal_alignment = 1
+
+[node name="DocsList" type="VBoxContainer" parent="Tabs/Ressources/Africa/Eswatini/Content/DocsColumn"]
+layout_mode = 2
+size_flags_vertical = 0
+
+[node name="Ghana" type="ScrollContainer" parent="Tabs/Ressources/Africa"]
+visible = false
+layout_mode = 2
+script = ExtResource("8_rcqid")
+country_name = "Ghana"
+metadata/_tab_index = 2
+
+[node name="Content" type="HBoxContainer" parent="Tabs/Ressources/Africa/Ghana"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="DocsColumn" type="VBoxContainer" parent="Tabs/Ressources/Africa/Ghana/Content"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 7.0
+
+[node name="Docs" type="Label" parent="Tabs/Ressources/Africa/Ghana/Content/DocsColumn"]
+layout_mode = 2
+text = "Documents (Difficulty/Usefulness)"
+horizontal_alignment = 1
+
+[node name="DocsList" type="VBoxContainer" parent="Tabs/Ressources/Africa/Ghana/Content/DocsColumn"]
+layout_mode = 2
+size_flags_vertical = 0
+
+[node name="Kenya" type="ScrollContainer" parent="Tabs/Ressources/Africa"]
+visible = false
+layout_mode = 2
+script = ExtResource("8_rcqid")
+country_name = "Kenya"
+metadata/_tab_index = 3
+
+[node name="Content" type="HBoxContainer" parent="Tabs/Ressources/Africa/Kenya"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="DocsColumn" type="VBoxContainer" parent="Tabs/Ressources/Africa/Kenya/Content"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 7.0
+
+[node name="Docs" type="Label" parent="Tabs/Ressources/Africa/Kenya/Content/DocsColumn"]
+layout_mode = 2
+text = "Documents (Difficulty/Usefulness)"
+horizontal_alignment = 1
+
+[node name="DocsList" type="VBoxContainer" parent="Tabs/Ressources/Africa/Kenya/Content/DocsColumn"]
+layout_mode = 2
+size_flags_vertical = 0
+
+[node name="Lesotho" type="ScrollContainer" parent="Tabs/Ressources/Africa"]
+visible = false
+layout_mode = 2
+script = ExtResource("8_rcqid")
+country_name = "Lesotho"
+metadata/_tab_index = 4
+
+[node name="Content" type="HBoxContainer" parent="Tabs/Ressources/Africa/Lesotho"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="DocsColumn" type="VBoxContainer" parent="Tabs/Ressources/Africa/Lesotho/Content"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 7.0
+
+[node name="Docs" type="Label" parent="Tabs/Ressources/Africa/Lesotho/Content/DocsColumn"]
+layout_mode = 2
+text = "Documents (Difficulty/Usefulness)"
+horizontal_alignment = 1
+
+[node name="DocsList" type="VBoxContainer" parent="Tabs/Ressources/Africa/Lesotho/Content/DocsColumn"]
+layout_mode = 2
+size_flags_vertical = 0
+
+[node name="Namibia" type="ScrollContainer" parent="Tabs/Ressources/Africa"]
+visible = false
+layout_mode = 2
+script = ExtResource("8_rcqid")
+country_name = "Namibia"
+metadata/_tab_index = 5
+
+[node name="Content" type="HBoxContainer" parent="Tabs/Ressources/Africa/Namibia"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="DocsColumn" type="VBoxContainer" parent="Tabs/Ressources/Africa/Namibia/Content"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 7.0
+
+[node name="Docs" type="Label" parent="Tabs/Ressources/Africa/Namibia/Content/DocsColumn"]
+layout_mode = 2
+text = "Documents (Difficulty/Usefulness)"
+horizontal_alignment = 1
+
+[node name="DocsList" type="VBoxContainer" parent="Tabs/Ressources/Africa/Namibia/Content/DocsColumn"]
+layout_mode = 2
+size_flags_vertical = 0
+
+[node name="Nigeria" type="ScrollContainer" parent="Tabs/Ressources/Africa"]
+visible = false
+layout_mode = 2
+script = ExtResource("8_rcqid")
+country_name = "Nigeria"
+metadata/_tab_index = 6
+
+[node name="Content" type="HBoxContainer" parent="Tabs/Ressources/Africa/Nigeria"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="DocsColumn" type="VBoxContainer" parent="Tabs/Ressources/Africa/Nigeria/Content"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 7.0
+
+[node name="Docs" type="Label" parent="Tabs/Ressources/Africa/Nigeria/Content/DocsColumn"]
+layout_mode = 2
+text = "Documents (Difficulty/Usefulness)"
+horizontal_alignment = 1
+
+[node name="DocsList" type="VBoxContainer" parent="Tabs/Ressources/Africa/Nigeria/Content/DocsColumn"]
+layout_mode = 2
+size_flags_vertical = 0
+
+[node name="Rwanda" type="ScrollContainer" parent="Tabs/Ressources/Africa"]
+visible = false
+layout_mode = 2
+script = ExtResource("8_rcqid")
+country_name = "Rwanda"
+metadata/_tab_index = 7
+
+[node name="Content" type="HBoxContainer" parent="Tabs/Ressources/Africa/Rwanda"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="DocsColumn" type="VBoxContainer" parent="Tabs/Ressources/Africa/Rwanda/Content"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 7.0
+
+[node name="Docs" type="Label" parent="Tabs/Ressources/Africa/Rwanda/Content/DocsColumn"]
+layout_mode = 2
+text = "Documents (Difficulty/Usefulness)"
+horizontal_alignment = 1
+
+[node name="DocsList" type="VBoxContainer" parent="Tabs/Ressources/Africa/Rwanda/Content/DocsColumn"]
+layout_mode = 2
+size_flags_vertical = 0
+
+[node name="Senegal" type="ScrollContainer" parent="Tabs/Ressources/Africa"]
+visible = false
+layout_mode = 2
+script = ExtResource("8_rcqid")
+country_name = "Senegal"
+metadata/_tab_index = 8
+
+[node name="Content" type="HBoxContainer" parent="Tabs/Ressources/Africa/Senegal"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="DocsColumn" type="VBoxContainer" parent="Tabs/Ressources/Africa/Senegal/Content"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 7.0
+
+[node name="Docs" type="Label" parent="Tabs/Ressources/Africa/Senegal/Content/DocsColumn"]
+layout_mode = 2
+text = "Documents (Difficulty/Usefulness)"
+horizontal_alignment = 1
+
+[node name="DocsList" type="VBoxContainer" parent="Tabs/Ressources/Africa/Senegal/Content/DocsColumn"]
+layout_mode = 2
+size_flags_vertical = 0
+
+[node name="South Africa" type="ScrollContainer" parent="Tabs/Ressources/Africa"]
+visible = false
+layout_mode = 2
+script = ExtResource("8_rcqid")
+country_name = "South Africa"
+metadata/_tab_index = 9
+
+[node name="Content" type="HBoxContainer" parent="Tabs/Ressources/Africa/South Africa"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="DocsColumn" type="VBoxContainer" parent="Tabs/Ressources/Africa/South Africa/Content"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 7.0
+
+[node name="Docs" type="Label" parent="Tabs/Ressources/Africa/South Africa/Content/DocsColumn"]
+layout_mode = 2
+text = "Documents (Difficulty/Usefulness)"
+horizontal_alignment = 1
+
+[node name="DocsList" type="VBoxContainer" parent="Tabs/Ressources/Africa/South Africa/Content/DocsColumn"]
+layout_mode = 2
+size_flags_vertical = 0
+
+[node name="Sao Tome" type="ScrollContainer" parent="Tabs/Ressources/Africa"]
+visible = false
+layout_mode = 2
+script = ExtResource("8_rcqid")
+country_name = "Sao Tome & Principe"
+metadata/_tab_index = 10
+
+[node name="Content" type="HBoxContainer" parent="Tabs/Ressources/Africa/Sao Tome"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="DocsColumn" type="VBoxContainer" parent="Tabs/Ressources/Africa/Sao Tome/Content"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 7.0
+
+[node name="Docs" type="Label" parent="Tabs/Ressources/Africa/Sao Tome/Content/DocsColumn"]
+layout_mode = 2
+text = "Documents (Difficulty/Usefulness)"
+horizontal_alignment = 1
+
+[node name="DocsList" type="VBoxContainer" parent="Tabs/Ressources/Africa/Sao Tome/Content/DocsColumn"]
+layout_mode = 2
+size_flags_vertical = 0
+
+[node name="Tunisia" type="ScrollContainer" parent="Tabs/Ressources/Africa"]
+visible = false
+layout_mode = 2
+script = ExtResource("8_rcqid")
+country_name = "Tunisia"
+metadata/_tab_index = 11
+
+[node name="Content" type="HBoxContainer" parent="Tabs/Ressources/Africa/Tunisia"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="DocsColumn" type="VBoxContainer" parent="Tabs/Ressources/Africa/Tunisia/Content"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 7.0
+
+[node name="Docs" type="Label" parent="Tabs/Ressources/Africa/Tunisia/Content/DocsColumn"]
+layout_mode = 2
+text = "Documents (Difficulty/Usefulness)"
+horizontal_alignment = 1
+
+[node name="DocsList" type="VBoxContainer" parent="Tabs/Ressources/Africa/Tunisia/Content/DocsColumn"]
+layout_mode = 2
+size_flags_vertical = 0
+
+[node name="Uganda" type="ScrollContainer" parent="Tabs/Ressources/Africa"]
+visible = false
+layout_mode = 2
+script = ExtResource("8_rcqid")
+country_name = "Uganda"
+metadata/_tab_index = 12
+
+[node name="Content" type="HBoxContainer" parent="Tabs/Ressources/Africa/Uganda"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="DocsColumn" type="VBoxContainer" parent="Tabs/Ressources/Africa/Uganda/Content"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 7.0
+
+[node name="Docs" type="Label" parent="Tabs/Ressources/Africa/Uganda/Content/DocsColumn"]
+layout_mode = 2
+text = "Documents (Difficulty/Usefulness)"
+horizontal_alignment = 1
+
+[node name="DocsList" type="VBoxContainer" parent="Tabs/Ressources/Africa/Uganda/Content/DocsColumn"]
+layout_mode = 2
+size_flags_vertical = 0
+
+[node name="Asia" type="TabContainer" parent="Tabs/Ressources"]
+visible = false
+layout_mode = 2
+current_tab = 0
+metadata/_tab_index = 2
+
+[node name="Bangladesh" type="ScrollContainer" parent="Tabs/Ressources/Asia"]
+layout_mode = 2
+script = ExtResource("8_rcqid")
+country_name = "Bangladesh"
+metadata/_tab_index = 0
+
+[node name="Content" type="HBoxContainer" parent="Tabs/Ressources/Asia/Bangladesh"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="DocsColumn" type="VBoxContainer" parent="Tabs/Ressources/Asia/Bangladesh/Content"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 7.0
+
+[node name="Docs" type="Label" parent="Tabs/Ressources/Asia/Bangladesh/Content/DocsColumn"]
+layout_mode = 2
+text = "Documents (Difficulty/Usefulness)"
+horizontal_alignment = 1
+
+[node name="DocsList" type="VBoxContainer" parent="Tabs/Ressources/Asia/Bangladesh/Content/DocsColumn"]
+layout_mode = 2
+size_flags_vertical = 0
+
+[node name="Bhutan" type="ScrollContainer" parent="Tabs/Ressources/Asia"]
+visible = false
+layout_mode = 2
+script = ExtResource("8_rcqid")
+country_name = "Bhutan"
+metadata/_tab_index = 1
+
+[node name="Content" type="HBoxContainer" parent="Tabs/Ressources/Asia/Bhutan"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="DocsColumn" type="VBoxContainer" parent="Tabs/Ressources/Asia/Bhutan/Content"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 7.0
+
+[node name="Docs" type="Label" parent="Tabs/Ressources/Asia/Bhutan/Content/DocsColumn"]
+layout_mode = 2
+text = "Documents (Difficulty/Usefulness)"
+horizontal_alignment = 1
+
+[node name="DocsList" type="VBoxContainer" parent="Tabs/Ressources/Asia/Bhutan/Content/DocsColumn"]
+layout_mode = 2
+size_flags_vertical = 0
+
+[node name="Cambodia" type="ScrollContainer" parent="Tabs/Ressources/Asia"]
+visible = false
+layout_mode = 2
+script = ExtResource("8_rcqid")
+country_name = "Cambodia"
+metadata/_tab_index = 2
+
+[node name="Content" type="HBoxContainer" parent="Tabs/Ressources/Asia/Cambodia"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="DocsColumn" type="VBoxContainer" parent="Tabs/Ressources/Asia/Cambodia/Content"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 7.0
+
+[node name="Docs" type="Label" parent="Tabs/Ressources/Asia/Cambodia/Content/DocsColumn"]
+layout_mode = 2
+text = "Documents (Difficulty/Usefulness)"
+horizontal_alignment = 1
+
+[node name="DocsList" type="VBoxContainer" parent="Tabs/Ressources/Asia/Cambodia/Content/DocsColumn"]
+layout_mode = 2
+size_flags_vertical = 0
+
+[node name="Hong Kong" type="ScrollContainer" parent="Tabs/Ressources/Asia"]
+visible = false
+layout_mode = 2
+script = ExtResource("8_rcqid")
+country_name = "Hong Kong"
+metadata/_tab_index = 3
+
+[node name="Content" type="HBoxContainer" parent="Tabs/Ressources/Asia/Hong Kong"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="DocsColumn" type="VBoxContainer" parent="Tabs/Ressources/Asia/Hong Kong/Content"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 7.0
+
+[node name="Docs" type="Label" parent="Tabs/Ressources/Asia/Hong Kong/Content/DocsColumn"]
+layout_mode = 2
+text = "Documents (Difficulty/Usefulness)"
+horizontal_alignment = 1
+
+[node name="DocsList" type="VBoxContainer" parent="Tabs/Ressources/Asia/Hong Kong/Content/DocsColumn"]
+layout_mode = 2
+size_flags_vertical = 0
+
+[node name="India" type="ScrollContainer" parent="Tabs/Ressources/Asia"]
+visible = false
+layout_mode = 2
+script = ExtResource("8_rcqid")
+country_name = "India"
+metadata/_tab_index = 4
+
+[node name="Content" type="HBoxContainer" parent="Tabs/Ressources/Asia/India"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="DocsColumn" type="VBoxContainer" parent="Tabs/Ressources/Asia/India/Content"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 7.0
+
+[node name="Docs" type="Label" parent="Tabs/Ressources/Asia/India/Content/DocsColumn"]
+layout_mode = 2
+text = "Documents (Difficulty/Usefulness)"
+horizontal_alignment = 1
+
+[node name="DocsList" type="VBoxContainer" parent="Tabs/Ressources/Asia/India/Content/DocsColumn"]
+layout_mode = 2
+size_flags_vertical = 0
+
+[node name="Indonesia" type="ScrollContainer" parent="Tabs/Ressources/Asia"]
+visible = false
+layout_mode = 2
+script = ExtResource("8_rcqid")
+country_name = "Indonesia"
+metadata/_tab_index = 5
+
+[node name="Content" type="HBoxContainer" parent="Tabs/Ressources/Asia/Indonesia"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="DocsColumn" type="VBoxContainer" parent="Tabs/Ressources/Asia/Indonesia/Content"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 7.0
+
+[node name="Docs" type="Label" parent="Tabs/Ressources/Asia/Indonesia/Content/DocsColumn"]
+layout_mode = 2
+text = "Documents (Difficulty/Usefulness)"
+horizontal_alignment = 1
+
+[node name="DocsList" type="VBoxContainer" parent="Tabs/Ressources/Asia/Indonesia/Content/DocsColumn"]
+layout_mode = 2
+size_flags_vertical = 0
+
+[node name="Israel" type="ScrollContainer" parent="Tabs/Ressources/Asia"]
+visible = false
+layout_mode = 2
+script = ExtResource("8_rcqid")
+country_name = "Israel"
+metadata/_tab_index = 6
+
+[node name="Content" type="HBoxContainer" parent="Tabs/Ressources/Asia/Israel"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="DocsColumn" type="VBoxContainer" parent="Tabs/Ressources/Asia/Israel/Content"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 7.0
+
+[node name="Docs" type="Label" parent="Tabs/Ressources/Asia/Israel/Content/DocsColumn"]
+layout_mode = 2
+text = "Documents (Difficulty/Usefulness)"
+horizontal_alignment = 1
+
+[node name="DocsList" type="VBoxContainer" parent="Tabs/Ressources/Asia/Israel/Content/DocsColumn"]
+layout_mode = 2
+size_flags_vertical = 0
+
+[node name="Japan" type="ScrollContainer" parent="Tabs/Ressources/Asia"]
+visible = false
+layout_mode = 2
+script = ExtResource("8_rcqid")
+country_name = "Japan"
+metadata/_tab_index = 7
+
+[node name="Content" type="HBoxContainer" parent="Tabs/Ressources/Asia/Japan"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="DocsColumn" type="VBoxContainer" parent="Tabs/Ressources/Asia/Japan/Content"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 7.0
+
+[node name="Docs" type="Label" parent="Tabs/Ressources/Asia/Japan/Content/DocsColumn"]
+layout_mode = 2
+text = "Documents (Difficulty/Usefulness)"
+horizontal_alignment = 1
+
+[node name="DocsList" type="VBoxContainer" parent="Tabs/Ressources/Asia/Japan/Content/DocsColumn"]
+layout_mode = 2
+size_flags_vertical = 0
+
+[node name="Jordan" type="ScrollContainer" parent="Tabs/Ressources/Asia"]
+visible = false
+layout_mode = 2
+script = ExtResource("8_rcqid")
+country_name = "Jordan"
+metadata/_tab_index = 8
+
+[node name="Content" type="HBoxContainer" parent="Tabs/Ressources/Asia/Jordan"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="DocsColumn" type="VBoxContainer" parent="Tabs/Ressources/Asia/Jordan/Content"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 7.0
+
+[node name="Docs" type="Label" parent="Tabs/Ressources/Asia/Jordan/Content/DocsColumn"]
+layout_mode = 2
+text = "Documents (Difficulty/Usefulness)"
+horizontal_alignment = 1
+
+[node name="DocsList" type="VBoxContainer" parent="Tabs/Ressources/Asia/Jordan/Content/DocsColumn"]
+layout_mode = 2
+size_flags_vertical = 0
+
+[node name="Kazakhstan" type="ScrollContainer" parent="Tabs/Ressources/Asia"]
+visible = false
+layout_mode = 2
+script = ExtResource("8_rcqid")
+country_name = "Kazakhstan"
+metadata/_tab_index = 9
+
+[node name="Content" type="HBoxContainer" parent="Tabs/Ressources/Asia/Kazakhstan"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="DocsColumn" type="VBoxContainer" parent="Tabs/Ressources/Asia/Kazakhstan/Content"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 7.0
+
+[node name="Docs" type="Label" parent="Tabs/Ressources/Asia/Kazakhstan/Content/DocsColumn"]
+layout_mode = 2
+text = "Documents (Difficulty/Usefulness)"
+horizontal_alignment = 1
+
+[node name="DocsList" type="VBoxContainer" parent="Tabs/Ressources/Asia/Kazakhstan/Content/DocsColumn"]
+layout_mode = 2
+size_flags_vertical = 0
+
+[node name="Kyrgyzstan" type="ScrollContainer" parent="Tabs/Ressources/Asia"]
+visible = false
+layout_mode = 2
+script = ExtResource("8_rcqid")
+country_name = "Kyrgyzstan"
+metadata/_tab_index = 10
+
+[node name="Content" type="HBoxContainer" parent="Tabs/Ressources/Asia/Kyrgyzstan"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="DocsColumn" type="VBoxContainer" parent="Tabs/Ressources/Asia/Kyrgyzstan/Content"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 7.0
+
+[node name="Docs" type="Label" parent="Tabs/Ressources/Asia/Kyrgyzstan/Content/DocsColumn"]
+layout_mode = 2
+text = "Documents (Difficulty/Usefulness)"
+horizontal_alignment = 1
+
+[node name="DocsList" type="VBoxContainer" parent="Tabs/Ressources/Asia/Kyrgyzstan/Content/DocsColumn"]
+layout_mode = 2
+size_flags_vertical = 0
+
+[node name="Laos" type="ScrollContainer" parent="Tabs/Ressources/Asia"]
+visible = false
+layout_mode = 2
+script = ExtResource("8_rcqid")
+country_name = "Laos"
+metadata/_tab_index = 11
+
+[node name="Content" type="HBoxContainer" parent="Tabs/Ressources/Asia/Laos"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="DocsColumn" type="VBoxContainer" parent="Tabs/Ressources/Asia/Laos/Content"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 7.0
+
+[node name="Docs" type="Label" parent="Tabs/Ressources/Asia/Laos/Content/DocsColumn"]
+layout_mode = 2
+text = "Documents (Difficulty/Usefulness)"
+horizontal_alignment = 1
+
+[node name="DocsList" type="VBoxContainer" parent="Tabs/Ressources/Asia/Laos/Content/DocsColumn"]
+layout_mode = 2
+size_flags_vertical = 0
+
+[node name="Lebanon" type="ScrollContainer" parent="Tabs/Ressources/Asia"]
+visible = false
+layout_mode = 2
+script = ExtResource("8_rcqid")
+country_name = "Lebanon"
+metadata/_tab_index = 12
+
+[node name="Content" type="HBoxContainer" parent="Tabs/Ressources/Asia/Lebanon"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="DocsColumn" type="VBoxContainer" parent="Tabs/Ressources/Asia/Lebanon/Content"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 7.0
+
+[node name="Docs" type="Label" parent="Tabs/Ressources/Asia/Lebanon/Content/DocsColumn"]
+layout_mode = 2
+text = "Documents (Difficulty/Usefulness)"
+horizontal_alignment = 1
+
+[node name="DocsList" type="VBoxContainer" parent="Tabs/Ressources/Asia/Lebanon/Content/DocsColumn"]
+layout_mode = 2
+size_flags_vertical = 0
+
+[node name="Macau" type="ScrollContainer" parent="Tabs/Ressources/Asia"]
+visible = false
+layout_mode = 2
+script = ExtResource("8_rcqid")
+country_name = "Macau"
+metadata/_tab_index = 13
+
+[node name="Content" type="HBoxContainer" parent="Tabs/Ressources/Asia/Macau"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="DocsColumn" type="VBoxContainer" parent="Tabs/Ressources/Asia/Macau/Content"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 7.0
+
+[node name="Docs" type="Label" parent="Tabs/Ressources/Asia/Macau/Content/DocsColumn"]
+layout_mode = 2
+text = "Documents (Difficulty/Usefulness)"
+horizontal_alignment = 1
+
+[node name="DocsList" type="VBoxContainer" parent="Tabs/Ressources/Asia/Macau/Content/DocsColumn"]
+layout_mode = 2
+size_flags_vertical = 0
+
+[node name="Malaysia" type="ScrollContainer" parent="Tabs/Ressources/Asia"]
+visible = false
+layout_mode = 2
+script = ExtResource("8_rcqid")
+country_name = "Malaysia"
+metadata/_tab_index = 14
+
+[node name="Content" type="HBoxContainer" parent="Tabs/Ressources/Asia/Malaysia"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="DocsColumn" type="VBoxContainer" parent="Tabs/Ressources/Asia/Malaysia/Content"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 7.0
+
+[node name="Docs" type="Label" parent="Tabs/Ressources/Asia/Malaysia/Content/DocsColumn"]
+layout_mode = 2
+text = "Documents (Difficulty/Usefulness)"
+horizontal_alignment = 1
+
+[node name="DocsList" type="VBoxContainer" parent="Tabs/Ressources/Asia/Malaysia/Content/DocsColumn"]
+layout_mode = 2
+size_flags_vertical = 0
+
+[node name="Mongolia" type="ScrollContainer" parent="Tabs/Ressources/Asia"]
+visible = false
+layout_mode = 2
+script = ExtResource("8_rcqid")
+country_name = "Mongolia"
+metadata/_tab_index = 15
+
+[node name="Content" type="HBoxContainer" parent="Tabs/Ressources/Asia/Mongolia"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="DocsColumn" type="VBoxContainer" parent="Tabs/Ressources/Asia/Mongolia/Content"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 7.0
+
+[node name="Docs" type="Label" parent="Tabs/Ressources/Asia/Mongolia/Content/DocsColumn"]
+layout_mode = 2
+text = "Documents (Difficulty/Usefulness)"
+horizontal_alignment = 1
+
+[node name="DocsList" type="VBoxContainer" parent="Tabs/Ressources/Asia/Mongolia/Content/DocsColumn"]
+layout_mode = 2
+size_flags_vertical = 0
+
+[node name="Nepal" type="ScrollContainer" parent="Tabs/Ressources/Asia"]
+visible = false
+layout_mode = 2
+script = ExtResource("8_rcqid")
+country_name = "Nepal"
+metadata/_tab_index = 16
+
+[node name="Content" type="HBoxContainer" parent="Tabs/Ressources/Asia/Nepal"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="DocsColumn" type="VBoxContainer" parent="Tabs/Ressources/Asia/Nepal/Content"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 7.0
+
+[node name="Docs" type="Label" parent="Tabs/Ressources/Asia/Nepal/Content/DocsColumn"]
+layout_mode = 2
+text = "Documents (Difficulty/Usefulness)"
+horizontal_alignment = 1
+
+[node name="DocsList" type="VBoxContainer" parent="Tabs/Ressources/Asia/Nepal/Content/DocsColumn"]
+layout_mode = 2
+size_flags_vertical = 0
+
+[node name="Oman" type="ScrollContainer" parent="Tabs/Ressources/Asia"]
+visible = false
+layout_mode = 2
+script = ExtResource("8_rcqid")
+country_name = "Oman"
+metadata/_tab_index = 17
+
+[node name="Content" type="HBoxContainer" parent="Tabs/Ressources/Asia/Oman"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="DocsColumn" type="VBoxContainer" parent="Tabs/Ressources/Asia/Oman/Content"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 7.0
+
+[node name="Docs" type="Label" parent="Tabs/Ressources/Asia/Oman/Content/DocsColumn"]
+layout_mode = 2
+text = "Documents (Difficulty/Usefulness)"
+horizontal_alignment = 1
+
+[node name="DocsList" type="VBoxContainer" parent="Tabs/Ressources/Asia/Oman/Content/DocsColumn"]
+layout_mode = 2
+size_flags_vertical = 0
+
+[node name="Philippines" type="ScrollContainer" parent="Tabs/Ressources/Asia"]
+visible = false
+layout_mode = 2
+script = ExtResource("8_rcqid")
+country_name = "Philippines"
+metadata/_tab_index = 18
+
+[node name="Content" type="HBoxContainer" parent="Tabs/Ressources/Asia/Philippines"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="DocsColumn" type="VBoxContainer" parent="Tabs/Ressources/Asia/Philippines/Content"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 7.0
+
+[node name="Docs" type="Label" parent="Tabs/Ressources/Asia/Philippines/Content/DocsColumn"]
+layout_mode = 2
+text = "Documents (Difficulty/Usefulness)"
+horizontal_alignment = 1
+
+[node name="DocsList" type="VBoxContainer" parent="Tabs/Ressources/Asia/Philippines/Content/DocsColumn"]
+layout_mode = 2
+size_flags_vertical = 0
+
+[node name="Qatar" type="ScrollContainer" parent="Tabs/Ressources/Asia"]
+visible = false
+layout_mode = 2
+script = ExtResource("8_rcqid")
+country_name = "Qatar"
+metadata/_tab_index = 19
+
+[node name="Content" type="HBoxContainer" parent="Tabs/Ressources/Asia/Qatar"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="DocsColumn" type="VBoxContainer" parent="Tabs/Ressources/Asia/Qatar/Content"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 7.0
+
+[node name="Docs" type="Label" parent="Tabs/Ressources/Asia/Qatar/Content/DocsColumn"]
+layout_mode = 2
+text = "Documents (Difficulty/Usefulness)"
+horizontal_alignment = 1
+
+[node name="DocsList" type="VBoxContainer" parent="Tabs/Ressources/Asia/Qatar/Content/DocsColumn"]
+layout_mode = 2
+size_flags_vertical = 0
+
+[node name="Russia" type="ScrollContainer" parent="Tabs/Ressources/Asia"]
+visible = false
+layout_mode = 2
+script = ExtResource("8_rcqid")
+country_name = "Russia"
+metadata/_tab_index = 20
+
+[node name="Content" type="HBoxContainer" parent="Tabs/Ressources/Asia/Russia"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="DocsColumn" type="VBoxContainer" parent="Tabs/Ressources/Asia/Russia/Content"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 7.0
+
+[node name="Docs" type="Label" parent="Tabs/Ressources/Asia/Russia/Content/DocsColumn"]
+layout_mode = 2
+text = "Documents (Difficulty/Usefulness)"
+horizontal_alignment = 1
+
+[node name="DocsList" type="VBoxContainer" parent="Tabs/Ressources/Asia/Russia/Content/DocsColumn"]
+layout_mode = 2
+size_flags_vertical = 0
+
+[node name="Singapore" type="ScrollContainer" parent="Tabs/Ressources/Asia"]
+visible = false
+layout_mode = 2
+script = ExtResource("8_rcqid")
+country_name = "Singapore"
+metadata/_tab_index = 21
+
+[node name="Content" type="HBoxContainer" parent="Tabs/Ressources/Asia/Singapore"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="DocsColumn" type="VBoxContainer" parent="Tabs/Ressources/Asia/Singapore/Content"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 7.0
+
+[node name="Docs" type="Label" parent="Tabs/Ressources/Asia/Singapore/Content/DocsColumn"]
+layout_mode = 2
+text = "Documents (Difficulty/Usefulness)"
+horizontal_alignment = 1
+
+[node name="DocsList" type="VBoxContainer" parent="Tabs/Ressources/Asia/Singapore/Content/DocsColumn"]
+layout_mode = 2
+size_flags_vertical = 0
+
+[node name="South Korea" type="ScrollContainer" parent="Tabs/Ressources/Asia"]
+visible = false
+layout_mode = 2
+script = ExtResource("8_rcqid")
+country_name = "South Korea"
+metadata/_tab_index = 22
+
+[node name="Content" type="HBoxContainer" parent="Tabs/Ressources/Asia/South Korea"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="DocsColumn" type="VBoxContainer" parent="Tabs/Ressources/Asia/South Korea/Content"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 7.0
+
+[node name="Docs" type="Label" parent="Tabs/Ressources/Asia/South Korea/Content/DocsColumn"]
+layout_mode = 2
+text = "Documents (Difficulty/Usefulness)"
+horizontal_alignment = 1
+
+[node name="DocsList" type="VBoxContainer" parent="Tabs/Ressources/Asia/South Korea/Content/DocsColumn"]
+layout_mode = 2
+size_flags_vertical = 0
+
+[node name="Sri Lanka" type="ScrollContainer" parent="Tabs/Ressources/Asia"]
+visible = false
+layout_mode = 2
+script = ExtResource("8_rcqid")
+country_name = "Sri Lanka"
+metadata/_tab_index = 23
+
+[node name="Content" type="HBoxContainer" parent="Tabs/Ressources/Asia/Sri Lanka"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="DocsColumn" type="VBoxContainer" parent="Tabs/Ressources/Asia/Sri Lanka/Content"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 7.0
+
+[node name="Docs" type="Label" parent="Tabs/Ressources/Asia/Sri Lanka/Content/DocsColumn"]
+layout_mode = 2
+text = "Documents (Difficulty/Usefulness)"
+horizontal_alignment = 1
+
+[node name="DocsList" type="VBoxContainer" parent="Tabs/Ressources/Asia/Sri Lanka/Content/DocsColumn"]
+layout_mode = 2
+size_flags_vertical = 0
+
+[node name="Taiwan" type="ScrollContainer" parent="Tabs/Ressources/Asia"]
+visible = false
+layout_mode = 2
+script = ExtResource("8_rcqid")
+country_name = "Taiwan"
+metadata/_tab_index = 24
+
+[node name="Content" type="HBoxContainer" parent="Tabs/Ressources/Asia/Taiwan"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="DocsColumn" type="VBoxContainer" parent="Tabs/Ressources/Asia/Taiwan/Content"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 7.0
+
+[node name="Docs" type="Label" parent="Tabs/Ressources/Asia/Taiwan/Content/DocsColumn"]
+layout_mode = 2
+text = "Documents (Difficulty/Usefulness)"
+horizontal_alignment = 1
+
+[node name="DocsList" type="VBoxContainer" parent="Tabs/Ressources/Asia/Taiwan/Content/DocsColumn"]
+layout_mode = 2
+size_flags_vertical = 0
+
+[node name="Thailand" type="ScrollContainer" parent="Tabs/Ressources/Asia"]
+visible = false
+layout_mode = 2
+script = ExtResource("8_rcqid")
+country_name = "Thailand"
+metadata/_tab_index = 25
+
+[node name="Content" type="HBoxContainer" parent="Tabs/Ressources/Asia/Thailand"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="DocsColumn" type="VBoxContainer" parent="Tabs/Ressources/Asia/Thailand/Content"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 7.0
+
+[node name="Docs" type="Label" parent="Tabs/Ressources/Asia/Thailand/Content/DocsColumn"]
+layout_mode = 2
+text = "Documents (Difficulty/Usefulness)"
+horizontal_alignment = 1
+
+[node name="DocsList" type="VBoxContainer" parent="Tabs/Ressources/Asia/Thailand/Content/DocsColumn"]
+layout_mode = 2
+size_flags_vertical = 0
+
+[node name="Turkey" type="ScrollContainer" parent="Tabs/Ressources/Asia"]
+visible = false
+layout_mode = 2
+script = ExtResource("8_rcqid")
+country_name = "Turkey"
+metadata/_tab_index = 26
+
+[node name="Content" type="HBoxContainer" parent="Tabs/Ressources/Asia/Turkey"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="DocsColumn" type="VBoxContainer" parent="Tabs/Ressources/Asia/Turkey/Content"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 7.0
+
+[node name="Docs" type="Label" parent="Tabs/Ressources/Asia/Turkey/Content/DocsColumn"]
+layout_mode = 2
+text = "Documents (Difficulty/Usefulness)"
+horizontal_alignment = 1
+
+[node name="DocsList" type="VBoxContainer" parent="Tabs/Ressources/Asia/Turkey/Content/DocsColumn"]
+layout_mode = 2
+size_flags_vertical = 0
+
+[node name="UAE" type="ScrollContainer" parent="Tabs/Ressources/Asia"]
+visible = false
+layout_mode = 2
+script = ExtResource("8_rcqid")
+country_name = "United Arab Emirates"
+metadata/_tab_index = 27
+
+[node name="Content" type="HBoxContainer" parent="Tabs/Ressources/Asia/UAE"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="DocsColumn" type="VBoxContainer" parent="Tabs/Ressources/Asia/UAE/Content"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 7.0
+
+[node name="Docs" type="Label" parent="Tabs/Ressources/Asia/UAE/Content/DocsColumn"]
+layout_mode = 2
+text = "Documents (Difficulty/Usefulness)"
+horizontal_alignment = 1
+
+[node name="DocsList" type="VBoxContainer" parent="Tabs/Ressources/Asia/UAE/Content/DocsColumn"]
+layout_mode = 2
+size_flags_vertical = 0
+
+[node name="Vietnam" type="ScrollContainer" parent="Tabs/Ressources/Asia"]
+visible = false
+layout_mode = 2
+script = ExtResource("8_rcqid")
+country_name = "Vietnam"
+metadata/_tab_index = 28
+
+[node name="Content" type="HBoxContainer" parent="Tabs/Ressources/Asia/Vietnam"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="DocsColumn" type="VBoxContainer" parent="Tabs/Ressources/Asia/Vietnam/Content"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 7.0
+
+[node name="Docs" type="Label" parent="Tabs/Ressources/Asia/Vietnam/Content/DocsColumn"]
+layout_mode = 2
+text = "Documents (Difficulty/Usefulness)"
+horizontal_alignment = 1
+
+[node name="DocsList" type="VBoxContainer" parent="Tabs/Ressources/Asia/Vietnam/Content/DocsColumn"]
+layout_mode = 2
+size_flags_vertical = 0
+
+[node name="Europe" type="TabContainer" parent="Tabs/Ressources"]
+visible = false
+layout_mode = 2
+current_tab = 0
+metadata/_tab_index = 3
+
+[node name="Albania" type="ScrollContainer" parent="Tabs/Ressources/Europe"]
+layout_mode = 2
+script = ExtResource("8_rcqid")
+country_name = "Albania"
+metadata/_tab_index = 0
+
+[node name="Content" type="HBoxContainer" parent="Tabs/Ressources/Europe/Albania"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="DocsColumn" type="VBoxContainer" parent="Tabs/Ressources/Europe/Albania/Content"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 7.0
+
+[node name="Docs" type="Label" parent="Tabs/Ressources/Europe/Albania/Content/DocsColumn"]
+layout_mode = 2
+text = "Documents (Difficulty/Usefulness)"
+horizontal_alignment = 1
+
+[node name="DocsList" type="VBoxContainer" parent="Tabs/Ressources/Europe/Albania/Content/DocsColumn"]
+layout_mode = 2
+size_flags_vertical = 0
+
+[node name="Andorra" type="ScrollContainer" parent="Tabs/Ressources/Europe"]
+visible = false
+layout_mode = 2
+script = ExtResource("8_rcqid")
+country_name = "Andorra"
+metadata/_tab_index = 1
+
+[node name="Content" type="HBoxContainer" parent="Tabs/Ressources/Europe/Andorra"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="DocsColumn" type="VBoxContainer" parent="Tabs/Ressources/Europe/Andorra/Content"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 7.0
+
+[node name="Docs" type="Label" parent="Tabs/Ressources/Europe/Andorra/Content/DocsColumn"]
+layout_mode = 2
+text = "Documents (Difficulty/Usefulness)"
+horizontal_alignment = 1
+
+[node name="DocsList" type="VBoxContainer" parent="Tabs/Ressources/Europe/Andorra/Content/DocsColumn"]
+layout_mode = 2
+size_flags_vertical = 0
+
+[node name="Austria" type="ScrollContainer" parent="Tabs/Ressources/Europe"]
+visible = false
+layout_mode = 2
+script = ExtResource("8_rcqid")
+country_name = "Austria"
+metadata/_tab_index = 2
+
+[node name="Content" type="HBoxContainer" parent="Tabs/Ressources/Europe/Austria"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="DocsColumn" type="VBoxContainer" parent="Tabs/Ressources/Europe/Austria/Content"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 7.0
+
+[node name="Docs" type="Label" parent="Tabs/Ressources/Europe/Austria/Content/DocsColumn"]
+layout_mode = 2
+text = "Documents (Difficulty/Usefulness)"
+horizontal_alignment = 1
+
+[node name="DocsList" type="VBoxContainer" parent="Tabs/Ressources/Europe/Austria/Content/DocsColumn"]
+layout_mode = 2
+size_flags_vertical = 0
+
+[node name="Belgium" type="ScrollContainer" parent="Tabs/Ressources/Europe"]
+visible = false
+layout_mode = 2
+script = ExtResource("8_rcqid")
+country_name = "Belgium"
+metadata/_tab_index = 3
+
+[node name="Content" type="HBoxContainer" parent="Tabs/Ressources/Europe/Belgium"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="DocsColumn" type="VBoxContainer" parent="Tabs/Ressources/Europe/Belgium/Content"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 7.0
+
+[node name="Docs" type="Label" parent="Tabs/Ressources/Europe/Belgium/Content/DocsColumn"]
+layout_mode = 2
+text = "Documents (Difficulty/Usefulness)"
+horizontal_alignment = 1
+
+[node name="DocsList" type="VBoxContainer" parent="Tabs/Ressources/Europe/Belgium/Content/DocsColumn"]
+layout_mode = 2
+size_flags_vertical = 0
+
+[node name="Bulgaria" type="ScrollContainer" parent="Tabs/Ressources/Europe"]
+visible = false
+layout_mode = 2
+script = ExtResource("8_rcqid")
+country_name = "Bulgaria"
+metadata/_tab_index = 4
+
+[node name="Content" type="HBoxContainer" parent="Tabs/Ressources/Europe/Bulgaria"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="DocsColumn" type="VBoxContainer" parent="Tabs/Ressources/Europe/Bulgaria/Content"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 7.0
+
+[node name="Docs" type="Label" parent="Tabs/Ressources/Europe/Bulgaria/Content/DocsColumn"]
+layout_mode = 2
+text = "Documents (Difficulty/Usefulness)"
+horizontal_alignment = 1
+
+[node name="DocsList" type="VBoxContainer" parent="Tabs/Ressources/Europe/Bulgaria/Content/DocsColumn"]
+layout_mode = 2
+size_flags_vertical = 0
+
+[node name="Croatia" type="ScrollContainer" parent="Tabs/Ressources/Europe"]
+visible = false
+layout_mode = 2
+script = ExtResource("8_rcqid")
+country_name = "Croatia"
+metadata/_tab_index = 5
+
+[node name="Content" type="HBoxContainer" parent="Tabs/Ressources/Europe/Croatia"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="DocsColumn" type="VBoxContainer" parent="Tabs/Ressources/Europe/Croatia/Content"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 7.0
+
+[node name="Docs" type="Label" parent="Tabs/Ressources/Europe/Croatia/Content/DocsColumn"]
+layout_mode = 2
+text = "Documents (Difficulty/Usefulness)"
+horizontal_alignment = 1
+
+[node name="DocsList" type="VBoxContainer" parent="Tabs/Ressources/Europe/Croatia/Content/DocsColumn"]
+layout_mode = 2
+size_flags_vertical = 0
+
+[node name="Cyprus" type="ScrollContainer" parent="Tabs/Ressources/Europe"]
+visible = false
+layout_mode = 2
+script = ExtResource("8_rcqid")
+country_name = "Cyprus"
+metadata/_tab_index = 6
+
+[node name="Content" type="HBoxContainer" parent="Tabs/Ressources/Europe/Cyprus"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="DocsColumn" type="VBoxContainer" parent="Tabs/Ressources/Europe/Cyprus/Content"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 7.0
+
+[node name="Docs" type="Label" parent="Tabs/Ressources/Europe/Cyprus/Content/DocsColumn"]
+layout_mode = 2
+text = "Documents (Difficulty/Usefulness)"
+horizontal_alignment = 1
+
+[node name="DocsList" type="VBoxContainer" parent="Tabs/Ressources/Europe/Cyprus/Content/DocsColumn"]
+layout_mode = 2
+size_flags_vertical = 0
+
+[node name="Czechia" type="ScrollContainer" parent="Tabs/Ressources/Europe"]
+visible = false
+layout_mode = 2
+script = ExtResource("8_rcqid")
+country_name = "Czechia"
+metadata/_tab_index = 7
+
+[node name="Content" type="HBoxContainer" parent="Tabs/Ressources/Europe/Czechia"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="DocsColumn" type="VBoxContainer" parent="Tabs/Ressources/Europe/Czechia/Content"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 7.0
+
+[node name="Docs" type="Label" parent="Tabs/Ressources/Europe/Czechia/Content/DocsColumn"]
+layout_mode = 2
+text = "Documents (Difficulty/Usefulness)"
+horizontal_alignment = 1
+
+[node name="DocsList" type="VBoxContainer" parent="Tabs/Ressources/Europe/Czechia/Content/DocsColumn"]
+layout_mode = 2
+size_flags_vertical = 0
+
+[node name="Denmark" type="ScrollContainer" parent="Tabs/Ressources/Europe"]
+visible = false
+layout_mode = 2
+script = ExtResource("8_rcqid")
+country_name = "Denmark"
+metadata/_tab_index = 8
+
+[node name="Content" type="HBoxContainer" parent="Tabs/Ressources/Europe/Denmark"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="DocsColumn" type="VBoxContainer" parent="Tabs/Ressources/Europe/Denmark/Content"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 7.0
+
+[node name="Docs" type="Label" parent="Tabs/Ressources/Europe/Denmark/Content/DocsColumn"]
+layout_mode = 2
+text = "Documents (Difficulty/Usefulness)"
+horizontal_alignment = 1
+
+[node name="DocsList" type="VBoxContainer" parent="Tabs/Ressources/Europe/Denmark/Content/DocsColumn"]
+layout_mode = 2
+size_flags_vertical = 0
+
+[node name="Estonia" type="ScrollContainer" parent="Tabs/Ressources/Europe"]
+visible = false
+layout_mode = 2
+script = ExtResource("8_rcqid")
+country_name = "Estonia"
+metadata/_tab_index = 9
+
+[node name="Content" type="HBoxContainer" parent="Tabs/Ressources/Europe/Estonia"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="DocsColumn" type="VBoxContainer" parent="Tabs/Ressources/Europe/Estonia/Content"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 7.0
+
+[node name="Docs" type="Label" parent="Tabs/Ressources/Europe/Estonia/Content/DocsColumn"]
+layout_mode = 2
+text = "Documents (Difficulty/Usefulness)"
+horizontal_alignment = 1
+
+[node name="DocsList" type="VBoxContainer" parent="Tabs/Ressources/Europe/Estonia/Content/DocsColumn"]
+layout_mode = 2
+size_flags_vertical = 0
+
+[node name="Faroe" type="ScrollContainer" parent="Tabs/Ressources/Europe"]
+visible = false
+layout_mode = 2
+script = ExtResource("8_rcqid")
+country_name = "Faroe Islands"
+metadata/_tab_index = 10
+
+[node name="Content" type="HBoxContainer" parent="Tabs/Ressources/Europe/Faroe"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="DocsColumn" type="VBoxContainer" parent="Tabs/Ressources/Europe/Faroe/Content"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 7.0
+
+[node name="Docs" type="Label" parent="Tabs/Ressources/Europe/Faroe/Content/DocsColumn"]
+layout_mode = 2
+text = "Documents (Difficulty/Usefulness)"
+horizontal_alignment = 1
+
+[node name="DocsList" type="VBoxContainer" parent="Tabs/Ressources/Europe/Faroe/Content/DocsColumn"]
+layout_mode = 2
+size_flags_vertical = 0
+
+[node name="Finland" type="ScrollContainer" parent="Tabs/Ressources/Europe"]
+visible = false
+layout_mode = 2
+script = ExtResource("8_rcqid")
+country_name = "Finland"
+metadata/_tab_index = 11
+
+[node name="Content" type="HBoxContainer" parent="Tabs/Ressources/Europe/Finland"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="DocsColumn" type="VBoxContainer" parent="Tabs/Ressources/Europe/Finland/Content"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 7.0
+
+[node name="Docs" type="Label" parent="Tabs/Ressources/Europe/Finland/Content/DocsColumn"]
+layout_mode = 2
+text = "Documents (Difficulty/Usefulness)"
+horizontal_alignment = 1
+
+[node name="DocsList" type="VBoxContainer" parent="Tabs/Ressources/Europe/Finland/Content/DocsColumn"]
+layout_mode = 2
+size_flags_vertical = 0
+
+[node name="France" type="ScrollContainer" parent="Tabs/Ressources/Europe"]
+visible = false
+layout_mode = 2
+script = ExtResource("8_rcqid")
+country_name = "France"
+metadata/_tab_index = 12
+
+[node name="Content" type="HBoxContainer" parent="Tabs/Ressources/Europe/France"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="DocsColumn" type="VBoxContainer" parent="Tabs/Ressources/Europe/France/Content"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 7.0
+
+[node name="Docs" type="Label" parent="Tabs/Ressources/Europe/France/Content/DocsColumn"]
+layout_mode = 2
+text = "Documents (Difficulty/Usefulness)"
+horizontal_alignment = 1
+
+[node name="DocsList" type="VBoxContainer" parent="Tabs/Ressources/Europe/France/Content/DocsColumn"]
+layout_mode = 2
+size_flags_vertical = 0
+
+[node name="Germany" type="ScrollContainer" parent="Tabs/Ressources/Europe"]
+visible = false
+layout_mode = 2
+script = ExtResource("8_rcqid")
+country_name = "Germany"
+metadata/_tab_index = 13
+
+[node name="Content" type="HBoxContainer" parent="Tabs/Ressources/Europe/Germany"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="DocsColumn" type="VBoxContainer" parent="Tabs/Ressources/Europe/Germany/Content"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 7.0
+
+[node name="Docs" type="Label" parent="Tabs/Ressources/Europe/Germany/Content/DocsColumn"]
+layout_mode = 2
+text = "Documents (Difficulty/Usefulness)"
+horizontal_alignment = 1
+
+[node name="DocsList" type="VBoxContainer" parent="Tabs/Ressources/Europe/Germany/Content/DocsColumn"]
+layout_mode = 2
+size_flags_vertical = 0
+
+[node name="Gibraltar" type="ScrollContainer" parent="Tabs/Ressources/Europe"]
+visible = false
+layout_mode = 2
+script = ExtResource("8_rcqid")
+country_name = "Gibraltar"
+metadata/_tab_index = 14
+
+[node name="Content" type="HBoxContainer" parent="Tabs/Ressources/Europe/Gibraltar"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="DocsColumn" type="VBoxContainer" parent="Tabs/Ressources/Europe/Gibraltar/Content"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 7.0
+
+[node name="Docs" type="Label" parent="Tabs/Ressources/Europe/Gibraltar/Content/DocsColumn"]
+layout_mode = 2
+text = "Documents (Difficulty/Usefulness)"
+horizontal_alignment = 1
+
+[node name="DocsList" type="VBoxContainer" parent="Tabs/Ressources/Europe/Gibraltar/Content/DocsColumn"]
+layout_mode = 2
+size_flags_vertical = 0
+
+[node name="Greece" type="ScrollContainer" parent="Tabs/Ressources/Europe"]
+visible = false
+layout_mode = 2
+script = ExtResource("8_rcqid")
+country_name = "Greece"
+metadata/_tab_index = 15
+
+[node name="Content" type="HBoxContainer" parent="Tabs/Ressources/Europe/Greece"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="DocsColumn" type="VBoxContainer" parent="Tabs/Ressources/Europe/Greece/Content"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 7.0
+
+[node name="Docs" type="Label" parent="Tabs/Ressources/Europe/Greece/Content/DocsColumn"]
+layout_mode = 2
+text = "Documents (Difficulty/Usefulness)"
+horizontal_alignment = 1
+
+[node name="DocsList" type="VBoxContainer" parent="Tabs/Ressources/Europe/Greece/Content/DocsColumn"]
+layout_mode = 2
+size_flags_vertical = 0
+
+[node name="Hungary" type="ScrollContainer" parent="Tabs/Ressources/Europe"]
+visible = false
+layout_mode = 2
+script = ExtResource("8_rcqid")
+country_name = "Hungary"
+metadata/_tab_index = 16
+
+[node name="Content" type="HBoxContainer" parent="Tabs/Ressources/Europe/Hungary"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="DocsColumn" type="VBoxContainer" parent="Tabs/Ressources/Europe/Hungary/Content"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 7.0
+
+[node name="Docs" type="Label" parent="Tabs/Ressources/Europe/Hungary/Content/DocsColumn"]
+layout_mode = 2
+text = "Documents (Difficulty/Usefulness)"
+horizontal_alignment = 1
+
+[node name="DocsList" type="VBoxContainer" parent="Tabs/Ressources/Europe/Hungary/Content/DocsColumn"]
+layout_mode = 2
+size_flags_vertical = 0
+
+[node name="Iceland" type="ScrollContainer" parent="Tabs/Ressources/Europe"]
+visible = false
+layout_mode = 2
+script = ExtResource("8_rcqid")
+country_name = "Iceland"
+metadata/_tab_index = 17
+
+[node name="Content" type="HBoxContainer" parent="Tabs/Ressources/Europe/Iceland"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="DocsColumn" type="VBoxContainer" parent="Tabs/Ressources/Europe/Iceland/Content"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 7.0
+
+[node name="Docs" type="Label" parent="Tabs/Ressources/Europe/Iceland/Content/DocsColumn"]
+layout_mode = 2
+text = "Documents (Difficulty/Usefulness)"
+horizontal_alignment = 1
+
+[node name="DocsList" type="VBoxContainer" parent="Tabs/Ressources/Europe/Iceland/Content/DocsColumn"]
+layout_mode = 2
+size_flags_vertical = 0
+
+[node name="Ireland" type="ScrollContainer" parent="Tabs/Ressources/Europe"]
+visible = false
+layout_mode = 2
+script = ExtResource("8_rcqid")
+country_name = "Ireland"
+metadata/_tab_index = 18
+
+[node name="Content" type="HBoxContainer" parent="Tabs/Ressources/Europe/Ireland"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="DocsColumn" type="VBoxContainer" parent="Tabs/Ressources/Europe/Ireland/Content"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 7.0
+
+[node name="Docs" type="Label" parent="Tabs/Ressources/Europe/Ireland/Content/DocsColumn"]
+layout_mode = 2
+text = "Documents (Difficulty/Usefulness)"
+horizontal_alignment = 1
+
+[node name="DocsList" type="VBoxContainer" parent="Tabs/Ressources/Europe/Ireland/Content/DocsColumn"]
+layout_mode = 2
+size_flags_vertical = 0
+
+[node name="Isle of Man" type="ScrollContainer" parent="Tabs/Ressources/Europe"]
+visible = false
+layout_mode = 2
+script = ExtResource("8_rcqid")
+country_name = "Isle of Man"
+metadata/_tab_index = 19
+
+[node name="Content" type="HBoxContainer" parent="Tabs/Ressources/Europe/Isle of Man"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="DocsColumn" type="VBoxContainer" parent="Tabs/Ressources/Europe/Isle of Man/Content"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 7.0
+
+[node name="Docs" type="Label" parent="Tabs/Ressources/Europe/Isle of Man/Content/DocsColumn"]
+layout_mode = 2
+text = "Documents (Difficulty/Usefulness)"
+horizontal_alignment = 1
+
+[node name="DocsList" type="VBoxContainer" parent="Tabs/Ressources/Europe/Isle of Man/Content/DocsColumn"]
+layout_mode = 2
+size_flags_vertical = 0
+
+[node name="Italy" type="ScrollContainer" parent="Tabs/Ressources/Europe"]
+visible = false
+layout_mode = 2
+script = ExtResource("8_rcqid")
+country_name = "Italy"
+metadata/_tab_index = 20
+
+[node name="Content" type="HBoxContainer" parent="Tabs/Ressources/Europe/Italy"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="DocsColumn" type="VBoxContainer" parent="Tabs/Ressources/Europe/Italy/Content"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 7.0
+
+[node name="Docs" type="Label" parent="Tabs/Ressources/Europe/Italy/Content/DocsColumn"]
+layout_mode = 2
+text = "Documents (Difficulty/Usefulness)"
+horizontal_alignment = 1
+
+[node name="DocsList" type="VBoxContainer" parent="Tabs/Ressources/Europe/Italy/Content/DocsColumn"]
+layout_mode = 2
+size_flags_vertical = 0
+
+[node name="Latvia" type="ScrollContainer" parent="Tabs/Ressources/Europe"]
+visible = false
+layout_mode = 2
+script = ExtResource("8_rcqid")
+country_name = "Latvia"
+metadata/_tab_index = 21
+
+[node name="Content" type="HBoxContainer" parent="Tabs/Ressources/Europe/Latvia"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="DocsColumn" type="VBoxContainer" parent="Tabs/Ressources/Europe/Latvia/Content"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 7.0
+
+[node name="Docs" type="Label" parent="Tabs/Ressources/Europe/Latvia/Content/DocsColumn"]
+layout_mode = 2
+text = "Documents (Difficulty/Usefulness)"
+horizontal_alignment = 1
+
+[node name="DocsList" type="VBoxContainer" parent="Tabs/Ressources/Europe/Latvia/Content/DocsColumn"]
+layout_mode = 2
+size_flags_vertical = 0
+
+[node name="Liechtenstein" type="ScrollContainer" parent="Tabs/Ressources/Europe"]
+visible = false
+layout_mode = 2
+script = ExtResource("8_rcqid")
+country_name = "Liechtenstein"
+metadata/_tab_index = 22
+
+[node name="Content" type="HBoxContainer" parent="Tabs/Ressources/Europe/Liechtenstein"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="DocsColumn" type="VBoxContainer" parent="Tabs/Ressources/Europe/Liechtenstein/Content"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 7.0
+
+[node name="Docs" type="Label" parent="Tabs/Ressources/Europe/Liechtenstein/Content/DocsColumn"]
+layout_mode = 2
+text = "Documents (Difficulty/Usefulness)"
+horizontal_alignment = 1
+
+[node name="DocsList" type="VBoxContainer" parent="Tabs/Ressources/Europe/Liechtenstein/Content/DocsColumn"]
+layout_mode = 2
+size_flags_vertical = 0
+
+[node name="Lithuania" type="ScrollContainer" parent="Tabs/Ressources/Europe"]
+visible = false
+layout_mode = 2
+script = ExtResource("8_rcqid")
+country_name = "Lithuania"
+metadata/_tab_index = 23
+
+[node name="Content" type="HBoxContainer" parent="Tabs/Ressources/Europe/Lithuania"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="DocsColumn" type="VBoxContainer" parent="Tabs/Ressources/Europe/Lithuania/Content"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 7.0
+
+[node name="Docs" type="Label" parent="Tabs/Ressources/Europe/Lithuania/Content/DocsColumn"]
+layout_mode = 2
+text = "Documents (Difficulty/Usefulness)"
+horizontal_alignment = 1
+
+[node name="DocsList" type="VBoxContainer" parent="Tabs/Ressources/Europe/Lithuania/Content/DocsColumn"]
+layout_mode = 2
+size_flags_vertical = 0
+
+[node name="Luxembourg" type="ScrollContainer" parent="Tabs/Ressources/Europe"]
+visible = false
+layout_mode = 2
+script = ExtResource("8_rcqid")
+country_name = "Luxembourg"
+metadata/_tab_index = 24
+
+[node name="Content" type="HBoxContainer" parent="Tabs/Ressources/Europe/Luxembourg"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="DocsColumn" type="VBoxContainer" parent="Tabs/Ressources/Europe/Luxembourg/Content"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 7.0
+
+[node name="Docs" type="Label" parent="Tabs/Ressources/Europe/Luxembourg/Content/DocsColumn"]
+layout_mode = 2
+text = "Documents (Difficulty/Usefulness)"
+horizontal_alignment = 1
+
+[node name="DocsList" type="VBoxContainer" parent="Tabs/Ressources/Europe/Luxembourg/Content/DocsColumn"]
+layout_mode = 2
+size_flags_vertical = 0
+
+[node name="Macedonia" type="ScrollContainer" parent="Tabs/Ressources/Europe"]
+visible = false
+layout_mode = 2
+script = ExtResource("8_rcqid")
+country_name = "North Macedonia"
+metadata/_tab_index = 25
+
+[node name="Content" type="HBoxContainer" parent="Tabs/Ressources/Europe/Macedonia"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="DocsColumn" type="VBoxContainer" parent="Tabs/Ressources/Europe/Macedonia/Content"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 7.0
+
+[node name="Docs" type="Label" parent="Tabs/Ressources/Europe/Macedonia/Content/DocsColumn"]
+layout_mode = 2
+text = "Documents (Difficulty/Usefulness)"
+horizontal_alignment = 1
+
+[node name="DocsList" type="VBoxContainer" parent="Tabs/Ressources/Europe/Macedonia/Content/DocsColumn"]
+layout_mode = 2
+size_flags_vertical = 0
+
+[node name="Malta" type="ScrollContainer" parent="Tabs/Ressources/Europe"]
+visible = false
+layout_mode = 2
+script = ExtResource("8_rcqid")
+country_name = "Malta"
+metadata/_tab_index = 26
+
+[node name="Content" type="HBoxContainer" parent="Tabs/Ressources/Europe/Malta"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="DocsColumn" type="VBoxContainer" parent="Tabs/Ressources/Europe/Malta/Content"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 7.0
+
+[node name="Docs" type="Label" parent="Tabs/Ressources/Europe/Malta/Content/DocsColumn"]
+layout_mode = 2
+text = "Documents (Difficulty/Usefulness)"
+horizontal_alignment = 1
+
+[node name="DocsList" type="VBoxContainer" parent="Tabs/Ressources/Europe/Malta/Content/DocsColumn"]
+layout_mode = 2
+size_flags_vertical = 0
+
+[node name="Monaco" type="ScrollContainer" parent="Tabs/Ressources/Europe"]
+visible = false
+layout_mode = 2
+script = ExtResource("8_rcqid")
+country_name = "Monaco"
+metadata/_tab_index = 27
+
+[node name="Content" type="HBoxContainer" parent="Tabs/Ressources/Europe/Monaco"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="DocsColumn" type="VBoxContainer" parent="Tabs/Ressources/Europe/Monaco/Content"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 7.0
+
+[node name="Docs" type="Label" parent="Tabs/Ressources/Europe/Monaco/Content/DocsColumn"]
+layout_mode = 2
+text = "Documents (Difficulty/Usefulness)"
+horizontal_alignment = 1
+
+[node name="DocsList" type="VBoxContainer" parent="Tabs/Ressources/Europe/Monaco/Content/DocsColumn"]
+layout_mode = 2
+size_flags_vertical = 0
+
+[node name="Montenegro" type="ScrollContainer" parent="Tabs/Ressources/Europe"]
+visible = false
+layout_mode = 2
+script = ExtResource("8_rcqid")
+country_name = "Montenegro"
+metadata/_tab_index = 28
+
+[node name="Content" type="HBoxContainer" parent="Tabs/Ressources/Europe/Montenegro"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="DocsColumn" type="VBoxContainer" parent="Tabs/Ressources/Europe/Montenegro/Content"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 7.0
+
+[node name="Docs" type="Label" parent="Tabs/Ressources/Europe/Montenegro/Content/DocsColumn"]
+layout_mode = 2
+text = "Documents (Difficulty/Usefulness)"
+horizontal_alignment = 1
+
+[node name="DocsList" type="VBoxContainer" parent="Tabs/Ressources/Europe/Montenegro/Content/DocsColumn"]
+layout_mode = 2
+size_flags_vertical = 0
+
+[node name="Netherlands" type="ScrollContainer" parent="Tabs/Ressources/Europe"]
+visible = false
+layout_mode = 2
+script = ExtResource("8_rcqid")
+country_name = "Netherlands"
+metadata/_tab_index = 29
+
+[node name="Content" type="HBoxContainer" parent="Tabs/Ressources/Europe/Netherlands"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="DocsColumn" type="VBoxContainer" parent="Tabs/Ressources/Europe/Netherlands/Content"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 7.0
+
+[node name="Docs" type="Label" parent="Tabs/Ressources/Europe/Netherlands/Content/DocsColumn"]
+layout_mode = 2
+text = "Documents (Difficulty/Usefulness)"
+horizontal_alignment = 1
+
+[node name="DocsList" type="VBoxContainer" parent="Tabs/Ressources/Europe/Netherlands/Content/DocsColumn"]
+layout_mode = 2
+size_flags_vertical = 0
+
+[node name="Norway" type="ScrollContainer" parent="Tabs/Ressources/Europe"]
+visible = false
+layout_mode = 2
+script = ExtResource("8_rcqid")
+country_name = "Norway"
+metadata/_tab_index = 30
+
+[node name="Content" type="HBoxContainer" parent="Tabs/Ressources/Europe/Norway"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="DocsColumn" type="VBoxContainer" parent="Tabs/Ressources/Europe/Norway/Content"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 7.0
+
+[node name="Docs" type="Label" parent="Tabs/Ressources/Europe/Norway/Content/DocsColumn"]
+layout_mode = 2
+text = "Documents (Difficulty/Usefulness)"
+horizontal_alignment = 1
+
+[node name="DocsList" type="VBoxContainer" parent="Tabs/Ressources/Europe/Norway/Content/DocsColumn"]
+layout_mode = 2
+size_flags_vertical = 0
+
+[node name="Poland" type="ScrollContainer" parent="Tabs/Ressources/Europe"]
+visible = false
+layout_mode = 2
+script = ExtResource("8_rcqid")
+country_name = "Poland"
+metadata/_tab_index = 31
+
+[node name="Content" type="HBoxContainer" parent="Tabs/Ressources/Europe/Poland"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="DocsColumn" type="VBoxContainer" parent="Tabs/Ressources/Europe/Poland/Content"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 7.0
+
+[node name="Docs" type="Label" parent="Tabs/Ressources/Europe/Poland/Content/DocsColumn"]
+layout_mode = 2
+text = "Documents (Difficulty/Usefulness)"
+horizontal_alignment = 1
+
+[node name="DocsList" type="VBoxContainer" parent="Tabs/Ressources/Europe/Poland/Content/DocsColumn"]
+layout_mode = 2
+size_flags_vertical = 0
+
+[node name="Portugal" type="ScrollContainer" parent="Tabs/Ressources/Europe"]
+visible = false
+layout_mode = 2
+script = ExtResource("8_rcqid")
+country_name = "Portugal"
+metadata/_tab_index = 32
+
+[node name="Content" type="HBoxContainer" parent="Tabs/Ressources/Europe/Portugal"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="DocsColumn" type="VBoxContainer" parent="Tabs/Ressources/Europe/Portugal/Content"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 7.0
+
+[node name="Docs" type="Label" parent="Tabs/Ressources/Europe/Portugal/Content/DocsColumn"]
+layout_mode = 2
+text = "Documents (Difficulty/Usefulness)"
+horizontal_alignment = 1
+
+[node name="DocsList" type="VBoxContainer" parent="Tabs/Ressources/Europe/Portugal/Content/DocsColumn"]
+layout_mode = 2
+size_flags_vertical = 0
+
+[node name="Romania" type="ScrollContainer" parent="Tabs/Ressources/Europe"]
+visible = false
+layout_mode = 2
+script = ExtResource("8_rcqid")
+country_name = "Romania"
+metadata/_tab_index = 33
+
+[node name="Content" type="HBoxContainer" parent="Tabs/Ressources/Europe/Romania"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="DocsColumn" type="VBoxContainer" parent="Tabs/Ressources/Europe/Romania/Content"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 7.0
+
+[node name="Docs" type="Label" parent="Tabs/Ressources/Europe/Romania/Content/DocsColumn"]
+layout_mode = 2
+text = "Documents (Difficulty/Usefulness)"
+horizontal_alignment = 1
+
+[node name="DocsList" type="VBoxContainer" parent="Tabs/Ressources/Europe/Romania/Content/DocsColumn"]
+layout_mode = 2
+size_flags_vertical = 0
+
+[node name="San Marino" type="ScrollContainer" parent="Tabs/Ressources/Europe"]
+visible = false
+layout_mode = 2
+script = ExtResource("8_rcqid")
+country_name = "San Marino"
+metadata/_tab_index = 34
+
+[node name="Content" type="HBoxContainer" parent="Tabs/Ressources/Europe/San Marino"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="DocsColumn" type="VBoxContainer" parent="Tabs/Ressources/Europe/San Marino/Content"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 7.0
+
+[node name="Docs" type="Label" parent="Tabs/Ressources/Europe/San Marino/Content/DocsColumn"]
+layout_mode = 2
+text = "Documents (Difficulty/Usefulness)"
+horizontal_alignment = 1
+
+[node name="DocsList" type="VBoxContainer" parent="Tabs/Ressources/Europe/San Marino/Content/DocsColumn"]
+layout_mode = 2
+size_flags_vertical = 0
+
+[node name="Serbia" type="ScrollContainer" parent="Tabs/Ressources/Europe"]
+visible = false
+layout_mode = 2
+script = ExtResource("8_rcqid")
+country_name = "Serbia"
+metadata/_tab_index = 35
+
+[node name="Content" type="HBoxContainer" parent="Tabs/Ressources/Europe/Serbia"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="DocsColumn" type="VBoxContainer" parent="Tabs/Ressources/Europe/Serbia/Content"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 7.0
+
+[node name="Docs" type="Label" parent="Tabs/Ressources/Europe/Serbia/Content/DocsColumn"]
+layout_mode = 2
+text = "Documents (Difficulty/Usefulness)"
+horizontal_alignment = 1
+
+[node name="DocsList" type="VBoxContainer" parent="Tabs/Ressources/Europe/Serbia/Content/DocsColumn"]
+layout_mode = 2
+size_flags_vertical = 0
+
+[node name="Slovakia" type="ScrollContainer" parent="Tabs/Ressources/Europe"]
+visible = false
+layout_mode = 2
+script = ExtResource("8_rcqid")
+country_name = "Slovakia"
+metadata/_tab_index = 36
+
+[node name="Content" type="HBoxContainer" parent="Tabs/Ressources/Europe/Slovakia"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="DocsColumn" type="VBoxContainer" parent="Tabs/Ressources/Europe/Slovakia/Content"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 7.0
+
+[node name="Docs" type="Label" parent="Tabs/Ressources/Europe/Slovakia/Content/DocsColumn"]
+layout_mode = 2
+text = "Documents (Difficulty/Usefulness)"
+horizontal_alignment = 1
+
+[node name="DocsList" type="VBoxContainer" parent="Tabs/Ressources/Europe/Slovakia/Content/DocsColumn"]
+layout_mode = 2
+size_flags_vertical = 0
+
+[node name="Slovenia" type="ScrollContainer" parent="Tabs/Ressources/Europe"]
+visible = false
+layout_mode = 2
+script = ExtResource("8_rcqid")
+country_name = "Slovenia"
+metadata/_tab_index = 37
+
+[node name="Content" type="HBoxContainer" parent="Tabs/Ressources/Europe/Slovenia"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="DocsColumn" type="VBoxContainer" parent="Tabs/Ressources/Europe/Slovenia/Content"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 7.0
+
+[node name="Docs" type="Label" parent="Tabs/Ressources/Europe/Slovenia/Content/DocsColumn"]
+layout_mode = 2
+text = "Documents (Difficulty/Usefulness)"
+horizontal_alignment = 1
+
+[node name="DocsList" type="VBoxContainer" parent="Tabs/Ressources/Europe/Slovenia/Content/DocsColumn"]
+layout_mode = 2
+size_flags_vertical = 0
+
+[node name="Spain" type="ScrollContainer" parent="Tabs/Ressources/Europe"]
+visible = false
+layout_mode = 2
+script = ExtResource("8_rcqid")
+country_name = "Spain"
+metadata/_tab_index = 38
+
+[node name="Content" type="HBoxContainer" parent="Tabs/Ressources/Europe/Spain"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="DocsColumn" type="VBoxContainer" parent="Tabs/Ressources/Europe/Spain/Content"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 7.0
+
+[node name="Docs" type="Label" parent="Tabs/Ressources/Europe/Spain/Content/DocsColumn"]
+layout_mode = 2
+text = "Documents (Difficulty/Usefulness)"
+horizontal_alignment = 1
+
+[node name="DocsList" type="VBoxContainer" parent="Tabs/Ressources/Europe/Spain/Content/DocsColumn"]
+layout_mode = 2
+size_flags_vertical = 0
+
+[node name="Sweden" type="ScrollContainer" parent="Tabs/Ressources/Europe"]
+visible = false
+layout_mode = 2
+script = ExtResource("8_rcqid")
+country_name = "Sweden"
+metadata/_tab_index = 39
+
+[node name="Content" type="HBoxContainer" parent="Tabs/Ressources/Europe/Sweden"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="DocsColumn" type="VBoxContainer" parent="Tabs/Ressources/Europe/Sweden/Content"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 7.0
+
+[node name="Docs" type="Label" parent="Tabs/Ressources/Europe/Sweden/Content/DocsColumn"]
+layout_mode = 2
+text = "Documents (Difficulty/Usefulness)"
+horizontal_alignment = 1
+
+[node name="DocsList" type="VBoxContainer" parent="Tabs/Ressources/Europe/Sweden/Content/DocsColumn"]
+layout_mode = 2
+size_flags_vertical = 0
+
+[node name="Switzerland" type="ScrollContainer" parent="Tabs/Ressources/Europe"]
+visible = false
+layout_mode = 2
+script = ExtResource("8_rcqid")
+country_name = "Switzerland"
+metadata/_tab_index = 40
+
+[node name="Content" type="HBoxContainer" parent="Tabs/Ressources/Europe/Switzerland"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="DocsColumn" type="VBoxContainer" parent="Tabs/Ressources/Europe/Switzerland/Content"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 7.0
+
+[node name="Docs" type="Label" parent="Tabs/Ressources/Europe/Switzerland/Content/DocsColumn"]
+layout_mode = 2
+text = "Documents (Difficulty/Usefulness)"
+horizontal_alignment = 1
+
+[node name="DocsList" type="VBoxContainer" parent="Tabs/Ressources/Europe/Switzerland/Content/DocsColumn"]
+layout_mode = 2
+size_flags_vertical = 0
+
+[node name="Ukraine" type="ScrollContainer" parent="Tabs/Ressources/Europe"]
+visible = false
+layout_mode = 2
+script = ExtResource("8_rcqid")
+country_name = "Ukraine"
+metadata/_tab_index = 41
+
+[node name="Content" type="HBoxContainer" parent="Tabs/Ressources/Europe/Ukraine"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="DocsColumn" type="VBoxContainer" parent="Tabs/Ressources/Europe/Ukraine/Content"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 7.0
+
+[node name="Docs" type="Label" parent="Tabs/Ressources/Europe/Ukraine/Content/DocsColumn"]
+layout_mode = 2
+text = "Documents (Difficulty/Usefulness)"
+horizontal_alignment = 1
+
+[node name="DocsList" type="VBoxContainer" parent="Tabs/Ressources/Europe/Ukraine/Content/DocsColumn"]
+layout_mode = 2
+size_flags_vertical = 0
+
+[node name="UK" type="ScrollContainer" parent="Tabs/Ressources/Europe"]
+visible = false
+layout_mode = 2
+script = ExtResource("8_rcqid")
+country_name = "United Kingdom"
+metadata/_tab_index = 42
+
+[node name="Content" type="HBoxContainer" parent="Tabs/Ressources/Europe/UK"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="DocsColumn" type="VBoxContainer" parent="Tabs/Ressources/Europe/UK/Content"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 7.0
+
+[node name="Docs" type="Label" parent="Tabs/Ressources/Europe/UK/Content/DocsColumn"]
+layout_mode = 2
+text = "Documents (Difficulty/Usefulness)"
+horizontal_alignment = 1
+
+[node name="DocsList" type="VBoxContainer" parent="Tabs/Ressources/Europe/UK/Content/DocsColumn"]
+layout_mode = 2
+size_flags_vertical = 0
+
+[node name="North America" type="TabContainer" parent="Tabs/Ressources"]
+visible = false
+layout_mode = 2
+current_tab = 0
+metadata/_tab_index = 4
+
+[node name="Bermuda" type="ScrollContainer" parent="Tabs/Ressources/North America"]
+layout_mode = 2
+script = ExtResource("8_rcqid")
+country_name = "Bermuda"
+metadata/_tab_index = 0
+
+[node name="Content" type="HBoxContainer" parent="Tabs/Ressources/North America/Bermuda"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="DocsColumn" type="VBoxContainer" parent="Tabs/Ressources/North America/Bermuda/Content"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 7.0
+
+[node name="Docs" type="Label" parent="Tabs/Ressources/North America/Bermuda/Content/DocsColumn"]
+layout_mode = 2
+text = "Documents (Difficulty/Usefulness)"
+horizontal_alignment = 1
+
+[node name="DocsList" type="VBoxContainer" parent="Tabs/Ressources/North America/Bermuda/Content/DocsColumn"]
+layout_mode = 2
+size_flags_vertical = 0
+
+[node name="Canada" type="ScrollContainer" parent="Tabs/Ressources/North America"]
+visible = false
+layout_mode = 2
+script = ExtResource("8_rcqid")
+country_name = "Canada"
+metadata/_tab_index = 1
+
+[node name="Content" type="HBoxContainer" parent="Tabs/Ressources/North America/Canada"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="DocsColumn" type="VBoxContainer" parent="Tabs/Ressources/North America/Canada/Content"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 7.0
+
+[node name="Docs" type="Label" parent="Tabs/Ressources/North America/Canada/Content/DocsColumn"]
+layout_mode = 2
+text = "Documents (Difficulty/Usefulness)"
+horizontal_alignment = 1
+
+[node name="DocsList" type="VBoxContainer" parent="Tabs/Ressources/North America/Canada/Content/DocsColumn"]
+layout_mode = 2
+size_flags_vertical = 0
+
+[node name="Costa Rica" type="ScrollContainer" parent="Tabs/Ressources/North America"]
+visible = false
+layout_mode = 2
+script = ExtResource("8_rcqid")
+country_name = "Costa Rica"
+metadata/_tab_index = 2
+
+[node name="Content" type="HBoxContainer" parent="Tabs/Ressources/North America/Costa Rica"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="DocsColumn" type="VBoxContainer" parent="Tabs/Ressources/North America/Costa Rica/Content"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 7.0
+
+[node name="Docs" type="Label" parent="Tabs/Ressources/North America/Costa Rica/Content/DocsColumn"]
+layout_mode = 2
+text = "Documents (Difficulty/Usefulness)"
+horizontal_alignment = 1
+
+[node name="DocsList" type="VBoxContainer" parent="Tabs/Ressources/North America/Costa Rica/Content/DocsColumn"]
+layout_mode = 2
+size_flags_vertical = 0
+
+[node name="Dominican Rep" type="ScrollContainer" parent="Tabs/Ressources/North America"]
+visible = false
+layout_mode = 2
+script = ExtResource("8_rcqid")
+country_name = "Dominican Republic"
+metadata/_tab_index = 3
+
+[node name="Content" type="HBoxContainer" parent="Tabs/Ressources/North America/Dominican Rep"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="DocsColumn" type="VBoxContainer" parent="Tabs/Ressources/North America/Dominican Rep/Content"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 7.0
+
+[node name="Docs" type="Label" parent="Tabs/Ressources/North America/Dominican Rep/Content/DocsColumn"]
+layout_mode = 2
+text = "Documents (Difficulty/Usefulness)"
+horizontal_alignment = 1
+
+[node name="DocsList" type="VBoxContainer" parent="Tabs/Ressources/North America/Dominican Rep/Content/DocsColumn"]
+layout_mode = 2
+size_flags_vertical = 0
+
+[node name="Greenland" type="ScrollContainer" parent="Tabs/Ressources/North America"]
+visible = false
+layout_mode = 2
+script = ExtResource("8_rcqid")
+country_name = "Greenland"
+metadata/_tab_index = 4
+
+[node name="Content" type="HBoxContainer" parent="Tabs/Ressources/North America/Greenland"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="DocsColumn" type="VBoxContainer" parent="Tabs/Ressources/North America/Greenland/Content"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 7.0
+
+[node name="Docs" type="Label" parent="Tabs/Ressources/North America/Greenland/Content/DocsColumn"]
+layout_mode = 2
+text = "Documents (Difficulty/Usefulness)"
+horizontal_alignment = 1
+
+[node name="DocsList" type="VBoxContainer" parent="Tabs/Ressources/North America/Greenland/Content/DocsColumn"]
+layout_mode = 2
+size_flags_vertical = 0
+
+[node name="Guatemala" type="ScrollContainer" parent="Tabs/Ressources/North America"]
+visible = false
+layout_mode = 2
+script = ExtResource("8_rcqid")
+country_name = "Guatemala"
+metadata/_tab_index = 5
+
+[node name="Content" type="HBoxContainer" parent="Tabs/Ressources/North America/Guatemala"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="DocsColumn" type="VBoxContainer" parent="Tabs/Ressources/North America/Guatemala/Content"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 7.0
+
+[node name="Docs" type="Label" parent="Tabs/Ressources/North America/Guatemala/Content/DocsColumn"]
+layout_mode = 2
+text = "Documents (Difficulty/Usefulness)"
+horizontal_alignment = 1
+
+[node name="DocsList" type="VBoxContainer" parent="Tabs/Ressources/North America/Guatemala/Content/DocsColumn"]
+layout_mode = 2
+size_flags_vertical = 0
+
+[node name="Mexico" type="ScrollContainer" parent="Tabs/Ressources/North America"]
+visible = false
+layout_mode = 2
+script = ExtResource("8_rcqid")
+country_name = "Mexico"
+metadata/_tab_index = 6
+
+[node name="Content" type="HBoxContainer" parent="Tabs/Ressources/North America/Mexico"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="DocsColumn" type="VBoxContainer" parent="Tabs/Ressources/North America/Mexico/Content"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 7.0
+
+[node name="Docs" type="Label" parent="Tabs/Ressources/North America/Mexico/Content/DocsColumn"]
+layout_mode = 2
+text = "Documents (Difficulty/Usefulness)"
+horizontal_alignment = 1
+
+[node name="DocsList" type="VBoxContainer" parent="Tabs/Ressources/North America/Mexico/Content/DocsColumn"]
+layout_mode = 2
+size_flags_vertical = 0
+
+[node name="Panama" type="ScrollContainer" parent="Tabs/Ressources/North America"]
+visible = false
+layout_mode = 2
+script = ExtResource("8_rcqid")
+country_name = "Panama"
+metadata/_tab_index = 7
+
+[node name="Content" type="HBoxContainer" parent="Tabs/Ressources/North America/Panama"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="DocsColumn" type="VBoxContainer" parent="Tabs/Ressources/North America/Panama/Content"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 7.0
+
+[node name="Docs" type="Label" parent="Tabs/Ressources/North America/Panama/Content/DocsColumn"]
+layout_mode = 2
+text = "Documents (Difficulty/Usefulness)"
+horizontal_alignment = 1
+
+[node name="DocsList" type="VBoxContainer" parent="Tabs/Ressources/North America/Panama/Content/DocsColumn"]
+layout_mode = 2
+size_flags_vertical = 0
+
+[node name="Puerto Rico" type="ScrollContainer" parent="Tabs/Ressources/North America"]
+visible = false
+layout_mode = 2
+script = ExtResource("8_rcqid")
+country_name = "Puerto Rico"
+metadata/_tab_index = 8
+
+[node name="Content" type="HBoxContainer" parent="Tabs/Ressources/North America/Puerto Rico"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="DocsColumn" type="VBoxContainer" parent="Tabs/Ressources/North America/Puerto Rico/Content"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 7.0
+
+[node name="Docs" type="Label" parent="Tabs/Ressources/North America/Puerto Rico/Content/DocsColumn"]
+layout_mode = 2
+text = "Documents (Difficulty/Usefulness)"
+horizontal_alignment = 1
+
+[node name="DocsList" type="VBoxContainer" parent="Tabs/Ressources/North America/Puerto Rico/Content/DocsColumn"]
+layout_mode = 2
+size_flags_vertical = 0
+
+[node name="US Virgin Islands" type="ScrollContainer" parent="Tabs/Ressources/North America"]
+visible = false
+layout_mode = 2
+script = ExtResource("8_rcqid")
+country_name = "US Virgin Islands"
+metadata/_tab_index = 9
+
+[node name="Content" type="HBoxContainer" parent="Tabs/Ressources/North America/US Virgin Islands"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="DocsColumn" type="VBoxContainer" parent="Tabs/Ressources/North America/US Virgin Islands/Content"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 7.0
+
+[node name="Docs" type="Label" parent="Tabs/Ressources/North America/US Virgin Islands/Content/DocsColumn"]
+layout_mode = 2
+text = "Documents (Difficulty/Usefulness)"
+horizontal_alignment = 1
+
+[node name="DocsList" type="VBoxContainer" parent="Tabs/Ressources/North America/US Virgin Islands/Content/DocsColumn"]
+layout_mode = 2
+size_flags_vertical = 0
+
+[node name="USA" type="ScrollContainer" parent="Tabs/Ressources/North America"]
+visible = false
+layout_mode = 2
+script = ExtResource("8_rcqid")
+country_name = "United States"
+metadata/_tab_index = 10
+
+[node name="Content" type="HBoxContainer" parent="Tabs/Ressources/North America/USA"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="DocsColumn" type="VBoxContainer" parent="Tabs/Ressources/North America/USA/Content"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 7.0
+
+[node name="Docs" type="Label" parent="Tabs/Ressources/North America/USA/Content/DocsColumn"]
+layout_mode = 2
+text = "Documents (Difficulty/Usefulness)"
+horizontal_alignment = 1
+
+[node name="DocsList" type="VBoxContainer" parent="Tabs/Ressources/North America/USA/Content/DocsColumn"]
+layout_mode = 2
+size_flags_vertical = 0
+
+[node name="Oceania" type="TabContainer" parent="Tabs/Ressources"]
+visible = false
+layout_mode = 2
+current_tab = 0
+metadata/_tab_index = 5
+
+[node name="American Samoa" type="ScrollContainer" parent="Tabs/Ressources/Oceania"]
+layout_mode = 2
+script = ExtResource("8_rcqid")
+country_name = "American Samoa"
+metadata/_tab_index = 0
+
+[node name="Content" type="HBoxContainer" parent="Tabs/Ressources/Oceania/American Samoa"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="DocsColumn" type="VBoxContainer" parent="Tabs/Ressources/Oceania/American Samoa/Content"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 7.0
+
+[node name="Docs" type="Label" parent="Tabs/Ressources/Oceania/American Samoa/Content/DocsColumn"]
+layout_mode = 2
+text = "Documents (Difficulty/Usefulness)"
+horizontal_alignment = 1
+
+[node name="DocsList" type="VBoxContainer" parent="Tabs/Ressources/Oceania/American Samoa/Content/DocsColumn"]
+layout_mode = 2
+size_flags_vertical = 0
+
+[node name="Australia" type="ScrollContainer" parent="Tabs/Ressources/Oceania"]
+visible = false
+layout_mode = 2
+script = ExtResource("8_rcqid")
+country_name = "Australia"
+metadata/_tab_index = 1
+
+[node name="Content" type="HBoxContainer" parent="Tabs/Ressources/Oceania/Australia"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="DocsColumn" type="VBoxContainer" parent="Tabs/Ressources/Oceania/Australia/Content"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 7.0
+
+[node name="Docs" type="Label" parent="Tabs/Ressources/Oceania/Australia/Content/DocsColumn"]
+layout_mode = 2
+text = "Documents (Difficulty/Usefulness)"
+horizontal_alignment = 1
+
+[node name="DocsList" type="VBoxContainer" parent="Tabs/Ressources/Oceania/Australia/Content/DocsColumn"]
+layout_mode = 2
+size_flags_vertical = 0
+
+[node name="Christmas Island" type="ScrollContainer" parent="Tabs/Ressources/Oceania"]
+visible = false
+layout_mode = 2
+script = ExtResource("8_rcqid")
+country_name = "Christmas Island"
+metadata/_tab_index = 2
+
+[node name="Content" type="HBoxContainer" parent="Tabs/Ressources/Oceania/Christmas Island"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="DocsColumn" type="VBoxContainer" parent="Tabs/Ressources/Oceania/Christmas Island/Content"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 7.0
+
+[node name="Docs" type="Label" parent="Tabs/Ressources/Oceania/Christmas Island/Content/DocsColumn"]
+layout_mode = 2
+text = "Documents (Difficulty/Usefulness)"
+horizontal_alignment = 1
+
+[node name="DocsList" type="VBoxContainer" parent="Tabs/Ressources/Oceania/Christmas Island/Content/DocsColumn"]
+layout_mode = 2
+size_flags_vertical = 0
+
+[node name="Cocos Island" type="ScrollContainer" parent="Tabs/Ressources/Oceania"]
+visible = false
+layout_mode = 2
+script = ExtResource("8_rcqid")
+country_name = "Cocos Island"
+metadata/_tab_index = 3
+
+[node name="Content" type="HBoxContainer" parent="Tabs/Ressources/Oceania/Cocos Island"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="DocsColumn" type="VBoxContainer" parent="Tabs/Ressources/Oceania/Cocos Island/Content"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 7.0
+
+[node name="Docs" type="Label" parent="Tabs/Ressources/Oceania/Cocos Island/Content/DocsColumn"]
+layout_mode = 2
+text = "Documents (Difficulty/Usefulness)"
+horizontal_alignment = 1
+
+[node name="DocsList" type="VBoxContainer" parent="Tabs/Ressources/Oceania/Cocos Island/Content/DocsColumn"]
+layout_mode = 2
+size_flags_vertical = 0
+
+[node name="Guam" type="ScrollContainer" parent="Tabs/Ressources/Oceania"]
+visible = false
+layout_mode = 2
+script = ExtResource("8_rcqid")
+country_name = "Guam"
+metadata/_tab_index = 4
+
+[node name="Content" type="HBoxContainer" parent="Tabs/Ressources/Oceania/Guam"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="DocsColumn" type="VBoxContainer" parent="Tabs/Ressources/Oceania/Guam/Content"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 7.0
+
+[node name="Docs" type="Label" parent="Tabs/Ressources/Oceania/Guam/Content/DocsColumn"]
+layout_mode = 2
+text = "Documents (Difficulty/Usefulness)"
+horizontal_alignment = 1
+
+[node name="DocsList" type="VBoxContainer" parent="Tabs/Ressources/Oceania/Guam/Content/DocsColumn"]
+layout_mode = 2
+size_flags_vertical = 0
+
+[node name="New Zealand" type="ScrollContainer" parent="Tabs/Ressources/Oceania"]
+visible = false
+layout_mode = 2
+script = ExtResource("8_rcqid")
+country_name = "New Zealand"
+metadata/_tab_index = 5
+
+[node name="Content" type="HBoxContainer" parent="Tabs/Ressources/Oceania/New Zealand"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="DocsColumn" type="VBoxContainer" parent="Tabs/Ressources/Oceania/New Zealand/Content"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 7.0
+
+[node name="Docs" type="Label" parent="Tabs/Ressources/Oceania/New Zealand/Content/DocsColumn"]
+layout_mode = 2
+text = "Documents (Difficulty/Usefulness)"
+horizontal_alignment = 1
+
+[node name="DocsList" type="VBoxContainer" parent="Tabs/Ressources/Oceania/New Zealand/Content/DocsColumn"]
+layout_mode = 2
+size_flags_vertical = 0
+
+[node name="Northern Mariana" type="ScrollContainer" parent="Tabs/Ressources/Oceania"]
+visible = false
+layout_mode = 2
+script = ExtResource("8_rcqid")
+country_name = "Northern Mariana Islands"
+metadata/_tab_index = 6
+
+[node name="Content" type="HBoxContainer" parent="Tabs/Ressources/Oceania/Northern Mariana"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="DocsColumn" type="VBoxContainer" parent="Tabs/Ressources/Oceania/Northern Mariana/Content"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 7.0
+
+[node name="Docs" type="Label" parent="Tabs/Ressources/Oceania/Northern Mariana/Content/DocsColumn"]
+layout_mode = 2
+text = "Documents (Difficulty/Usefulness)"
+horizontal_alignment = 1
+
+[node name="DocsList" type="VBoxContainer" parent="Tabs/Ressources/Oceania/Northern Mariana/Content/DocsColumn"]
+layout_mode = 2
+size_flags_vertical = 0
+
+[node name="South America" type="TabContainer" parent="Tabs/Ressources"]
+visible = false
+layout_mode = 2
+current_tab = 0
+metadata/_tab_index = 6
+
+[node name="Argentina" type="ScrollContainer" parent="Tabs/Ressources/South America"]
+layout_mode = 2
+script = ExtResource("8_rcqid")
+country_name = "Argentina"
+metadata/_tab_index = 0
+
+[node name="Content" type="HBoxContainer" parent="Tabs/Ressources/South America/Argentina"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="DocsColumn" type="VBoxContainer" parent="Tabs/Ressources/South America/Argentina/Content"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 7.0
+
+[node name="Docs" type="Label" parent="Tabs/Ressources/South America/Argentina/Content/DocsColumn"]
+layout_mode = 2
+text = "Documents (Difficulty/Usefulness)"
+horizontal_alignment = 1
+
+[node name="DocsList" type="VBoxContainer" parent="Tabs/Ressources/South America/Argentina/Content/DocsColumn"]
+layout_mode = 2
+size_flags_vertical = 0
+
+[node name="Bolivia" type="ScrollContainer" parent="Tabs/Ressources/South America"]
+visible = false
+layout_mode = 2
+script = ExtResource("8_rcqid")
+country_name = "Bolivia"
+metadata/_tab_index = 1
+
+[node name="Content" type="HBoxContainer" parent="Tabs/Ressources/South America/Bolivia"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="DocsColumn" type="VBoxContainer" parent="Tabs/Ressources/South America/Bolivia/Content"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 7.0
+
+[node name="Docs" type="Label" parent="Tabs/Ressources/South America/Bolivia/Content/DocsColumn"]
+layout_mode = 2
+text = "Documents (Difficulty/Usefulness)"
+horizontal_alignment = 1
+
+[node name="DocsList" type="VBoxContainer" parent="Tabs/Ressources/South America/Bolivia/Content/DocsColumn"]
+layout_mode = 2
+size_flags_vertical = 0
+
+[node name="Brazil" type="ScrollContainer" parent="Tabs/Ressources/South America"]
+visible = false
+layout_mode = 2
+script = ExtResource("8_rcqid")
+country_name = "Brazil"
+metadata/_tab_index = 2
+
+[node name="Content" type="HBoxContainer" parent="Tabs/Ressources/South America/Brazil"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="DocsColumn" type="VBoxContainer" parent="Tabs/Ressources/South America/Brazil/Content"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 7.0
+
+[node name="Docs" type="Label" parent="Tabs/Ressources/South America/Brazil/Content/DocsColumn"]
+layout_mode = 2
+text = "Documents (Difficulty/Usefulness)"
+horizontal_alignment = 1
+
+[node name="DocsList" type="VBoxContainer" parent="Tabs/Ressources/South America/Brazil/Content/DocsColumn"]
+layout_mode = 2
+size_flags_vertical = 0
+
+[node name="Chile" type="ScrollContainer" parent="Tabs/Ressources/South America"]
+visible = false
+layout_mode = 2
+script = ExtResource("8_rcqid")
+country_name = "Chile"
+metadata/_tab_index = 3
+
+[node name="Content" type="HBoxContainer" parent="Tabs/Ressources/South America/Chile"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="DocsColumn" type="VBoxContainer" parent="Tabs/Ressources/South America/Chile/Content"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 7.0
+
+[node name="Docs" type="Label" parent="Tabs/Ressources/South America/Chile/Content/DocsColumn"]
+layout_mode = 2
+text = "Documents (Difficulty/Usefulness)"
+horizontal_alignment = 1
+
+[node name="DocsList" type="VBoxContainer" parent="Tabs/Ressources/South America/Chile/Content/DocsColumn"]
+layout_mode = 2
+size_flags_vertical = 0
+
+[node name="Colombia" type="ScrollContainer" parent="Tabs/Ressources/South America"]
+visible = false
+layout_mode = 2
+script = ExtResource("8_rcqid")
+country_name = "Colombia"
+metadata/_tab_index = 4
+
+[node name="Content" type="HBoxContainer" parent="Tabs/Ressources/South America/Colombia"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="DocsColumn" type="VBoxContainer" parent="Tabs/Ressources/South America/Colombia/Content"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 7.0
+
+[node name="Docs" type="Label" parent="Tabs/Ressources/South America/Colombia/Content/DocsColumn"]
+layout_mode = 2
+text = "Documents (Difficulty/Usefulness)"
+horizontal_alignment = 1
+
+[node name="DocsList" type="VBoxContainer" parent="Tabs/Ressources/South America/Colombia/Content/DocsColumn"]
+layout_mode = 2
+size_flags_vertical = 0
+
+[node name="Curaçao" type="ScrollContainer" parent="Tabs/Ressources/South America"]
+visible = false
+layout_mode = 2
+script = ExtResource("8_rcqid")
+country_name = "Curaçao"
+metadata/_tab_index = 5
+
+[node name="Content" type="HBoxContainer" parent="Tabs/Ressources/South America/Curaçao"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="DocsColumn" type="VBoxContainer" parent="Tabs/Ressources/South America/Curaçao/Content"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 7.0
+
+[node name="Docs" type="Label" parent="Tabs/Ressources/South America/Curaçao/Content/DocsColumn"]
+layout_mode = 2
+text = "Documents (Difficulty/Usefulness)"
+horizontal_alignment = 1
+
+[node name="DocsList" type="VBoxContainer" parent="Tabs/Ressources/South America/Curaçao/Content/DocsColumn"]
+layout_mode = 2
+size_flags_vertical = 0
+
+[node name="Ecuador" type="ScrollContainer" parent="Tabs/Ressources/South America"]
+visible = false
+layout_mode = 2
+script = ExtResource("8_rcqid")
+country_name = "Ecuador"
+metadata/_tab_index = 6
+
+[node name="Content" type="HBoxContainer" parent="Tabs/Ressources/South America/Ecuador"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="DocsColumn" type="VBoxContainer" parent="Tabs/Ressources/South America/Ecuador/Content"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 7.0
+
+[node name="Docs" type="Label" parent="Tabs/Ressources/South America/Ecuador/Content/DocsColumn"]
+layout_mode = 2
+text = "Documents (Difficulty/Usefulness)"
+horizontal_alignment = 1
+
+[node name="DocsList" type="VBoxContainer" parent="Tabs/Ressources/South America/Ecuador/Content/DocsColumn"]
+layout_mode = 2
+size_flags_vertical = 0
+
+[node name="Peru" type="ScrollContainer" parent="Tabs/Ressources/South America"]
+visible = false
+layout_mode = 2
+script = ExtResource("8_rcqid")
+country_name = "Peru"
+metadata/_tab_index = 7
+
+[node name="Content" type="HBoxContainer" parent="Tabs/Ressources/South America/Peru"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="DocsColumn" type="VBoxContainer" parent="Tabs/Ressources/South America/Peru/Content"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 7.0
+
+[node name="Docs" type="Label" parent="Tabs/Ressources/South America/Peru/Content/DocsColumn"]
+layout_mode = 2
+text = "Documents (Difficulty/Usefulness)"
+horizontal_alignment = 1
+
+[node name="DocsList" type="VBoxContainer" parent="Tabs/Ressources/South America/Peru/Content/DocsColumn"]
+layout_mode = 2
+size_flags_vertical = 0
+
+[node name="Uruguay" type="ScrollContainer" parent="Tabs/Ressources/South America"]
+visible = false
+layout_mode = 2
+script = ExtResource("8_rcqid")
+country_name = "Uruguay"
+metadata/_tab_index = 8
+
+[node name="Content" type="HBoxContainer" parent="Tabs/Ressources/South America/Uruguay"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="DocsColumn" type="VBoxContainer" parent="Tabs/Ressources/South America/Uruguay/Content"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 7.0
+
+[node name="Docs" type="Label" parent="Tabs/Ressources/South America/Uruguay/Content/DocsColumn"]
+layout_mode = 2
+text = "Documents (Difficulty/Usefulness)"
+horizontal_alignment = 1
+
+[node name="DocsList" type="VBoxContainer" parent="Tabs/Ressources/South America/Uruguay/Content/DocsColumn"]
+layout_mode = 2
+size_flags_vertical = 0
+
 [node name="Stats" type="TabContainer" parent="Tabs"]
+visible = false
 layout_mode = 2
 current_tab = 0
 metadata/_tab_index = 3

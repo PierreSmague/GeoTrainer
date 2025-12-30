@@ -50,7 +50,7 @@ func _load_duels_stats():
 	var elo_data = []
 	for i in range(duels_data.size() - 1, -1, -1):  # Iterate backwards
 		var duel = duels_data[i]
-		var rating = _extract_rating_from_duel(duel)
+		var rating = duel["playerRatingAfter"]
 		if rating != -1:
 			elo_data.append(rating)
 	
@@ -64,24 +64,3 @@ func _load_duels_stats():
 	duels_elo_chart.set_data(elo_data, "Duels - ELO evolution")
 	
 	print("Duels stats loaded: %d ELO points" % elo_data.size())
-
-func _extract_rating_from_duel(duel):
-	# Search for player rating in teams
-	if not duel.has("teams"):
-		return -1
-	
-	for team in duel["teams"]:
-		if not team.has("players"):
-			continue
-		
-		for player in team["players"]:
-			if player["playerId"] == player_id:
-				# Check if rating is available
-				if player.has("progressChange") and player["progressChange"] != null:
-					var progress = player["progressChange"]
-					if progress.has("rankedSystemProgress") and progress["rankedSystemProgress"] != null:
-						var ranked_progress = progress["rankedSystemProgress"]
-						if ranked_progress.has("ratingAfter"):
-							return ranked_progress["ratingAfter"]
-	
-	return -1  # Rating not found

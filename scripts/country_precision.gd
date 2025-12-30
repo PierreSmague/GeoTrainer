@@ -2,11 +2,15 @@ extends Control
 
 const duels_detailed := "user://duels_detailed.json"
 const profile := "user://profile.json"
+const countries_polygons := "res://misc/countries_polygon.json"
+const stats_detailed := "user://stats_detailed.json"
 
 @onready var stats_container = $ScrollContainer/VBoxContainer
-@onready var grid_container = GridContainer.new()  # Conteneur pour les colonnes
+@onready var grid_container = GridContainer.new()
 
 var player_id: String = ""
+var country_geometries: Dictionary = {}
+var exported_stats: Dictionary = {}
 
 # Alpha-2 to country name mapping
 var country_names = {
@@ -36,16 +40,28 @@ var country_names = {
 	"na": "Namibia", "ao": "Angola", "mz": "Mozambique", "mg": "Madagascar", "uy": "Uruguay",
 	"py": "Paraguay", "ve": "Venezuela", "sr": "Suriname", "gy": "Guyana", "gf": "French Guiana",
 	"gt": "Guatemala", "hn": "Honduras", "sv": "El Salvador", "ni": "Nicaragua", "cr": "Costa Rica",
-	"pa": "Panama", "cu": "Cuba", "do": "Dominican Republic", "jm": "Jamaica"
+	"pa": "Panama", "cu": "Cuba", "do": "Dominican Republic", "jm": "Jamaica", "bs": "Bahamas"
 }
 
 func _ready():
+	_load_country_geometries()
 	_load_player_id()
 	_load_country_stats()
 
 func _refresh():
+	_load_country_geometries()
 	_load_player_id()
 	_load_country_stats()
+
+func _load_country_geometries():
+	var file = FileAccess.open(countries_polygons, FileAccess.READ)
+	if not file:
+		push_error("Cannot open countries.polygon.json")
+		return
+	
+	country_geometries = JSON.parse_string(file.get_as_text())
+	file.close()
+	print("Loaded %d country geometries" % country_geometries.size())
 
 func _load_player_id():
 	var file = FileAccess.open(profile, FileAccess.READ)
@@ -56,6 +72,8 @@ func _load_player_id():
 			player_id = profile_data["user"]["id"]
 
 func _load_country_stats():
+	exported_stats.clear()
+	
 	if not FileAccess.file_exists(duels_detailed):
 		print("duels_detailed.json file not found")
 		_display_no_data()
@@ -76,7 +94,7 @@ func _load_country_stats():
 		return
 
 	# Analyze all duels
-	var player_stats = {}  # {country: {total_score: X, count: Y}}
+	var player_stats = {}
 	var opponent_stats = {}
 
 	for duel in duels_data:
@@ -86,72 +104,71 @@ func _load_country_stats():
 	_display_country_stats(player_stats, opponent_stats)
 
 func _analyze_duel(duel, player_stats: Dictionary, opponent_stats: Dictionary):
-	if not duel.has("rounds") or not duel.has("teams"):
+	if not duel.has("rounds"):
 		return
 
-	# Find player and opponent
-	var player_guesses = []
-	var opponent_guesses = []
-
-	for team in duel["teams"]:
-		for player in team["players"]:
-			if player["playerId"] == player_id:
-				player_guesses = player["guesses"] if player.has("guesses") else []
-			else:
-				opponent_guesses = player["guesses"] if player.has("guesses") else []
-
-	# Analyze each round
+	# Process each round with optimized structure
 	for round in duel["rounds"]:
-		if not round.has("panorama") or not round["panorama"].has("countryCode"):
-			continue
+		var correct_country = round["actualCountry"]
+		
+		# Player stats
+		if round.has("player") and round["player"].size() > 0:
+			var guessed_country = round["player"]["guessedCountry"]
+			var distance = round["player"]["distance"]
+			var score = round["player"]["score"]
+			_update_stats(player_stats, correct_country, guessed_country, distance, score)
+		
+		# Opponent stats
+		if round.has("opponent") and round["opponent"].size() > 0:
+			var guessed_country = round["opponent"]["guessedCountry"]
+			var distance = round["opponent"]["distance"]
+			var score = round["opponent"]["score"]
+			_update_stats(opponent_stats, correct_country, guessed_country, distance, score)
 
-		var country = round["panorama"]["countryCode"].to_lower()
-		var round_num = round["roundNumber"]
-
-		# Find player's score for this round
-		for guess in player_guesses:
-			if guess["roundNumber"] == round_num and guess.has("score"):
-				if not player_stats.has(country):
-					player_stats[country] = {"total_score": 0, "count": 0}
-				player_stats[country]["total_score"] += guess["score"]
-				player_stats[country]["count"] += 1
-				break
-
-		# Find opponent's score for this round
-		for guess in opponent_guesses:
-			if guess["roundNumber"] == round_num and guess.has("score"):
-				if not opponent_stats.has(country):
-					opponent_stats[country] = {"total_score": 0, "count": 0}
-				opponent_stats[country]["total_score"] += guess["score"]
-				opponent_stats[country]["count"] += 1
-				break
+func _update_stats(stats: Dictionary, correct_country: String, guessed_country: String, distance: float, score: int):
+	if not stats.has(correct_country):
+		stats[correct_country] = {
+			"correct": 0,
+			"total": 0,
+			"total_distance": 0.0,
+			"correct_guesses": 0,
+			"total_score": 0
+		}
+	
+	stats[correct_country]["total"] += 1
+	stats[correct_country]["total_score"] += score
+	
+	if guessed_country == correct_country:
+		stats[correct_country]["correct"] += 1
+		stats[correct_country]["total_distance"] += distance
+		stats[correct_country]["correct_guesses"] += 1
 
 func _display_country_stats(player_stats: Dictionary, opponent_stats: Dictionary):
 	# Clear existing children
 	for child in stats_container.get_children():
 		child.queue_free()
 
-	# Titre centré
+	# Title
 	var title_container = CenterContainer.new()
 	var title = Label.new()
-	title.text = "Average Score by Country"
-	title.add_theme_font_size_override("font_size", 20)
+	title.text = "Country Performance Analysis"
+	title.add_theme_font_size_override("font_size", 22)
 	title_container.add_child(title)
 	stats_container.add_child(title_container)
 
 	var separator = HSeparator.new()
 	stats_container.add_child(separator)
 
-	# GridContainer pour les colonnes
+	# GridContainer for columns
 	grid_container.columns = 2
-	grid_container.add_theme_constant_override("h_separation", 20)
-	grid_container.add_theme_constant_override("v_separation", 20)
+	grid_container.add_theme_constant_override("h_separation", 25)
+	grid_container.add_theme_constant_override("v_separation", 25)
 	stats_container.add_child(grid_container)
 
 	# Collect all countries and sort by rounds played
 	var country_list = []
 	for country in player_stats.keys():
-		var count = player_stats[country]["count"]
+		var count = player_stats[country]["total"]
 		country_list.append({"code": country, "count": count})
 
 	country_list.sort_custom(func(a, b): return a["count"] > b["count"])
@@ -160,126 +177,195 @@ func _display_country_stats(player_stats: Dictionary, opponent_stats: Dictionary
 	for item in country_list:
 		var country = item["code"]
 		_create_country_box(country, player_stats, opponent_stats)
+		
+		_save_stats_to_file()
 
 func _create_country_box(country: String, player_stats: Dictionary, opponent_stats: Dictionary):
-	# Country container
 	var country_box = PanelContainer.new()
-	country_box.custom_minimum_size = Vector2(625, 200)
+	country_box.custom_minimum_size = Vector2(650, 280)
 
-	# Style: fond semi-transparent
 	var stylebox = StyleBoxFlat.new()
-	stylebox.bg_color = Color(0, 0, 0, 0.25)
-	stylebox.corner_radius_top_left = 10
-	stylebox.corner_radius_top_right = 10
-	stylebox.corner_radius_bottom_left = 10
-	stylebox.corner_radius_bottom_right = 10
-	stylebox.content_margin_left = 10
-	stylebox.content_margin_right = 10
-	stylebox.content_margin_top = 10
-	stylebox.content_margin_bottom = 10
+	stylebox.bg_color = Color(0.15, 0.25, 0.4, 0.3)  # Bleu transparent
+	stylebox.corner_radius_top_left = 12
+	stylebox.corner_radius_top_right = 12
+	stylebox.corner_radius_bottom_left = 12
+	stylebox.corner_radius_bottom_right = 12
+	stylebox.content_margin_left = 15
+	stylebox.content_margin_right = 15
+	stylebox.content_margin_top = 15
+	stylebox.content_margin_bottom = 15
 	country_box.add_theme_stylebox_override("panel", stylebox)
 
 	var box_vbox = VBoxContainer.new()
-	box_vbox.add_theme_constant_override("separation", 5)
+	box_vbox.add_theme_constant_override("separation", 10)
 	country_box.add_child(box_vbox)
 
-	# Header: Country name and rounds count
+	# Header
 	var header_hbox = HBoxContainer.new()
-	var country_name = country_names[country] if country_names.has(country) else country.to_upper()
+	var country_name = country_names[country.to_lower()] if country_names.has(country.to_lower()) else country
 	var name_label = Label.new()
 	name_label.text = country_name
-	name_label.add_theme_font_size_override("font_size", 25)
+	name_label.add_theme_font_size_override("font_size", 24)
 	name_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	header_hbox.add_child(name_label)
 
 	var rounds_label = Label.new()
-	rounds_label.text = "%d rounds" % player_stats[country]["count"]
-	rounds_label.add_theme_color_override("font_color", Color.GRAY)
+	rounds_label.text = "%d rounds" % player_stats[country]["total"]
+	rounds_label.add_theme_color_override("font_color", Color.LIGHT_GRAY)
+	rounds_label.add_theme_font_size_override("font_size", 16)
 	header_hbox.add_child(rounds_label)
 	box_vbox.add_child(header_hbox)
 
-	# Ajouter un espace vertical
-	var spacer = Control.new()
-	spacer.custom_minimum_size = Vector2(0, 20)
-	box_vbox.add_child(spacer)
+	# Calculate stats
+	var player_correct = player_stats[country]["correct"]
+	var player_total = player_stats[country]["total"]
+	var player_accuracy = (float(player_correct) / player_total) * 100.0 if player_total > 0 else 0.0
+	
+	var opp_correct = opponent_stats[country]["correct"] if opponent_stats.has(country) else 0
+	var opp_total = opponent_stats[country]["total"] if opponent_stats.has(country) else 0
+	var opp_accuracy = (float(opp_correct) / opp_total) * 100.0 if opp_total > 0 else 0.0
+	
+	# Average distance when correct (in km)
+	var player_avg_dist_km = 0.0
+	if player_stats[country]["correct_guesses"] > 0:
+		player_avg_dist_km = (player_stats[country]["total_distance"] / player_stats[country]["correct_guesses"]) / 1000.0
+	
+	var opp_avg_dist_km = 0.0
+	if opponent_stats.has(country) and opponent_stats[country]["correct_guesses"] > 0:
+		opp_avg_dist_km = (opponent_stats[country]["total_distance"] / opponent_stats[country]["correct_guesses"]) / 1000.0
+	
+	# Score stats
+	var player_avg_score = float(player_stats[country]["total_score"]) / player_total if player_total > 0 else 0.0
+	var opp_avg_score = float(opponent_stats[country]["total_score"]) / opp_total if opp_total > 0 and opponent_stats.has(country) else 0.0
+	var score_delta = player_avg_score - opp_avg_score
+	var total_score_diff = score_delta * player_total
 
-	# Calculate averages
-	var player_avg = float(player_stats[country]["total_score"]) / player_stats[country]["count"]
-	var opp_count = opponent_stats[country]["count"] if opponent_stats.has(country) else 0
-	var opp_avg = 0.0
-	if opp_count > 0:
-		opp_avg = float(opponent_stats[country]["total_score"]) / opp_count
-	var difference = player_avg - opp_avg
+	# Accuracy section
+	var acc_section = Label.new()
+	acc_section.text = "Country Identification Accuracy"
+	acc_section.add_theme_font_size_override("font_size", 15)
+	acc_section.add_theme_color_override("font_color", Color.LIGHT_GRAY)
+	box_vbox.add_child(acc_section)
 
-	# Player score bar
-	var player_hbox = HBoxContainer.new()
-	player_hbox.add_theme_constant_override("separation", 10)
-	var player_label = Label.new()
-	player_label.text = "You:"
-	player_label.custom_minimum_size = Vector2(80, 0)
-	player_label.add_theme_color_override("font_color", Color.CYAN)
-	player_hbox.add_child(player_label)
+	_add_stat_bar(box_vbox, "You:", player_accuracy, Color.CYAN, "%.1f%% (%d/%d)" % [player_accuracy, player_correct, player_total])
+	_add_stat_bar(box_vbox, "Opponent:", opp_accuracy, Color.ORANGE_RED, "%.1f%% (%d/%d)" % [opp_accuracy, opp_correct, opp_total])
 
-	var player_bar = ProgressBar.new()
-	player_bar.min_value = 0
-	player_bar.max_value = 5000
-	player_bar.value = player_avg
-	player_bar.show_percentage = false
-	player_bar.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	player_bar.custom_minimum_size = Vector2(300, 20)
-	player_bar.self_modulate = Color.CYAN
-	player_bar.add_theme_constant_override("margin_left", 10)  # Abscisse fixe
-	player_hbox.add_child(player_bar)
+	# Average distance section
+	var dist_section = Label.new()
+	dist_section.text = "Average Distance and scores (when country found)"
+	dist_section.add_theme_font_size_override("font_size", 15)
+	dist_section.add_theme_color_override("font_color", Color.LIGHT_GRAY)
+	box_vbox.add_child(dist_section)
 
+	var dist_hbox = HBoxContainer.new()
+	dist_hbox.add_theme_constant_override("separation", 30)
+	
+	var player_dist_label = Label.new()
+	player_dist_label.text = "You: %.1f km" % player_avg_dist_km
+	player_dist_label.add_theme_color_override("font_color", Color.CYAN)
+	player_dist_label.add_theme_font_size_override("font_size", 14)
+	dist_hbox.add_child(player_dist_label)
+	
+	var opp_dist_label = Label.new()
+	opp_dist_label.text = "Opponent: %.1f km" % opp_avg_dist_km
+	opp_dist_label.add_theme_color_override("font_color", Color.ORANGE_RED)
+	opp_dist_label.add_theme_font_size_override("font_size", 14)
+	dist_hbox.add_child(opp_dist_label)
+	
+	box_vbox.add_child(dist_hbox)
+
+	# Score difference section
+	var score_section = Label.new()
+	score_section.text = "Score Performance"
+	score_section.add_theme_font_size_override("font_size", 15)
+	score_section.add_theme_color_override("font_color", Color.LIGHT_GRAY)
+	box_vbox.add_child(score_section)
+
+	var score_avg_hbox = HBoxContainer.new()
+	score_avg_hbox.add_theme_constant_override("separation", 30)
+	
 	var player_score_label = Label.new()
-	player_score_label.text = "%d pts" % int(player_avg)
-	player_score_label.custom_minimum_size = Vector2(70, 0)
-	player_score_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
-	player_hbox.add_child(player_score_label)
-	box_vbox.add_child(player_hbox)
-
-	# Opponent score bar
-	var opp_hbox = HBoxContainer.new()
-	opp_hbox.add_theme_constant_override("separation", 10)
-	var opp_label = Label.new()
-	opp_label.text = "Opponent:"
-	opp_label.custom_minimum_size = Vector2(80, 0)
-	opp_label.add_theme_color_override("font_color", Color.ORANGE_RED)
-	opp_hbox.add_child(opp_label)
-
-	var opp_bar = ProgressBar.new()
-	opp_bar.min_value = 0
-	opp_bar.max_value = 5000
-	opp_bar.value = opp_avg
-	opp_bar.show_percentage = false
-	opp_bar.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	opp_bar.custom_minimum_size = Vector2(300, 20)
-	opp_bar.self_modulate=  Color.ORANGE_RED  # Couleur rouge
-	opp_bar.add_theme_constant_override("margin_left", 10)  # Abscisse fixe
-	opp_hbox.add_child(opp_bar)
-
+	player_score_label.text = "You: %.1f points" % player_avg_score
+	player_score_label.add_theme_color_override("font_color", Color.CYAN)
+	player_score_label.add_theme_font_size_override("font_size", 14)
+	score_avg_hbox.add_child(player_score_label)
+	
+	box_vbox.add_child(score_avg_hbox)
+	
 	var opp_score_label = Label.new()
-	opp_score_label.text = "%d pts" % int(opp_avg)
-	opp_score_label.custom_minimum_size = Vector2(70, 0)
-	opp_score_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
-	opp_hbox.add_child(opp_score_label)
-	box_vbox.add_child(opp_hbox)
+	opp_score_label.text = "Opponent: %.1f points" % opp_avg_score
+	opp_score_label.add_theme_color_override("font_color", Color.ORANGE_RED)
+	opp_score_label.add_theme_font_size_override("font_size", 14)
+	score_avg_hbox.add_child(opp_score_label)
+	
+	var score_hbox = HBoxContainer.new()
+	score_hbox.add_theme_constant_override("separation", 30)
+	
+	var delta_label = Label.new()
+	delta_label.text = "Avg delta: %+.0f pts/round" % score_delta
+	delta_label.add_theme_font_size_override("font_size", 14)
+	delta_label.add_theme_color_override("font_color", Color.GREEN if score_delta >= 0 else Color.RED)
+	score_hbox.add_child(delta_label)
+	
+	var total_label = Label.new()
+	total_label.text = "Total difference: %+.0f pts" % total_score_diff
+	total_label.add_theme_font_size_override("font_size", 14)
+	total_label.add_theme_color_override("font_color", Color.GREEN if total_score_diff >= 0 else Color.RED)
+	score_hbox.add_child(total_label)
+	
+	box_vbox.add_child(score_hbox)
 
-	# Difference line
-	var diff_label = Label.new()
-	diff_label.text = "Difference: %+d pts" % int(difference)
-	diff_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	diff_label.add_theme_font_size_override("font_size", 14)
-	if difference > 0:
-		diff_label.add_theme_color_override("font_color", Color.GREEN)
-	elif difference < 0:
-		diff_label.add_theme_color_override("font_color", Color.RED)
-	else:
-		diff_label.add_theme_color_override("font_color", Color.GRAY)
-	box_vbox.add_child(diff_label)
+# --- EXPORT STATS ---
+	var country_code := country
 
-	# Add to grid
+	exported_stats[country_code] = {
+		"precision": {
+			"player": player_accuracy,
+			"opponent": opp_accuracy
+		},
+		"avg_region_km": {
+			"player": player_avg_dist_km,
+			"opponent": opp_avg_dist_km
+		},
+		"avg_score": {
+			"player": player_avg_score,
+			"opponent": opp_avg_score
+		},
+		"score_delta": {
+			"avg": score_delta,
+			"total": total_score_diff
+		}
+	}
+
 	grid_container.add_child(country_box)
+
+func _add_stat_bar(parent: VBoxContainer, label_text: String, value: float, bar_color: Color, score_text: String):
+	var hbox = HBoxContainer.new()
+	hbox.add_theme_constant_override("separation", 10)
+	
+	var label = Label.new()
+	label.text = label_text
+	label.custom_minimum_size = Vector2(90, 0)
+	label.add_theme_color_override("font_color", bar_color)
+	hbox.add_child(label)
+	
+	var bar = ProgressBar.new()
+	bar.min_value = 0
+	bar.max_value = 100
+	bar.value = value
+	bar.show_percentage = false
+	bar.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	bar.custom_minimum_size = Vector2(300, 20)
+	bar.self_modulate = bar_color
+	hbox.add_child(bar)
+	
+	var score_label = Label.new()
+	score_label.text = score_text
+	score_label.custom_minimum_size = Vector2(130, 0)
+	score_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
+	hbox.add_child(score_label)
+	
+	parent.add_child(hbox)
 
 func _display_no_data():
 	for child in stats_container.get_children():
@@ -290,3 +376,13 @@ func _display_no_data():
 	label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	label.add_theme_font_size_override("font_size", 16)
 	stats_container.add_child(label)
+	
+func _save_stats_to_file():
+	var file = FileAccess.open(stats_detailed, FileAccess.WRITE)
+	if not file:
+		push_error("Cannot write stats_detailed.json")
+		return
+
+	file.store_string(JSON.stringify(exported_stats, "\t"))
+	file.close()
+	print("Saved detailed stats to stats_detailed.json")

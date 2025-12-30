@@ -77,28 +77,16 @@ func _load_points_data():
 	print("Points stats loaded: %d duels" % points_data.size())
 
 func _extract_avg_points_from_duel(duel):
-	# Search for player in teams
-	if not duel.has("teams"):
-		return -1
+	var total_score = 0
+	var guess_count = 0
 	
-	for team in duel["teams"]:
-		if not team.has("players"):
-			continue
-		
-		for player in team["players"]:
-			if player["playerId"] == player_id:
-				# Get all guesses and calculate average score
-				if player.has("guesses") and player["guesses"].size() > 0:
-					var total_score = 0
-					var guess_count = 0
-					
-					for guess in player["guesses"]:
-						if guess.has("score"):
-							total_score += guess["score"]
-							guess_count += 1
-					
-					if guess_count > 0:
-						return float(total_score) / float(guess_count)
+	for round in duel["rounds"]:
+		if round["player"].has("score"):
+			total_score += round["player"]["score"]
+			guess_count += 1
+	
+	if guess_count > 0:
+		return float(total_score) / float(guess_count)
 	
 	return -1  # Player or scores not found
 
