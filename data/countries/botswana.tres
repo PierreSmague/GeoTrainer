@@ -1,1 +1,9 @@
+[gd_resource type="Resource" script_class="CountryResources" load_steps=3 format=3 uid="uid://cqvn6t2wox40p"]
 
+[ext_resource type="Script" uid="uid://bso6iuruupuxx" path="res://data/models/DocResource.gd" id="1_0etgl"]
+[ext_resource type="Script" uid="uid://dkmphpl17uwyw" path="res://data/models/CountryResources.gd" id="2_1vwyd"]
+
+[resource]
+script = ExtResource("2_1vwyd")
+country_name = "botswana"
+metadata/_custom_type_script = "uid://dkmphpl17uwyw"
