@@ -3,6 +3,7 @@ extends Button
 const duels := "user://duels.json"
 const solo := "user://solo.json"
 const duels_detailed := "user://duels_detailed.json"
+const duels_filtered := "user://duels_filtered.json"
 const solo_detailed := "user://solo_detailed.json"
 const ncfa_path := "user://ncfa.txt"
 const profile := "user://profile.json"
@@ -169,12 +170,22 @@ func _on_request_completed(result, response_code, headers, body):
 	call_deferred("_fetch_next_game")
 
 func _optimize_duel_data(duel: Dictionary) -> Dictionary:
+	var raw_date: String = duel["rounds"][0]["startTime"]
+	var dt := Time.get_datetime_dict_from_datetime_string(raw_date, false)
+	dt.hour = 0
+	dt.minute = 0
+	dt.second = 0
+
+	var day_timestamp := Time.get_unix_time_from_datetime_dict(dt)
+	
 	# Extract only essential information
 	var optimized = {
 		"gameId": duel["gameId"],
 		"mapName": duel["options"]["map"]["name"] if duel.has("options") and duel["options"].has("map") else "Unknown",
 		"isRated": duel["options"]["isRated"] if duel.has("options") else false,
-		"rounds": []
+		"rounds": [],
+		"mode": duel["options"]["competitiveGameMode"],
+		"date": day_timestamp
 	}
 	
 	# Find player and opponent guesses
@@ -206,6 +217,9 @@ func _optimize_duel_data(duel: Dictionary) -> Dictionary:
 	if duel.has("rounds"):
 		for round in duel["rounds"]:
 			if not round.has("panorama"):
+				continue
+				
+			if round["panorama"]["countryCode"] == "":
 				continue
 			
 			var round_num = round["roundNumber"]
@@ -328,6 +342,12 @@ func _save_current_type():
 	file.store_string(json_string)
 	file.close()
 	
+	if is_analyzing_duels:
+		var file2 = FileAccess.open(duels_filtered, FileAccess.WRITE)
+		file2.store_string(json_string)
+		file2.close()
+	
+	
 	print("✓ Données sauvegardées dans: %s" % output_file)
 	print("✓ Nombre de %s sauvegardés: %d" % [game_type, detailed_data.size()])
 	print("========================================================")
@@ -351,7 +371,7 @@ func _refresh_stats_display():
 	var stats_tab = _find_node_by_name(root, "Tabs")
 	if stats_tab:
 		_refresh_node_recursive(stats_tab)
-		print("Stats display refreshed")
+		print("Analyzer - Stats display refreshed")
 
 func _refresh_node_recursive(node: Node) -> void:
 	if node.has_method("_refresh"):

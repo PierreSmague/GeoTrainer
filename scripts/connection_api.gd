@@ -9,8 +9,8 @@ const SOLO := "user://solo.json"
 @onready var profile_infos := $AuthSlot/Profile_infos
 @onready var btn_import := $AuthSlot/ImportGames
 @onready var btn_analyze := $AuthSlot/AnalyzeGames
+@onready var btn_reset := $AuthSlot/ResetID
 @onready var nick_label = $AuthSlot/Profile_infos/Nick
-@onready var country_label = $AuthSlot/Profile_infos/Country
 @onready var level_label = $AuthSlot/Profile_infos/Level
 
 func _ready():
@@ -43,8 +43,7 @@ func _refresh_ui():
 
 			# Update labels
 			nick_label.text = str(nick)
-			country_label.text = str(country_code)
-			level_label.text = "Lvl " + str(int(level))
+			level_label.text = str(country_code).to_upper() + " | Lvl " + str(int(level))
 
 	btn_import.visible = (
 		has_ncfa
@@ -53,6 +52,13 @@ func _refresh_ui():
 	)
 	
 	btn_analyze.visible = (
+		has_ncfa
+		and has_profile
+		and has_duels
+		and has_solo
+	)
+	
+	btn_reset.visible = (
 		has_ncfa
 		and has_profile
 		and has_duels

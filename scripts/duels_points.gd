@@ -1,6 +1,6 @@
 extends Control
 
-const duels_detailed := "user://duels_detailed.json"
+const duels_detailed := "user://duels_filtered.json"
 const profile := "user://profile.json"
 
 var data: Array = []
@@ -130,8 +130,8 @@ func _draw():
 	var drawable_width = chart_size.x - 2 * padding
 	var drawable_height = chart_size.y - 2 * padding - 40  # Space for title
 	
-	# Fixed scale: 3500 to 5000
-	var min_val = 3500.0
+	# Fixed scale
+	var min_val = 2500.0
 	var max_val = 5000.0
 	var range_val = max_val - min_val
 	
@@ -151,7 +151,7 @@ func _draw():
 	draw_line(origin, x_axis_end, Color.WHITE, 2)  # X axis
 	
 	# Draw horizontal grid lines every 100 units from 3500 to 5000
-	for value in range(3500, 5001, 100):
+	for value in range(min_val, max_val + 1, 100):
 		var normalized = (value - min_val) / range_val
 		var y = origin.y - normalized * drawable_height
 		
@@ -163,7 +163,7 @@ func _draw():
 		var label_pos = Vector2(10, y + 5)
 		draw_string(ThemeDB.fallback_font, label_pos, str(value), HORIZONTAL_ALIGNMENT_LEFT, -1, 14, Color.WHITE)
 	
-	# Draw data points and lines (filter points < 3500 for display only)
+	# Draw data points and lines (filter points)
 	var points = PackedVector2Array()
 	var valid_indices = []  # Track which points are displayed
 	
