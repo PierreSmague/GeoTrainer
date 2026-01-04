@@ -1,6 +1,6 @@
 extends Control
 
-const duels_detailed := "user://duels_detailed.json"
+const duels_detailed := "user://duels_filtered.json"
 const profile := "user://profile.json"
 const countries_polygons := "res://misc/countries_polygon.json"
 const stats_detailed := "user://stats_detailed.json"
@@ -40,7 +40,8 @@ var country_names = {
 	"na": "Namibia", "ao": "Angola", "mz": "Mozambique", "mg": "Madagascar", "uy": "Uruguay",
 	"py": "Paraguay", "ve": "Venezuela", "sr": "Suriname", "gy": "Guyana", "gf": "French Guiana",
 	"gt": "Guatemala", "hn": "Honduras", "sv": "El Salvador", "ni": "Nicaragua", "cr": "Costa Rica",
-	"pa": "Panama", "cu": "Cuba", "do": "Dominican Republic", "jm": "Jamaica", "bs": "Bahamas"
+	"pa": "Panama", "cu": "Cuba", "do": "Dominican Republic", "jm": "Jamaica", "bs": "Bahamas",
+	"ls": "Laos", "lu": "Luxemburg", "SZ": "Eswatini", "CW": "Curaçao"
 }
 
 func _ready():
@@ -70,6 +71,7 @@ func _load_player_id():
 		file.close()
 		if profile_data and profile_data["user"].has("id"):
 			player_id = profile_data["user"]["id"]
+	print("Player ID loaded")
 
 func _load_country_stats():
 	exported_stats.clear()
@@ -78,6 +80,7 @@ func _load_country_stats():
 		print("duels_detailed.json file not found")
 		_display_no_data()
 		return
+		
 
 	var file = FileAccess.open(duels_detailed, FileAccess.READ)
 	if not file:
@@ -130,9 +133,9 @@ func _update_stats(stats: Dictionary, correct_country: String, guessed_country: 
 		stats[correct_country] = {
 			"correct": 0,
 			"total": 0,
-			"total_distance": 0.0,
-			"correct_guesses": 0,
-			"total_score": 0
+			"correct_distance": 0.0,
+			"total_score": 0,
+			"correct_score": 0
 		}
 	
 	stats[correct_country]["total"] += 1
@@ -140,14 +143,14 @@ func _update_stats(stats: Dictionary, correct_country: String, guessed_country: 
 	
 	if guessed_country == correct_country:
 		stats[correct_country]["correct"] += 1
-		stats[correct_country]["total_distance"] += distance
-		stats[correct_country]["correct_guesses"] += 1
+		stats[correct_country]["correct_distance"] += distance
+		stats[correct_country]["correct_score"] += score
 
 func _display_country_stats(player_stats: Dictionary, opponent_stats: Dictionary):
 	# Clear existing children
 	for child in stats_container.get_children():
 		child.queue_free()
-
+	
 	# Title
 	var title_container = CenterContainer.new()
 	var title = Label.new()
@@ -155,30 +158,36 @@ func _display_country_stats(player_stats: Dictionary, opponent_stats: Dictionary
 	title.add_theme_font_size_override("font_size", 22)
 	title_container.add_child(title)
 	stats_container.add_child(title_container)
-
+	
 	var separator = HSeparator.new()
 	stats_container.add_child(separator)
-
-	# GridContainer for columns
-	grid_container.columns = 2
-	grid_container.add_theme_constant_override("h_separation", 25)
-	grid_container.add_theme_constant_override("v_separation", 25)
-	stats_container.add_child(grid_container)
-
+	
+	# Create NEW GridContainer each time (don't reuse the member variable)
+	var grid = GridContainer.new()
+	grid.columns = 2
+	grid.add_theme_constant_override("h_separation", 25)
+	grid.add_theme_constant_override("v_separation", 25)
+	stats_container.add_child(grid)
+	
+	# Update the member variable reference
+	grid_container = grid
+	
 	# Collect all countries and sort by rounds played
 	var country_list = []
 	for country in player_stats.keys():
 		var count = player_stats[country]["total"]
 		country_list.append({"code": country, "count": count})
-
+	
 	country_list.sort_custom(func(a, b): return a["count"] > b["count"])
-
+	
 	# Display each country
 	for item in country_list:
 		var country = item["code"]
 		_create_country_box(country, player_stats, opponent_stats)
-		
-		_save_stats_to_file()
+
+	_save_stats_to_file()
+	
+	print("Saved detailed stats to stats_detailed.json")
 
 func _create_country_box(country: String, player_stats: Dictionary, opponent_stats: Dictionary):
 	var country_box = PanelContainer.new()
@@ -227,12 +236,26 @@ func _create_country_box(country: String, player_stats: Dictionary, opponent_sta
 	
 	# Average distance when correct (in km)
 	var player_avg_dist_km = 0.0
-	if player_stats[country]["correct_guesses"] > 0:
-		player_avg_dist_km = (player_stats[country]["total_distance"] / player_stats[country]["correct_guesses"]) / 1000.0
+	var player_avg_score_correct = 0.0
+	var player_avg_score_incorrect = 0.0
+	if player_correct > 0:
+		player_avg_dist_km = (player_stats[country]["correct_distance"] / player_correct) / 1000.0
+		player_avg_score_correct = player_stats[country]["correct_score"] / player_correct
+	if player_total - player_correct > 0:
+		player_avg_score_incorrect = (player_stats[country]["total_score"] - player_stats[country]["correct_score"]) / (player_total - player_correct)
+	else:
+		player_avg_score_incorrect = player_avg_score_correct
 	
 	var opp_avg_dist_km = 0.0
-	if opponent_stats.has(country) and opponent_stats[country]["correct_guesses"] > 0:
-		opp_avg_dist_km = (opponent_stats[country]["total_distance"] / opponent_stats[country]["correct_guesses"]) / 1000.0
+	var opp_avg_score_correct = 0.0
+	var opp_avg_score_incorrect = 0.0
+	if opponent_stats.has(country) and opp_correct > 0:
+		opp_avg_dist_km = (opponent_stats[country]["correct_distance"] / opp_correct) / 1000.0
+		opp_avg_score_correct = opponent_stats[country]["correct_score"] / opp_correct
+	if opp_total - opp_correct > 0:
+		opp_avg_score_incorrect = (opponent_stats[country]["total_score"] - opponent_stats[country]["correct_score"]) / (opp_total - opp_correct)
+	else:
+		opp_avg_score_incorrect = opp_avg_score_correct
 	
 	# Score stats
 	var player_avg_score = float(player_stats[country]["total_score"]) / player_total if player_total > 0 else 0.0
@@ -331,6 +354,14 @@ func _create_country_box(country: String, player_stats: Dictionary, opponent_sta
 			"player": player_avg_score,
 			"opponent": opp_avg_score
 		},
+		"avg_score_correct": {
+			"player": player_avg_score_correct,
+			"opponent": opp_avg_score_correct
+		},
+		"avg_score_incorrect": {
+			"player": player_avg_score_incorrect,
+			"opponent": opp_avg_score_incorrect
+		},
 		"score_delta": {
 			"avg": score_delta,
 			"total": total_score_diff
@@ -385,4 +416,3 @@ func _save_stats_to_file():
 
 	file.store_string(JSON.stringify(exported_stats, "\t"))
 	file.close()
-	print("Saved detailed stats to stats_detailed.json")

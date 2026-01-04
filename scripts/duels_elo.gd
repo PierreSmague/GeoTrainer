@@ -1,15 +1,72 @@
 extends Control
 
+const duels_detailed := "user://duels_filtered.json"
+const profile := "user://profile.json"
+
 var data: Array = []
-var chart_title: String = ""
+var chart_title: String = "Duels - ELO Evolution"
 var line_color: Color = Color.CYAN
 var padding: int = 60
+var player_id: String = ""
 
-func set_data(new_data: Array, title: String = "Chart", color: Color = Color.CYAN):
-	data = new_data
-	chart_title = title
-	line_color = color
+func _ready():
+	_load_player_id()
+	_load_elo_data()
+
+func _refresh():
+	_load_player_id()
+	_load_elo_data()
+
+func _load_player_id():
+	var file = FileAccess.open(profile, FileAccess.READ)
+	if file:
+		var profile_data = JSON.parse_string(file.get_as_text())
+		file.close()
+		if profile_data and profile_data["user"].has("id"):
+			player_id = profile_data["user"]["id"]
+			print("Player ID loaded: ", player_id)
+
+func _load_elo_data():
+	# Check if file exists
+	if not FileAccess.file_exists(duels_detailed):
+		print("duels_detailed.json file not found")
+		visible = false
+		return
+	
+	# Load data
+	var file = FileAccess.open(duels_detailed, FileAccess.READ)
+	if not file:
+		push_error("Cannot open duels_detailed.json")
+		visible = false
+		return
+	
+	var duels_data = JSON.parse_string(file.get_as_text())
+	file.close()
+	
+	if not duels_data or duels_data.size() == 0:
+		print("No duels found in duels_detailed.json")
+		visible = false
+		return
+	
+	# Extract ELO ratings from duels (already in chronological order)
+	var elo_data = []
+	for duel in duels_data:
+		if duel.has("playerRatingAfter"):
+			elo_data.append(duel["playerRatingAfter"])
+			
+	elo_data.reverse()
+	
+	if elo_data.size() == 0:
+		print("No ELO found in duels")
+		visible = false
+		return
+	
+	# Set data and trigger redraw
+	data = elo_data
+	visible = true
 	queue_redraw()
+	
+	print("ELO data loaded: %d points" % elo_data.size())
 
 func _draw():
 	if data.size() == 0:

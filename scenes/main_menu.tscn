@@ -1,4 +1,4 @@
-[gd_scene load_steps=17 format=3 uid="uid://b4o0d63bb7yhk"]
+[gd_scene load_steps=25 format=3 uid="uid://b4o0d63bb7yhk"]
 
 [ext_resource type="Script" uid="uid://ladsbtunl21d" path="res://scripts/main_menu.gd" id="1_l6cm7"]
 [ext_resource type="Script" uid="uid://b7bn5taswdjfw" path="res://scripts/tabs.gd" id="2_rtw2f"]
@@ -7,6 +7,8 @@
 [ext_resource type="Script" uid="uid://dbrf0pdrmrefs" path="res://scripts/popup_analyze.gd" id="6_jk1qb"]
 [ext_resource type="Script" uid="uid://cbwvmm6no053s" path="res://scripts/connection_api.gd" id="6_oa1go"]
 [ext_resource type="Script" uid="uid://746mj0q7o37i" path="res://scripts/connection.gd" id="6_rtw2f"]
+[ext_resource type="Script" uid="uid://d0un3lqmb02js" path="res://scripts/reset_id.gd" id="7_7b55j"]
+[ext_resource type="Script" uid="uid://3mhvw8uhvo6f" path="res://scripts/priority_panel.gd" id="8_1ajci"]
 [ext_resource type="Script" uid="uid://cwrvgafi0vwwx" path="res://scripts/countries_ressources.gd" id="8_rcqid"]
 [ext_resource type="Script" uid="uid://dp8q83sg7qjmw" path="res://scripts/duels.gd" id="8_tbmy8"]
 [ext_resource type="Script" uid="uid://bpss2m8qpqmwd" path="res://scripts/duels_elo.gd" id="9_jk1qb"]
@@ -22,6 +24,22 @@ bg_color = Color(0.118500985, 0.6272197, 0.9727176, 1)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_tbmy8"]
 bg_color = Color(0.17770422, 0.636676, 0.9153496, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_5pajh"]
+bg_color = Color(0.25051188, 0.62735, 0.92127717, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_7b55j"]
+bg_color = Color(0.4679566, 0.57847375, 0.9329873, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_j7ex8"]
+bg_color = Color(0.07288691, 0.09716912, 0.32647663, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_rcqid"]
+
+[sub_resource type="ButtonGroup" id="ButtonGroup_rcqid"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_1ajci"]
+bg_color = Color(0.22548616, 0.62942016, 0.92561066, 1)
 
 [node name="GeoTrainer" type="Control"]
 layout_mode = 3
@@ -98,11 +116,6 @@ horizontal_alignment = 2
 [node name="Level" type="Label" parent="Connection API/AuthSlot/Profile_infos"]
 layout_mode = 2
 horizontal_alignment = 2
-
-[node name="Country" type="Label" parent="Connection API/AuthSlot/Profile_infos"]
-layout_mode = 2
-horizontal_alignment = 2
-uppercase = true
 
 [node name="ImportGames" type="Button" parent="Connection API/AuthSlot"]
 layout_mode = 0
@@ -240,13 +253,25 @@ horizontal_alignment = 1
 vertical_alignment = 1
 autowrap_mode = 2
 
+[node name="ResetID" type="Button" parent="Connection API/AuthSlot"]
+layout_mode = 0
+offset_left = 74.0
+offset_top = 58.0
+offset_right = 231.0
+offset_bottom = 82.0
+theme_override_styles/normal = SubResource("StyleBoxFlat_5pajh")
+text = "Reset profile"
+script = ExtResource("7_7b55j")
+
+[node name="ConfirmationPopup" type="ConfirmationDialog" parent="Connection API/AuthSlot"]
+
 [node name="Tabs" type="TabContainer" parent="."]
 layout_mode = 0
 offset_left = -2.0
-offset_top = 60.0
+offset_top = 90.0
 offset_right = 1400.0
-offset_bottom = 744.0
-current_tab = 2
+offset_bottom = 778.0
+current_tab = 1
 script = ExtResource("2_rtw2f")
 
 [node name="Dashboard" type="Control" parent="Tabs"]
@@ -254,12 +279,114 @@ visible = false
 layout_mode = 2
 metadata/_tab_index = 0
 
-[node name="Training" type="Control" parent="Tabs"]
-visible = false
+[node name="MainContainer" type="HBoxContainer" parent="Tabs/Dashboard"]
+layout_mode = 0
+offset_right = 1402.0
+offset_bottom = 657.0
+
+[node name="PriorityPanel" type="PanelContainer" parent="Tabs/Dashboard/MainContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+script = ExtResource("8_1ajci")
+
+[node name="Priorities" type="VBoxContainer" parent="Tabs/Dashboard/MainContainer/PriorityPanel"]
+layout_mode = 2
+
+[node name="Title" type="Label" parent="Tabs/Dashboard/MainContainer/PriorityPanel/Priorities"]
+layout_mode = 2
+text = "Training Priorities"
+horizontal_alignment = 1
+
+[node name="ScrollContainer" type="ScrollContainer" parent="Tabs/Dashboard/MainContainer/PriorityPanel/Priorities"]
+custom_minimum_size = Vector2(0, 620)
+layout_mode = 2
+
+[node name="PriorityList" type="VBoxContainer" parent="Tabs/Dashboard/MainContainer/PriorityPanel/Priorities/ScrollContainer"]
+layout_mode = 2
+size_flags_horizontal = 6
+alignment = 1
+
+[node name="RightPanel" type="Control" parent="Tabs/Dashboard/MainContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Training" type="PanelContainer" parent="Tabs"]
 layout_mode = 2
 metadata/_tab_index = 1
 
+[node name="RootVBox" type="VBoxContainer" parent="Tabs/Training"]
+layout_mode = 2
+
+[node name="TimeTitle" type="Label" parent="Tabs/Training/RootVBox"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 22
+text = "Personalized training"
+horizontal_alignment = 1
+
+[node name="HSeparator" type="HSeparator" parent="Tabs/Training/RootVBox"]
+layout_mode = 2
+
+[node name="TimeSelection" type="VBoxContainer" parent="Tabs/Training/RootVBox"]
+layout_mode = 2
+
+[node name="TimeTitle" type="Label" parent="Tabs/Training/RootVBox/TimeSelection"]
+layout_mode = 2
+
+[node name="TimeSliderRow" type="HBoxContainer" parent="Tabs/Training/RootVBox/TimeSelection"]
+layout_mode = 2
+
+[node name="TimeMinLabel" type="Label" parent="Tabs/Training/RootVBox/TimeSelection/TimeSliderRow"]
+layout_mode = 2
+text = "0 min"
+
+[node name="TimeSlider" type="HSlider" parent="Tabs/Training/RootVBox/TimeSelection/TimeSliderRow"]
+custom_minimum_size = Vector2(600, 0)
+layout_mode = 2
+max_value = 18.0
+tick_count = 19
+ticks_on_borders = true
+
+[node name="TimeMaxLabel" type="Label" parent="Tabs/Training/RootVBox/TimeSelection/TimeSliderRow"]
+layout_mode = 2
+text = "180 min"
+
+[node name="TimeValueLabel" type="Label" parent="Tabs/Training/RootVBox/TimeSelection"]
+layout_mode = 2
+text = "Selected time: 60 minutes"
+
+[node name="HSeparator3" type="HSeparator" parent="Tabs/Training/RootVBox"]
+custom_minimum_size = Vector2(0, 70)
+layout_mode = 2
+
+[node name="GenerateTrainingButton" type="Button" parent="Tabs/Training/RootVBox"]
+custom_minimum_size = Vector2(0, 50)
+layout_mode = 2
+theme_override_styles/normal = SubResource("StyleBoxFlat_7b55j")
+text = "Generate training"
+
+[node name="HSeparator2" type="HSeparator" parent="Tabs/Training/RootVBox"]
+custom_minimum_size = Vector2(0, 20)
+layout_mode = 2
+
+[node name="InfoBanner" type="PanelContainer" parent="Tabs/Training/RootVBox"]
+layout_mode = 2
+
+[node name="InfoText" type="Label" parent="Tabs/Training/RootVBox/InfoBanner"]
+layout_mode = 2
+theme_override_styles/normal = SubResource("StyleBoxFlat_j7ex8")
+text = "This training is designed to work in tandem with a flashcard app such as Anki.
+"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="TrainingOutput" type="ScrollContainer" parent="Tabs/Training/RootVBox"]
+layout_mode = 2
+
+[node name="TrainingPlan" type="VBoxContainer" parent="Tabs/Training/RootVBox/TrainingOutput"]
+layout_mode = 2
+
 [node name="Ressources" type="TabContainer" parent="Tabs"]
+visible = false
 layout_mode = 2
 current_tab = 0
 metadata/_tab_index = 2
@@ -1641,12 +1768,37 @@ horizontal_alignment = 1
 layout_mode = 2
 size_flags_vertical = 0
 
+[node name="Bosnia" type="ScrollContainer" parent="Tabs/Ressources/Europe"]
+visible = false
+layout_mode = 2
+script = ExtResource("8_rcqid")
+country_name = "Bosnia"
+metadata/_tab_index = 4
+
+[node name="Content" type="HBoxContainer" parent="Tabs/Ressources/Europe/Bosnia"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="DocsColumn" type="VBoxContainer" parent="Tabs/Ressources/Europe/Bosnia/Content"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 7.0
+
+[node name="Docs" type="Label" parent="Tabs/Ressources/Europe/Bosnia/Content/DocsColumn"]
+layout_mode = 2
+text = "Documents (Difficulty/Usefulness)"
+horizontal_alignment = 1
+
+[node name="DocsList" type="VBoxContainer" parent="Tabs/Ressources/Europe/Bosnia/Content/DocsColumn"]
+layout_mode = 2
+size_flags_vertical = 0
+
 [node name="Bulgaria" type="ScrollContainer" parent="Tabs/Ressources/Europe"]
 visible = false
 layout_mode = 2
 script = ExtResource("8_rcqid")
 country_name = "Bulgaria"
-metadata/_tab_index = 4
+metadata/_tab_index = 5
 
 [node name="Content" type="HBoxContainer" parent="Tabs/Ressources/Europe/Bulgaria"]
 layout_mode = 2
@@ -1671,7 +1823,7 @@ visible = false
 layout_mode = 2
 script = ExtResource("8_rcqid")
 country_name = "Croatia"
-metadata/_tab_index = 5
+metadata/_tab_index = 6
 
 [node name="Content" type="HBoxContainer" parent="Tabs/Ressources/Europe/Croatia"]
 layout_mode = 2
@@ -1696,7 +1848,7 @@ visible = false
 layout_mode = 2
 script = ExtResource("8_rcqid")
 country_name = "Cyprus"
-metadata/_tab_index = 6
+metadata/_tab_index = 7
 
 [node name="Content" type="HBoxContainer" parent="Tabs/Ressources/Europe/Cyprus"]
 layout_mode = 2
@@ -1721,7 +1873,7 @@ visible = false
 layout_mode = 2
 script = ExtResource("8_rcqid")
 country_name = "Czechia"
-metadata/_tab_index = 7
+metadata/_tab_index = 8
 
 [node name="Content" type="HBoxContainer" parent="Tabs/Ressources/Europe/Czechia"]
 layout_mode = 2
@@ -1746,7 +1898,7 @@ visible = false
 layout_mode = 2
 script = ExtResource("8_rcqid")
 country_name = "Denmark"
-metadata/_tab_index = 8
+metadata/_tab_index = 9
 
 [node name="Content" type="HBoxContainer" parent="Tabs/Ressources/Europe/Denmark"]
 layout_mode = 2
@@ -1771,7 +1923,7 @@ visible = false
 layout_mode = 2
 script = ExtResource("8_rcqid")
 country_name = "Estonia"
-metadata/_tab_index = 9
+metadata/_tab_index = 10
 
 [node name="Content" type="HBoxContainer" parent="Tabs/Ressources/Europe/Estonia"]
 layout_mode = 2
@@ -1796,7 +1948,7 @@ visible = false
 layout_mode = 2
 script = ExtResource("8_rcqid")
 country_name = "Faroe Islands"
-metadata/_tab_index = 10
+metadata/_tab_index = 11
 
 [node name="Content" type="HBoxContainer" parent="Tabs/Ressources/Europe/Faroe"]
 layout_mode = 2
@@ -1821,7 +1973,7 @@ visible = false
 layout_mode = 2
 script = ExtResource("8_rcqid")
 country_name = "Finland"
-metadata/_tab_index = 11
+metadata/_tab_index = 12
 
 [node name="Content" type="HBoxContainer" parent="Tabs/Ressources/Europe/Finland"]
 layout_mode = 2
@@ -1846,7 +1998,7 @@ visible = false
 layout_mode = 2
 script = ExtResource("8_rcqid")
 country_name = "France"
-metadata/_tab_index = 12
+metadata/_tab_index = 13
 
 [node name="Content" type="HBoxContainer" parent="Tabs/Ressources/Europe/France"]
 layout_mode = 2
@@ -1871,7 +2023,7 @@ visible = false
 layout_mode = 2
 script = ExtResource("8_rcqid")
 country_name = "Germany"
-metadata/_tab_index = 13
+metadata/_tab_index = 14
 
 [node name="Content" type="HBoxContainer" parent="Tabs/Ressources/Europe/Germany"]
 layout_mode = 2
@@ -1896,7 +2048,7 @@ visible = false
 layout_mode = 2
 script = ExtResource("8_rcqid")
 country_name = "Gibraltar"
-metadata/_tab_index = 14
+metadata/_tab_index = 15
 
 [node name="Content" type="HBoxContainer" parent="Tabs/Ressources/Europe/Gibraltar"]
 layout_mode = 2
@@ -1921,7 +2073,7 @@ visible = false
 layout_mode = 2
 script = ExtResource("8_rcqid")
 country_name = "Greece"
-metadata/_tab_index = 15
+metadata/_tab_index = 16
 
 [node name="Content" type="HBoxContainer" parent="Tabs/Ressources/Europe/Greece"]
 layout_mode = 2
@@ -1946,7 +2098,7 @@ visible = false
 layout_mode = 2
 script = ExtResource("8_rcqid")
 country_name = "Hungary"
-metadata/_tab_index = 16
+metadata/_tab_index = 17
 
 [node name="Content" type="HBoxContainer" parent="Tabs/Ressources/Europe/Hungary"]
 layout_mode = 2
@@ -1971,7 +2123,7 @@ visible = false
 layout_mode = 2
 script = ExtResource("8_rcqid")
 country_name = "Iceland"
-metadata/_tab_index = 17
+metadata/_tab_index = 18
 
 [node name="Content" type="HBoxContainer" parent="Tabs/Ressources/Europe/Iceland"]
 layout_mode = 2
@@ -1996,7 +2148,7 @@ visible = false
 layout_mode = 2
 script = ExtResource("8_rcqid")
 country_name = "Ireland"
-metadata/_tab_index = 18
+metadata/_tab_index = 19
 
 [node name="Content" type="HBoxContainer" parent="Tabs/Ressources/Europe/Ireland"]
 layout_mode = 2
@@ -2021,7 +2173,7 @@ visible = false
 layout_mode = 2
 script = ExtResource("8_rcqid")
 country_name = "Isle of Man"
-metadata/_tab_index = 19
+metadata/_tab_index = 20
 
 [node name="Content" type="HBoxContainer" parent="Tabs/Ressources/Europe/Isle of Man"]
 layout_mode = 2
@@ -2046,7 +2198,7 @@ visible = false
 layout_mode = 2
 script = ExtResource("8_rcqid")
 country_name = "Italy"
-metadata/_tab_index = 20
+metadata/_tab_index = 21
 
 [node name="Content" type="HBoxContainer" parent="Tabs/Ressources/Europe/Italy"]
 layout_mode = 2
@@ -2071,7 +2223,7 @@ visible = false
 layout_mode = 2
 script = ExtResource("8_rcqid")
 country_name = "Latvia"
-metadata/_tab_index = 21
+metadata/_tab_index = 22
 
 [node name="Content" type="HBoxContainer" parent="Tabs/Ressources/Europe/Latvia"]
 layout_mode = 2
@@ -2096,7 +2248,7 @@ visible = false
 layout_mode = 2
 script = ExtResource("8_rcqid")
 country_name = "Liechtenstein"
-metadata/_tab_index = 22
+metadata/_tab_index = 23
 
 [node name="Content" type="HBoxContainer" parent="Tabs/Ressources/Europe/Liechtenstein"]
 layout_mode = 2
@@ -2121,7 +2273,7 @@ visible = false
 layout_mode = 2
 script = ExtResource("8_rcqid")
 country_name = "Lithuania"
-metadata/_tab_index = 23
+metadata/_tab_index = 24
 
 [node name="Content" type="HBoxContainer" parent="Tabs/Ressources/Europe/Lithuania"]
 layout_mode = 2
@@ -2146,7 +2298,7 @@ visible = false
 layout_mode = 2
 script = ExtResource("8_rcqid")
 country_name = "Luxembourg"
-metadata/_tab_index = 24
+metadata/_tab_index = 25
 
 [node name="Content" type="HBoxContainer" parent="Tabs/Ressources/Europe/Luxembourg"]
 layout_mode = 2
@@ -2171,7 +2323,7 @@ visible = false
 layout_mode = 2
 script = ExtResource("8_rcqid")
 country_name = "North Macedonia"
-metadata/_tab_index = 25
+metadata/_tab_index = 26
 
 [node name="Content" type="HBoxContainer" parent="Tabs/Ressources/Europe/Macedonia"]
 layout_mode = 2
@@ -2196,7 +2348,7 @@ visible = false
 layout_mode = 2
 script = ExtResource("8_rcqid")
 country_name = "Malta"
-metadata/_tab_index = 26
+metadata/_tab_index = 27
 
 [node name="Content" type="HBoxContainer" parent="Tabs/Ressources/Europe/Malta"]
 layout_mode = 2
@@ -2221,7 +2373,7 @@ visible = false
 layout_mode = 2
 script = ExtResource("8_rcqid")
 country_name = "Monaco"
-metadata/_tab_index = 27
+metadata/_tab_index = 28
 
 [node name="Content" type="HBoxContainer" parent="Tabs/Ressources/Europe/Monaco"]
 layout_mode = 2
@@ -2246,7 +2398,7 @@ visible = false
 layout_mode = 2
 script = ExtResource("8_rcqid")
 country_name = "Montenegro"
-metadata/_tab_index = 28
+metadata/_tab_index = 29
 
 [node name="Content" type="HBoxContainer" parent="Tabs/Ressources/Europe/Montenegro"]
 layout_mode = 2
@@ -2271,7 +2423,7 @@ visible = false
 layout_mode = 2
 script = ExtResource("8_rcqid")
 country_name = "Netherlands"
-metadata/_tab_index = 29
+metadata/_tab_index = 30
 
 [node name="Content" type="HBoxContainer" parent="Tabs/Ressources/Europe/Netherlands"]
 layout_mode = 2
@@ -2296,7 +2448,7 @@ visible = false
 layout_mode = 2
 script = ExtResource("8_rcqid")
 country_name = "Norway"
-metadata/_tab_index = 30
+metadata/_tab_index = 31
 
 [node name="Content" type="HBoxContainer" parent="Tabs/Ressources/Europe/Norway"]
 layout_mode = 2
@@ -2321,7 +2473,7 @@ visible = false
 layout_mode = 2
 script = ExtResource("8_rcqid")
 country_name = "Poland"
-metadata/_tab_index = 31
+metadata/_tab_index = 32
 
 [node name="Content" type="HBoxContainer" parent="Tabs/Ressources/Europe/Poland"]
 layout_mode = 2
@@ -2346,7 +2498,7 @@ visible = false
 layout_mode = 2
 script = ExtResource("8_rcqid")
 country_name = "Portugal"
-metadata/_tab_index = 32
+metadata/_tab_index = 33
 
 [node name="Content" type="HBoxContainer" parent="Tabs/Ressources/Europe/Portugal"]
 layout_mode = 2
@@ -2371,7 +2523,7 @@ visible = false
 layout_mode = 2
 script = ExtResource("8_rcqid")
 country_name = "Romania"
-metadata/_tab_index = 33
+metadata/_tab_index = 34
 
 [node name="Content" type="HBoxContainer" parent="Tabs/Ressources/Europe/Romania"]
 layout_mode = 2
@@ -2396,7 +2548,7 @@ visible = false
 layout_mode = 2
 script = ExtResource("8_rcqid")
 country_name = "San Marino"
-metadata/_tab_index = 34
+metadata/_tab_index = 35
 
 [node name="Content" type="HBoxContainer" parent="Tabs/Ressources/Europe/San Marino"]
 layout_mode = 2
@@ -2421,7 +2573,7 @@ visible = false
 layout_mode = 2
 script = ExtResource("8_rcqid")
 country_name = "Serbia"
-metadata/_tab_index = 35
+metadata/_tab_index = 36
 
 [node name="Content" type="HBoxContainer" parent="Tabs/Ressources/Europe/Serbia"]
 layout_mode = 2
@@ -2446,7 +2598,7 @@ visible = false
 layout_mode = 2
 script = ExtResource("8_rcqid")
 country_name = "Slovakia"
-metadata/_tab_index = 36
+metadata/_tab_index = 37
 
 [node name="Content" type="HBoxContainer" parent="Tabs/Ressources/Europe/Slovakia"]
 layout_mode = 2
@@ -2471,7 +2623,7 @@ visible = false
 layout_mode = 2
 script = ExtResource("8_rcqid")
 country_name = "Slovenia"
-metadata/_tab_index = 37
+metadata/_tab_index = 38
 
 [node name="Content" type="HBoxContainer" parent="Tabs/Ressources/Europe/Slovenia"]
 layout_mode = 2
@@ -2496,7 +2648,7 @@ visible = false
 layout_mode = 2
 script = ExtResource("8_rcqid")
 country_name = "Spain"
-metadata/_tab_index = 38
+metadata/_tab_index = 39
 
 [node name="Content" type="HBoxContainer" parent="Tabs/Ressources/Europe/Spain"]
 layout_mode = 2
@@ -2521,7 +2673,7 @@ visible = false
 layout_mode = 2
 script = ExtResource("8_rcqid")
 country_name = "Sweden"
-metadata/_tab_index = 39
+metadata/_tab_index = 40
 
 [node name="Content" type="HBoxContainer" parent="Tabs/Ressources/Europe/Sweden"]
 layout_mode = 2
@@ -2546,7 +2698,7 @@ visible = false
 layout_mode = 2
 script = ExtResource("8_rcqid")
 country_name = "Switzerland"
-metadata/_tab_index = 40
+metadata/_tab_index = 41
 
 [node name="Content" type="HBoxContainer" parent="Tabs/Ressources/Europe/Switzerland"]
 layout_mode = 2
@@ -2571,7 +2723,7 @@ visible = false
 layout_mode = 2
 script = ExtResource("8_rcqid")
 country_name = "Ukraine"
-metadata/_tab_index = 41
+metadata/_tab_index = 42
 
 [node name="Content" type="HBoxContainer" parent="Tabs/Ressources/Europe/Ukraine"]
 layout_mode = 2
@@ -2596,7 +2748,7 @@ visible = false
 layout_mode = 2
 script = ExtResource("8_rcqid")
 country_name = "United Kingdom"
-metadata/_tab_index = 42
+metadata/_tab_index = 43
 
 [node name="Content" type="HBoxContainer" parent="Tabs/Ressources/Europe/UK"]
 layout_mode = 2
@@ -2696,28 +2848,28 @@ horizontal_alignment = 1
 layout_mode = 2
 size_flags_vertical = 0
 
-[node name="Dominican Rep" type="ScrollContainer" parent="Tabs/Ressources/North America"]
+[node name="Dominican Republic" type="ScrollContainer" parent="Tabs/Ressources/North America"]
 visible = false
 layout_mode = 2
 script = ExtResource("8_rcqid")
 country_name = "Dominican Republic"
 metadata/_tab_index = 3
 
-[node name="Content" type="HBoxContainer" parent="Tabs/Ressources/North America/Dominican Rep"]
+[node name="Content" type="HBoxContainer" parent="Tabs/Ressources/North America/Dominican Republic"]
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="DocsColumn" type="VBoxContainer" parent="Tabs/Ressources/North America/Dominican Rep/Content"]
+[node name="DocsColumn" type="VBoxContainer" parent="Tabs/Ressources/North America/Dominican Republic/Content"]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_stretch_ratio = 7.0
 
-[node name="Docs" type="Label" parent="Tabs/Ressources/North America/Dominican Rep/Content/DocsColumn"]
+[node name="Docs" type="Label" parent="Tabs/Ressources/North America/Dominican Republic/Content/DocsColumn"]
 layout_mode = 2
 text = "Documents (Difficulty/Usefulness)"
 horizontal_alignment = 1
 
-[node name="DocsList" type="VBoxContainer" parent="Tabs/Ressources/North America/Dominican Rep/Content/DocsColumn"]
+[node name="DocsList" type="VBoxContainer" parent="Tabs/Ressources/North America/Dominican Republic/Content/DocsColumn"]
 layout_mode = 2
 size_flags_vertical = 0
 
@@ -3256,12 +3408,37 @@ horizontal_alignment = 1
 layout_mode = 2
 size_flags_vertical = 0
 
+[node name="Paraguay" type="ScrollContainer" parent="Tabs/Ressources/South America"]
+visible = false
+layout_mode = 2
+script = ExtResource("8_rcqid")
+country_name = "Paraguay"
+metadata/_tab_index = 7
+
+[node name="Content" type="HBoxContainer" parent="Tabs/Ressources/South America/Paraguay"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="DocsColumn" type="VBoxContainer" parent="Tabs/Ressources/South America/Paraguay/Content"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 7.0
+
+[node name="Docs" type="Label" parent="Tabs/Ressources/South America/Paraguay/Content/DocsColumn"]
+layout_mode = 2
+text = "Documents (Difficulty/Usefulness)"
+horizontal_alignment = 1
+
+[node name="DocsList" type="VBoxContainer" parent="Tabs/Ressources/South America/Paraguay/Content/DocsColumn"]
+layout_mode = 2
+size_flags_vertical = 0
+
 [node name="Peru" type="ScrollContainer" parent="Tabs/Ressources/South America"]
 visible = false
 layout_mode = 2
 script = ExtResource("8_rcqid")
 country_name = "Peru"
-metadata/_tab_index = 7
+metadata/_tab_index = 8
 
 [node name="Content" type="HBoxContainer" parent="Tabs/Ressources/South America/Peru"]
 layout_mode = 2
@@ -3286,7 +3463,7 @@ visible = false
 layout_mode = 2
 script = ExtResource("8_rcqid")
 country_name = "Uruguay"
-metadata/_tab_index = 8
+metadata/_tab_index = 9
 
 [node name="Content" type="HBoxContainer" parent="Tabs/Ressources/South America/Uruguay"]
 layout_mode = 2
@@ -3309,10 +3486,11 @@ size_flags_vertical = 0
 [node name="Stats" type="TabContainer" parent="Tabs"]
 visible = false
 layout_mode = 2
-current_tab = 0
+current_tab = 2
 metadata/_tab_index = 3
 
 [node name="Duels" type="TabContainer" parent="Tabs/Stats"]
+visible = false
 layout_mode = 2
 current_tab = 2
 script = ExtResource("8_tbmy8")
@@ -3369,5 +3547,97 @@ grow_vertical = 2
 [node name="VBoxContainer" type="VBoxContainer" parent="Tabs/Stats/Solo/Maps/ScrollContainer"]
 layout_mode = 2
 
+[node name="FilterModeAndDate" type="VBoxContainer" parent="Tabs/Stats"]
+layout_mode = 2
+metadata/_tab_index = 2
+
+[node name="FiltersPanel" type="PanelContainer" parent="Tabs/Stats/FilterModeAndDate"]
+custom_minimum_size = Vector2(0, 140)
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_rcqid")
+
+[node name="FiltersVBox" type="VBoxContainer" parent="Tabs/Stats/FilterModeAndDate/FiltersPanel"]
+layout_mode = 2
+
+[node name="Filters" type="Label" parent="Tabs/Stats/FilterModeAndDate/FiltersPanel/FiltersVBox"]
+layout_mode = 2
+
+[node name="DateRange" type="HBoxContainer" parent="Tabs/Stats/FilterModeAndDate/FiltersPanel/FiltersVBox"]
+layout_mode = 2
+
+[node name="DateStart" type="VBoxContainer" parent="Tabs/Stats/FilterModeAndDate/FiltersPanel/FiltersVBox/DateRange"]
+custom_minimum_size = Vector2(500, 0)
+layout_mode = 2
+alignment = 1
+
+[node name="DateStartLabel" type="Label" parent="Tabs/Stats/FilterModeAndDate/FiltersPanel/FiltersVBox/DateRange/DateStart"]
+layout_mode = 2
+text = "From"
+horizontal_alignment = 1
+
+[node name="DateStartSlider" type="HSlider" parent="Tabs/Stats/FilterModeAndDate/FiltersPanel/FiltersVBox/DateRange/DateStart"]
+layout_mode = 2
+step = 86400.0
+allow_greater = true
+allow_lesser = true
+
+[node name="DateEnd" type="VBoxContainer" parent="Tabs/Stats/FilterModeAndDate/FiltersPanel/FiltersVBox/DateRange"]
+custom_minimum_size = Vector2(500, 0)
+layout_mode = 2
+alignment = 1
+
+[node name="DateEndLabel" type="Label" parent="Tabs/Stats/FilterModeAndDate/FiltersPanel/FiltersVBox/DateRange/DateEnd"]
+layout_mode = 2
+text = "To"
+horizontal_alignment = 1
+
+[node name="DateEndSlider" type="HSlider" parent="Tabs/Stats/FilterModeAndDate/FiltersPanel/FiltersVBox/DateRange/DateEnd"]
+layout_mode = 2
+step = 86400.0
+allow_greater = true
+allow_lesser = true
+
+[node name="Separator" type="HSeparator" parent="Tabs/Stats/FilterModeAndDate/FiltersPanel/FiltersVBox"]
+layout_mode = 2
+
+[node name="ModeSelector" type="HBoxContainer" parent="Tabs/Stats/FilterModeAndDate/FiltersPanel/FiltersVBox"]
+layout_mode = 2
+
+[node name="Move" type="Button" parent="Tabs/Stats/FilterModeAndDate/FiltersPanel/FiltersVBox/ModeSelector"]
+layout_mode = 2
+size_flags_horizontal = 3
+toggle_mode = true
+button_group = SubResource("ButtonGroup_rcqid")
+text = "Move"
+
+[node name="NM" type="Button" parent="Tabs/Stats/FilterModeAndDate/FiltersPanel/FiltersVBox/ModeSelector"]
+layout_mode = 2
+size_flags_horizontal = 3
+toggle_mode = true
+button_group = SubResource("ButtonGroup_rcqid")
+text = "NM"
+
+[node name="NMPZ" type="Button" parent="Tabs/Stats/FilterModeAndDate/FiltersPanel/FiltersVBox/ModeSelector"]
+layout_mode = 2
+size_flags_horizontal = 3
+toggle_mode = true
+button_group = SubResource("ButtonGroup_rcqid")
+text = "NMPZ"
+
+[node name="Separator2" type="HSeparator" parent="Tabs/Stats/FilterModeAndDate/FiltersPanel/FiltersVBox"]
+layout_mode = 2
+
+[node name="Filter" type="Button" parent="Tabs/Stats/FilterModeAndDate/FiltersPanel/FiltersVBox"]
+custom_minimum_size = Vector2(0, 36)
+layout_mode = 2
+theme_override_styles/normal = SubResource("StyleBoxFlat_1ajci")
+text = "Filter"
+
 [connection signal="pressed" from="Connection API/AuthSlot/Connection/Popup_ncfa/Validate" to="Connection API/AuthSlot/Connection" method="_on_popup_validate"]
 [connection signal="confirmed" from="Connection API/AuthSlot/AnalyzeGames/ConfirmPopup" to="Connection API/AuthSlot/AnalyzeGames" method="_on_confirm_ok_pressed"]
+[connection signal="value_changed" from="Tabs/Stats/FilterModeAndDate/FiltersPanel/FiltersVBox/DateRange/DateStart/DateStartSlider" to="Tabs/Stats/Duels" method="_on_date_start_changed"]
+[connection signal="value_changed" from="Tabs/Stats/FilterModeAndDate/FiltersPanel/FiltersVBox/DateRange/DateEnd/DateEndSlider" to="Tabs/Stats/Duels" method="_on_date_end_changed"]
+[connection signal="pressed" from="Tabs/Stats/FilterModeAndDate/FiltersPanel/FiltersVBox/ModeSelector/Move" to="Tabs/Stats/Duels" method="_on_move_pressed"]
+[connection signal="pressed" from="Tabs/Stats/FilterModeAndDate/FiltersPanel/FiltersVBox/ModeSelector/NM" to="Tabs/Stats/Duels" method="_on_nm_pressed"]
+[connection signal="pressed" from="Tabs/Stats/FilterModeAndDate/FiltersPanel/FiltersVBox/ModeSelector/NMPZ" to="Tabs/Stats/Duels" method="_on_nmpz_pressed"]
+[connection signal="pressed" from="Tabs/Stats/FilterModeAndDate/FiltersPanel/FiltersVBox/Filter" to="Tabs/Stats/Duels" method="_on_filter_pressed"]
