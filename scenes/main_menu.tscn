@@ -1,7 +1,6 @@
 [gd_scene load_steps=25 format=3 uid="uid://b4o0d63bb7yhk"]
 
 [ext_resource type="Script" uid="uid://ladsbtunl21d" path="res://scripts/main_menu.gd" id="1_l6cm7"]
-[ext_resource type="Script" uid="uid://b7bn5taswdjfw" path="res://scripts/tabs.gd" id="2_rtw2f"]
 [ext_resource type="Script" uid="uid://dei17583qvuml" path="res://scripts/analyse_games.gd" id="5_jk1qb"]
 [ext_resource type="Script" uid="uid://i015iod328dl" path="res://scripts/import_games.gd" id="5_tbmy8"]
 [ext_resource type="Script" uid="uid://dbrf0pdrmrefs" path="res://scripts/popup_analyze.gd" id="6_jk1qb"]
@@ -11,6 +10,7 @@
 [ext_resource type="Script" uid="uid://3mhvw8uhvo6f" path="res://scripts/priority_panel.gd" id="8_1ajci"]
 [ext_resource type="Script" uid="uid://cwrvgafi0vwwx" path="res://scripts/countries_ressources.gd" id="8_rcqid"]
 [ext_resource type="Script" uid="uid://dp8q83sg7qjmw" path="res://scripts/duels.gd" id="8_tbmy8"]
+[ext_resource type="Script" uid="uid://c62vws1bdkpq1" path="res://scripts/training.gd" id="9_7b55j"]
 [ext_resource type="Script" uid="uid://bpss2m8qpqmwd" path="res://scripts/duels_elo.gd" id="9_jk1qb"]
 [ext_resource type="Script" uid="uid://cbnsxs8dl7l3y" path="res://scripts/solo.gd" id="10_5dd4i"]
 [ext_resource type="Script" uid="uid://c8b7s3peqx58t" path="res://scripts/duels_points.gd" id="10_lgwnu"]
@@ -272,7 +272,6 @@ offset_top = 90.0
 offset_right = 1400.0
 offset_bottom = 778.0
 current_tab = 1
-script = ExtResource("2_rtw2f")
 
 [node name="Dashboard" type="Control" parent="Tabs"]
 visible = false
@@ -312,6 +311,7 @@ size_flags_horizontal = 3
 
 [node name="Training" type="PanelContainer" parent="Tabs"]
 layout_mode = 2
+script = ExtResource("9_7b55j")
 metadata/_tab_index = 1
 
 [node name="RootVBox" type="VBoxContainer" parent="Tabs/Training"]
@@ -326,39 +326,79 @@ horizontal_alignment = 1
 [node name="HSeparator" type="HSeparator" parent="Tabs/Training/RootVBox"]
 layout_mode = 2
 
-[node name="TimeSelection" type="VBoxContainer" parent="Tabs/Training/RootVBox"]
+[node name="MarginContainerTime" type="MarginContainer" parent="Tabs/Training/RootVBox"]
+layout_mode = 2
+theme_override_constants/margin_left = 30
+theme_override_constants/margin_right = 30
+
+[node name="TimeSelection" type="VBoxContainer" parent="Tabs/Training/RootVBox/MarginContainerTime"]
 layout_mode = 2
 
-[node name="TimeTitle" type="Label" parent="Tabs/Training/RootVBox/TimeSelection"]
+[node name="TimeTitle" type="Label" parent="Tabs/Training/RootVBox/MarginContainerTime/TimeSelection"]
+layout_mode = 2
+text = "Selected time : "
+
+[node name="TimeSliderRow" type="HBoxContainer" parent="Tabs/Training/RootVBox/MarginContainerTime/TimeSelection"]
 layout_mode = 2
 
-[node name="TimeSliderRow" type="HBoxContainer" parent="Tabs/Training/RootVBox/TimeSelection"]
-layout_mode = 2
-
-[node name="TimeMinLabel" type="Label" parent="Tabs/Training/RootVBox/TimeSelection/TimeSliderRow"]
+[node name="TimeMinLabel" type="Label" parent="Tabs/Training/RootVBox/MarginContainerTime/TimeSelection/TimeSliderRow"]
 layout_mode = 2
 text = "0 min"
 
-[node name="TimeSlider" type="HSlider" parent="Tabs/Training/RootVBox/TimeSelection/TimeSliderRow"]
-custom_minimum_size = Vector2(600, 0)
+[node name="TimeSlider" type="HSlider" parent="Tabs/Training/RootVBox/MarginContainerTime/TimeSelection/TimeSliderRow"]
+custom_minimum_size = Vector2(1000, 0)
 layout_mode = 2
-max_value = 18.0
-tick_count = 19
+max_value = 240.0
+step = 10.0
+tick_count = 25
 ticks_on_borders = true
 
-[node name="TimeMaxLabel" type="Label" parent="Tabs/Training/RootVBox/TimeSelection/TimeSliderRow"]
+[node name="TimeMaxLabel" type="Label" parent="Tabs/Training/RootVBox/MarginContainerTime/TimeSelection/TimeSliderRow"]
 layout_mode = 2
-text = "180 min"
+text = "240 min"
 
-[node name="TimeValueLabel" type="Label" parent="Tabs/Training/RootVBox/TimeSelection"]
+[node name="HSeparator4" type="HSeparator" parent="Tabs/Training/RootVBox/MarginContainerTime/TimeSelection"]
 layout_mode = 2
-text = "Selected time: 60 minutes"
+
+[node name="Selector" type="HBoxContainer" parent="Tabs/Training/RootVBox/MarginContainerTime/TimeSelection"]
+layout_mode = 2
+
+[node name="ModeSelector" type="VBoxContainer" parent="Tabs/Training/RootVBox/MarginContainerTime/TimeSelection/Selector"]
+custom_minimum_size = Vector2(400, 0)
+layout_mode = 2
+
+[node name="Mode" type="Label" parent="Tabs/Training/RootVBox/MarginContainerTime/TimeSelection/Selector/ModeSelector"]
+layout_mode = 2
+text = "Mode (in development)"
+
+[node name="ModeOption" type="OptionButton" parent="Tabs/Training/RootVBox/MarginContainerTime/TimeSelection/Selector/ModeSelector"]
+layout_mode = 2
+
+[node name="VSeparator" type="VSeparator" parent="Tabs/Training/RootVBox/MarginContainerTime/TimeSelection/Selector"]
+custom_minimum_size = Vector2(200, 0)
+layout_mode = 2
+
+[node name="CountrySelector" type="VBoxContainer" parent="Tabs/Training/RootVBox/MarginContainerTime/TimeSelection/Selector"]
+layout_mode = 2
+
+[node name="CountryFocus" type="Label" parent="Tabs/Training/RootVBox/MarginContainerTime/TimeSelection/Selector/CountrySelector"]
+custom_minimum_size = Vector2(400, 0)
+layout_mode = 2
+text = "Country Focus"
+
+[node name="CountryOption" type="OptionButton" parent="Tabs/Training/RootVBox/MarginContainerTime/TimeSelection/Selector/CountrySelector"]
+layout_mode = 2
 
 [node name="HSeparator3" type="HSeparator" parent="Tabs/Training/RootVBox"]
-custom_minimum_size = Vector2(0, 70)
+custom_minimum_size = Vector2(0, 40)
 layout_mode = 2
 
-[node name="GenerateTrainingButton" type="Button" parent="Tabs/Training/RootVBox"]
+[node name="MarginContainerTrainingButton" type="MarginContainer" parent="Tabs/Training/RootVBox"]
+layout_mode = 2
+theme_override_constants/margin_left = 200
+theme_override_constants/margin_right = 200
+
+[node name="GenerateTrainingButton" type="Button" parent="Tabs/Training/RootVBox/MarginContainerTrainingButton"]
 custom_minimum_size = Vector2(0, 50)
 layout_mode = 2
 theme_override_styles/normal = SubResource("StyleBoxFlat_7b55j")
@@ -375,15 +415,27 @@ layout_mode = 2
 layout_mode = 2
 theme_override_styles/normal = SubResource("StyleBoxFlat_j7ex8")
 text = "This training is designed to work in tandem with a flashcard app such as Anki.
+The installation of the Learnable script is also mandatory to unleash full potential of the training module.
 "
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="TrainingOutput" type="ScrollContainer" parent="Tabs/Training/RootVBox"]
+[node name="TrainingOutput" type="VBoxContainer" parent="Tabs/Training/RootVBox"]
+custom_minimum_size = Vector2(0, 300)
 layout_mode = 2
 
-[node name="TrainingPlan" type="VBoxContainer" parent="Tabs/Training/RootVBox/TrainingOutput"]
+[node name="Margins" type="MarginContainer" parent="Tabs/Training/RootVBox/TrainingOutput"]
 layout_mode = 2
+theme_override_constants/margin_left = 100
+theme_override_constants/margin_top = 20
+
+[node name="ScrollContainer" type="ScrollContainer" parent="Tabs/Training/RootVBox/TrainingOutput/Margins"]
+custom_minimum_size = Vector2(0, 300)
+layout_mode = 2
+
+[node name="ModulesContainer" type="VBoxContainer" parent="Tabs/Training/RootVBox/TrainingOutput/Margins/ScrollContainer"]
+layout_mode = 2
+theme_override_constants/separation = 4
 
 [node name="Ressources" type="TabContainer" parent="Tabs"]
 visible = false
@@ -3635,6 +3687,7 @@ text = "Filter"
 
 [connection signal="pressed" from="Connection API/AuthSlot/Connection/Popup_ncfa/Validate" to="Connection API/AuthSlot/Connection" method="_on_popup_validate"]
 [connection signal="confirmed" from="Connection API/AuthSlot/AnalyzeGames/ConfirmPopup" to="Connection API/AuthSlot/AnalyzeGames" method="_on_confirm_ok_pressed"]
+[connection signal="pressed" from="Tabs/Training/RootVBox/MarginContainerTrainingButton/GenerateTrainingButton" to="Tabs/Training" method="_on_generate_training_pressed"]
 [connection signal="value_changed" from="Tabs/Stats/FilterModeAndDate/FiltersPanel/FiltersVBox/DateRange/DateStart/DateStartSlider" to="Tabs/Stats/Duels" method="_on_date_start_changed"]
 [connection signal="value_changed" from="Tabs/Stats/FilterModeAndDate/FiltersPanel/FiltersVBox/DateRange/DateEnd/DateEndSlider" to="Tabs/Stats/Duels" method="_on_date_end_changed"]
 [connection signal="pressed" from="Tabs/Stats/FilterModeAndDate/FiltersPanel/FiltersVBox/ModeSelector/Move" to="Tabs/Stats/Duels" method="_on_move_pressed"]
