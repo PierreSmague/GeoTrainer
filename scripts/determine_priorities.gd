@@ -66,9 +66,6 @@ func _compute_priorities(stats: Dictionary) -> Array:
 
 		if delta_precision < 0:
 			precision_priority -= 5.0 * freq * delta_precision * penalty_precision
-			
-		if c.avg_score_correct.player == 0:
-			precision_priority = 0
 
 		if precision_priority > 0:
 			priorities.append({
@@ -88,6 +85,9 @@ func _compute_priorities(stats: Dictionary) -> Array:
 
 		if delta_regionguess < 0:
 			regionguess_priority -= 5.0 * freq * delta_regionguess
+			
+		if c.avg_score_correct.player == 0:
+			regionguess_priority = 0
 
 		if regionguess_priority > 0:
 			priorities.append({
