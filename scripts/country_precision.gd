@@ -41,7 +41,7 @@ var country_names = {
 	"py": "Paraguay", "ve": "Venezuela", "sr": "Suriname", "gy": "Guyana", "gf": "French Guiana",
 	"gt": "Guatemala", "hn": "Honduras", "sv": "El Salvador", "ni": "Nicaragua", "cr": "Costa Rica",
 	"pa": "Panama", "cu": "Cuba", "do": "Dominican Republic", "jm": "Jamaica", "bs": "Bahamas",
-	"ls": "Laos", "lu": "Luxemburg", "SZ": "Eswatini", "CW": "Curaçao"
+	"ls": "Laos", "lu": "Luxemburg", "sz": "Eswatini", "cw": "Curaçao", "pr": "Puerto Rico"
 }
 
 func _ready():
