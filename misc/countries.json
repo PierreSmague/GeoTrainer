@@ -1,13 +1,4 @@
-extends PanelContainer
-
-const STATS_FILE := "user://stats_detailed.json"
-
-@onready var title_label: Label = $Priorities/Title
-@onready var priority_list: VBoxContainer = $Priorities/ScrollContainer/PriorityList
-@onready var priority_engine := DeterminePriorities.new()
-
-var priorities: Array = []
-var country_names = {
+{
 	"us": "United States", "ca": "Canada", "mx": "Mexico", "br": "Brazil", "ar": "Argentina",
 	"cl": "Chile", "pe": "Peru", "co": "Colombia", "ec": "Ecuador", "bo": "Bolivia",
 	"gb": "United Kingdom", "fr": "France", "de": "Germany", "es": "Spain", "it": "Italy",
@@ -35,53 +26,5 @@ var country_names = {
 	"py": "Paraguay", "ve": "Venezuela", "sr": "Suriname", "gy": "Guyana", "gf": "French Guiana",
 	"gt": "Guatemala", "hn": "Honduras", "sv": "El Salvador", "ni": "Nicaragua", "cr": "Costa Rica",
 	"pa": "Panama", "cu": "Cuba", "do": "Dominican Republic", "jm": "Jamaica", "bs": "Bahamas",
-	"sz": "Eswatini"
+	"ls": "Laos", "lu": "Luxemburg", "sz": "Eswatini", "cw": "Curaçao", "pr": "Puerto Rico"
 }
-
-func _ready():
-	_load_and_compute()
-
-func _refresh():
-	_load_and_compute()
-
-
-func _load_and_compute():
-	priorities = priority_engine.load_and_compute()
-	_display_priorities()
-	
-
-# ============================================================
-# UI DISPLAY (SCROLLABLE)
-# ============================================================
-func _display_priorities():
-	for child in priority_list.get_children():
-		child.queue_free()
-
-	var rank := 1
-
-	for p in priorities:
-		var row = HBoxContainer.new()
-		row.add_theme_constant_override("separation", 12)
-
-		var rank_label = Label.new()
-		rank_label.text = "%d." % rank
-		rank_label.custom_minimum_size.x = 30
-		row.add_child(rank_label)
-
-		var country_name :String= p.country.to_lower()
-		if country_names.has(country_name):
-			country_name = country_names[p.country.to_lower()]
-
-		var desc_label = Label.new()
-		desc_label.text = "%s – %s" % [p.type, country_name]
-		desc_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-		row.add_child(desc_label)
-
-		var score_label = Label.new()
-		score_label.text = str(p.score)
-		score_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
-		score_label.custom_minimum_size.x = 70
-		row.add_child(score_label)
-
-		priority_list.add_child(row)
-		rank += 1

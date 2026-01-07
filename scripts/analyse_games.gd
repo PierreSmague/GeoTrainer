@@ -369,9 +369,13 @@ func _show_completion_message():
 func _refresh_stats_display():
 	var root = get_tree().root
 	var stats_tab = _find_node_by_name(root, "Tabs")
+	var dashboard_tab = _find_node_by_name(root, "Dashboard")
 	if stats_tab:
 		_refresh_node_recursive(stats_tab)
 		print("Analyzer - Stats display refreshed")
+	if dashboard_tab:
+		_refresh_node_recursive(dashboard_tab)
+		print("Analyzer - Dashboard display refreshed")
 
 func _refresh_node_recursive(node: Node) -> void:
 	if node.has_method("_refresh"):
