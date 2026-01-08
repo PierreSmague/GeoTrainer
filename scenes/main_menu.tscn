@@ -1,4 +1,4 @@
-[gd_scene load_steps=25 format=3 uid="uid://b4o0d63bb7yhk"]
+[gd_scene load_steps=27 format=3 uid="uid://b4o0d63bb7yhk"]
 
 [ext_resource type="Script" uid="uid://ladsbtunl21d" path="res://scripts/main_menu.gd" id="1_l6cm7"]
 [ext_resource type="Script" uid="uid://dei17583qvuml" path="res://scripts/analyse_games.gd" id="5_jk1qb"]
@@ -8,6 +8,7 @@
 [ext_resource type="Script" uid="uid://746mj0q7o37i" path="res://scripts/connection.gd" id="6_rtw2f"]
 [ext_resource type="Script" uid="uid://d0un3lqmb02js" path="res://scripts/reset_id.gd" id="7_7b55j"]
 [ext_resource type="Script" uid="uid://3mhvw8uhvo6f" path="res://scripts/priority_panel.gd" id="8_1ajci"]
+[ext_resource type="Script" uid="uid://cyc2amhqq3psf" path="res://scripts/update_games.gd" id="8_5pajh"]
 [ext_resource type="Script" uid="uid://cwrvgafi0vwwx" path="res://scripts/countries_ressources.gd" id="8_rcqid"]
 [ext_resource type="Script" uid="uid://dp8q83sg7qjmw" path="res://scripts/duels.gd" id="8_tbmy8"]
 [ext_resource type="Script" uid="uid://c62vws1bdkpq1" path="res://scripts/training.gd" id="9_7b55j"]
@@ -27,6 +28,9 @@ bg_color = Color(0.17770422, 0.636676, 0.9153496, 1)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_5pajh"]
 bg_color = Color(0.25051188, 0.62735, 0.92127717, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_a8gd2"]
+bg_color = Color(0.26290727, 0.63623065, 0.87465066, 1)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_7b55j"]
 bg_color = Color(0.4679566, 0.57847375, 0.9329873, 1)
@@ -264,6 +268,17 @@ text = "Reset profile"
 script = ExtResource("7_7b55j")
 
 [node name="ConfirmationPopup" type="ConfirmationDialog" parent="Connection API/AuthSlot"]
+
+[node name="UpdateGames" type="Button" parent="Connection API/AuthSlot"]
+layout_mode = 0
+offset_left = -254.0
+offset_top = 5.0
+offset_right = -109.0
+offset_bottom = 83.0
+theme_override_styles/normal = SubResource("StyleBoxFlat_a8gd2")
+text = "Update with
+recent games"
+script = ExtResource("8_5pajh")
 
 [node name="Tabs" type="TabContainer" parent="."]
 layout_mode = 0
