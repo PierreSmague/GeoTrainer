@@ -325,32 +325,40 @@ func _update_progress():
 	progress_label.text = "Loading games: %d/%d (%d%%)" % [current_index, total_games, percentage]
 
 func _save_current_type():
-	if detailed_data.size() == 0:
+	if detailed_data.is_empty():
 		return
-	
-	print("========================================================")
-	var game_type = "duels" if is_analyzing_duels else "solo games"
-	print("Sauvegarde de %d %s..." % [detailed_data.size(), game_type])
-	
+
 	var output_file = duels_detailed if is_analyzing_duels else solo_detailed
+	var existing: Array = []
+
+	if is_analyzing_duels and FileAccess.file_exists(output_file):
+		var f = FileAccess.open(output_file, FileAccess.READ)
+		var parsed = JSON.parse_string(f.get_as_text())
+		f.close()
+		existing = parsed if parsed is Array else []
+
+	# Préfixe : nouveaux en premier
+	var final_data = detailed_data + existing
+
 	var file = FileAccess.open(output_file, FileAccess.WRITE)
 	if not file:
-		push_error("Impossible d'ouvrir le fichier %s pour écriture" % output_file)
+		push_error("Impossible d'ouvrir %s" % output_file)
 		return
-	
-	var json_string = JSON.stringify(detailed_data, "\t")
-	file.store_string(json_string)
+
+	file.store_string(JSON.stringify(final_data, "\t"))
 	file.close()
-	
+
+	# duels_filtered reste un snapshot
 	if is_analyzing_duels:
-		var file2 = FileAccess.open(duels_filtered, FileAccess.WRITE)
-		file2.store_string(json_string)
-		file2.close()
-	
-	
-	print("✓ Données sauvegardées dans: %s" % output_file)
-	print("✓ Nombre de %s sauvegardés: %d" % [game_type, detailed_data.size()])
-	print("========================================================")
+		var f2 = FileAccess.open(duels_filtered, FileAccess.WRITE)
+		f2.store_string(JSON.stringify(final_data, "\t"))
+		f2.close()
+
+	print("✓ %d %s ajoutés" % [
+		detailed_data.size(),
+		"duels" if is_analyzing_duels else "solos"
+	])
+
 
 func _show_completion_message():
 	progress_popup.hide()
