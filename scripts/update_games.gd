@@ -55,7 +55,7 @@ func _on_feed_response(result, code, headers, body):
 
 		for item in payload:
 			var p = item.get("payload", {})
-			if p.get("gameMode") != "Duels":
+			if p.get("gameMode") != "Duels" or not p.has("competitiveGameMode"):
 				continue
 			var id = p.get("gameId", "")
 			if id == "":
