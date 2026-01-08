@@ -10,6 +10,7 @@ const SOLO := "user://solo.json"
 @onready var btn_import := $AuthSlot/ImportGames
 @onready var btn_analyze := $AuthSlot/AnalyzeGames
 @onready var btn_reset := $AuthSlot/ResetID
+@onready var btn_update := $AuthSlot/UpdateGames
 @onready var nick_label = $AuthSlot/Profile_infos/Nick
 @onready var level_label = $AuthSlot/Profile_infos/Level
 
@@ -52,6 +53,13 @@ func _refresh_ui():
 	)
 	
 	btn_analyze.visible = (
+		has_ncfa
+		and has_profile
+		and has_duels
+		and has_solo
+	)
+	
+	btn_update.visible = (
 		has_ncfa
 		and has_profile
 		and has_duels

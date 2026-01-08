@@ -88,6 +88,8 @@ func _finalize_update():
 	# --- Trigger analysis ONLY for new duels
 	var analyzer = _find_node("AnalyzeGames")
 	analyzer._analyze_all_games(new_duel_ids.size(), 0)
+	
+	get_parent().get_parent()._refresh_ui()
 
 func _find_node(name: String) -> Node:
 	return _find_node_rec(get_tree().root, name)
