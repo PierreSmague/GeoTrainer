@@ -4,7 +4,7 @@ const duels_detailed := "user://duels_detailed.json"
 const profile := "user://profile.json"
 const duels_filtered := "user://duels_filtered.json"
 const MODE_MAP := {
-	"Move": "MoveDuels",
+	"Move": "StandardDuels",
 	"NM": "NoMoveDuels",
 	"NMPZ": "NMPZDuels"
 }
