@@ -15,7 +15,7 @@
 [ext_resource type="Script" uid="uid://bpss2m8qpqmwd" path="res://scripts/duels_elo.gd" id="9_jk1qb"]
 [ext_resource type="Script" uid="uid://cbnsxs8dl7l3y" path="res://scripts/solo.gd" id="10_5dd4i"]
 [ext_resource type="Script" uid="uid://c8b7s3peqx58t" path="res://scripts/duels_points.gd" id="10_lgwnu"]
-[ext_resource type="Script" uid="uid://badpqy7s7avw4" path="res://scripts/country_precision.gd" id="11_flqon"]
+[ext_resource type="Script" uid="uid://34bl0301i0j4" path="res://scripts/country_precision.gd" id="16_j7ex8"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_8ln24"]
 bg_color = Color(0.31311974, 0.61371267, 0.9381638, 1)
@@ -3577,18 +3577,8 @@ metadata/_tab_index = 1
 
 [node name="Country_Precision" type="Control" parent="Tabs/Stats/Duels"]
 layout_mode = 2
-script = ExtResource("11_flqon")
+script = ExtResource("16_j7ex8")
 metadata/_tab_index = 2
-
-[node name="ScrollContainer" type="ScrollContainer" parent="Tabs/Stats/Duels/Country_Precision"]
-layout_mode = 0
-offset_left = 61.0
-offset_top = 25.0
-offset_right = 1400.0
-offset_bottom = 591.0
-
-[node name="VBoxContainer" type="VBoxContainer" parent="Tabs/Stats/Duels/Country_Precision/ScrollContainer"]
-layout_mode = 2
 
 [node name="Solo" type="TabContainer" parent="Tabs/Stats"]
 visible = false
