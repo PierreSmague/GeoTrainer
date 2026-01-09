@@ -329,36 +329,27 @@ func _save_current_type():
 		return
 
 	var output_file = duels_detailed if is_analyzing_duels else solo_detailed
-	var existing: Array = []
 
-	if is_analyzing_duels and FileAccess.file_exists(output_file):
-		var f = FileAccess.open(output_file, FileAccess.READ)
-		var parsed = JSON.parse_string(f.get_as_text())
-		f.close()
-		existing = parsed if parsed is Array else []
-
-	# Préfixe : nouveaux en premier
-	var final_data = detailed_data + existing
-
+	# Écrire directement les données actuelles (remplace le fichier)
 	var file = FileAccess.open(output_file, FileAccess.WRITE)
 	if not file:
 		push_error("Impossible d'ouvrir %s" % output_file)
 		return
 
-	file.store_string(JSON.stringify(final_data, "\t"))
+	file.store_string(JSON.stringify(detailed_data, "\t"))
 	file.close()
 
-	# duels_filtered reste un snapshot
+	# duels_filtered reste un snapshot si on analyse des duels
 	if is_analyzing_duels:
 		var f2 = FileAccess.open(duels_filtered, FileAccess.WRITE)
-		f2.store_string(JSON.stringify(final_data, "\t"))
-		f2.close()
+		if f2:
+			f2.store_string(JSON.stringify(detailed_data, "\t"))
+			f2.close()
 
-	print("✓ %d %s ajoutés" % [
+	print("✓ %d %s sauvegardés" % [
 		detailed_data.size(),
 		"duels" if is_analyzing_duels else "solos"
 	])
-
 
 func _show_completion_message():
 	progress_popup.hide()
