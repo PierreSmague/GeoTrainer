@@ -4,18 +4,62 @@ const duels_detailed := "user://duels_filtered.json"
 const profile := "user://profile.json"
 
 var data: Array = []
+var dates: Array = []  # Store dates for each point
 var chart_title: String = "Duels - ELO Evolution"
 var line_color: Color = Color.CYAN
+var moving_avg_color: Color = Color(1.0, 0.5, 0.0)  # Orange
 var padding: int = 60
 var player_id: String = ""
+var moving_avg_period: int = 10
+var hovered_point_index: int = -1
+var points: PackedVector2Array = []
+
+# UI elements
+var period_slider: HSlider
+var period_label: Label
 
 func _ready():
+	_setup_ui()
 	_load_player_id()
 	_load_elo_data()
 
 func _refresh():
 	_load_player_id()
 	_load_elo_data()
+
+func _setup_ui():
+	# Create slider container
+	var slider_container = HBoxContainer.new()
+	slider_container.position = Vector2(10, 50)
+	slider_container.custom_minimum_size = Vector2(250, 30)
+	add_child(slider_container)
+	
+	# Create label
+	var label_text = Label.new()
+	label_text.text = "Moving Average Period:"
+	label_text.custom_minimum_size = Vector2(180, 0)
+	slider_container.add_child(label_text)
+	
+	# Create period label
+	period_label = Label.new()
+	period_label.text = str(moving_avg_period)
+	period_label.custom_minimum_size = Vector2(30, 0)
+	slider_container.add_child(period_label)
+	
+	# Create slider
+	period_slider = HSlider.new()
+	period_slider.min_value = 2
+	period_slider.max_value = 50
+	period_slider.step = 1
+	period_slider.value = moving_avg_period
+	period_slider.custom_minimum_size = Vector2(150, 0)
+	period_slider.value_changed.connect(_on_period_changed)
+	slider_container.add_child(period_slider)
+
+func _on_period_changed(value: float):
+	moving_avg_period = int(value)
+	period_label.text = str(moving_avg_period)
+	queue_redraw()
 
 func _load_player_id():
 	var file = FileAccess.open(profile, FileAccess.READ)
@@ -48,13 +92,16 @@ func _load_elo_data():
 		visible = false
 		return
 	
-	# Extract ELO ratings from duels (already in chronological order)
+	# Extract ELO ratings and dates from duels (already in chronological order)
 	var elo_data = []
+	var date_data = []
 	for duel in duels_data:
-		if duel.has("playerRatingAfter"):
+		if duel.has("playerRatingAfter") and duel.has("date"):
 			elo_data.append(duel["playerRatingAfter"])
-			
+			date_data.append(duel["date"])
+	
 	elo_data.reverse()
+	date_data.reverse()
 	
 	if elo_data.size() == 0:
 		print("No ELO found in duels")
@@ -63,10 +110,58 @@ func _load_elo_data():
 	
 	# Set data and trigger redraw
 	data = elo_data
+	dates = date_data
 	visible = true
 	queue_redraw()
 	
 	print("ELO data loaded: %d points" % elo_data.size())
+
+func _input(event):
+	if event is InputEventMouseMotion:
+		# Convert global mouse position to local control coordinates
+		var local_pos = get_global_mouse_position() - global_position
+		_check_hover(local_pos)
+
+func _check_hover(mouse_pos: Vector2):
+	var old_hovered = hovered_point_index
+	hovered_point_index = -1
+	
+	# Check if mouse is within the control bounds
+	if not Rect2(Vector2.ZERO, size).has_point(mouse_pos):
+		if old_hovered != hovered_point_index:
+			queue_redraw()
+		return
+	
+	# Check if mouse is near any point
+	for i in range(points.size()):
+		var distance = mouse_pos.distance_to(points[i])
+		if distance < 10:  # 10 pixel radius for hover detection
+			hovered_point_index = i
+			break
+	
+	# Redraw if hover state changed
+	if old_hovered != hovered_point_index:
+		queue_redraw()
+
+func _calculate_moving_average() -> Array:
+	if data.size() < moving_avg_period:
+		return []
+	
+	var moving_avg = []
+	for i in range(data.size()):
+		if i < moving_avg_period - 1:
+			moving_avg.append(null)  # Not enough data yet
+		else:
+			var sum = 0.0
+			for j in range(moving_avg_period):
+				sum += data[i - j]
+			moving_avg.append(sum / moving_avg_period)
+	
+	return moving_avg
+
+func format_unix_to_date(timestamp: int) -> String:
+	var dt = Time.get_datetime_dict_from_unix_time(timestamp)
+	return "%04d-%02d-%02d" % [dt.year, dt.month, dt.day]
 
 func _draw():
 	if data.size() == 0:
@@ -126,26 +221,78 @@ func _draw():
 		var label_pos = Vector2(10, y + 5)
 		draw_string(ThemeDB.fallback_font, label_pos, str(int(value)), HORIZONTAL_ALIGNMENT_LEFT, -1, 14, Color.WHITE)
 	
-	# Draw points and lines
-	var points = PackedVector2Array()
+	# Calculate points positions
+	points.clear()
 	for i in range(data.size()):
 		var x = padding + (float(i) / (data.size() - 1 if data.size() > 1 else 1)) * drawable_width
 		var normalized = (data[i] - min_val) / range_val
 		var y = origin.y - normalized * drawable_height
 		points.append(Vector2(x, y))
 		
-		# Draw point
-		draw_circle(Vector2(x, y), 5, line_color)
-		
-		# Draw label every N points to avoid overlap
+		# Draw X axis labels (game numbers)
 		if data.size() <= 20 or i % max(1, int(data.size() / 10)) == 0 or i == data.size() - 1:
 			var label = "G" + str(i + 1)  # G for Game
 			var label_pos = Vector2(x, origin.y + 20)
 			draw_string(ThemeDB.fallback_font, label_pos, label, HORIZONTAL_ALIGNMENT_CENTER, -1, 12, Color.LIGHT_GRAY)
 	
-	# Draw lines between points
+	# Draw main ELO line (no points)
 	for i in range(points.size() - 1):
 		draw_line(points[i], points[i + 1], line_color, 3)
+	
+	# Draw moving average line
+	var moving_avg = _calculate_moving_average()
+	if moving_avg.size() > 0:
+		var ma_points = PackedVector2Array()
+		for i in range(moving_avg.size()):
+			if moving_avg[i] != null:
+				var x = padding + (float(i) / (data.size() - 1 if data.size() > 1 else 1)) * drawable_width
+				var normalized = (moving_avg[i] - min_val) / range_val
+				var y = origin.y - normalized * drawable_height
+				ma_points.append(Vector2(x, y))
+		
+		# Draw moving average line
+		for i in range(ma_points.size() - 1):
+			draw_line(ma_points[i], ma_points[i + 1], moving_avg_color, 2)
+	
+	# Draw hover tooltip
+	if hovered_point_index >= 0 and hovered_point_index < points.size():
+		var point = points[hovered_point_index]
+		var elo_value = int(data[hovered_point_index])
+		var date_str = format_unix_to_date(dates[hovered_point_index])
+		
+		# Tooltip text
+		var tooltip_text = date_str + "\nELO: " + str(elo_value)
+		
+		# Calculate tooltip size
+		var font = ThemeDB.fallback_font
+		var font_size = 14
+		var line_height = 20
+		var tooltip_width = 120
+		var tooltip_height = 50
+		
+		# Position tooltip (offset from point)
+		var tooltip_pos = point + Vector2(15, -25)
+		
+		# Keep tooltip within bounds
+		if tooltip_pos.x + tooltip_width > chart_size.x:
+			tooltip_pos.x = point.x - tooltip_width - 15
+		if tooltip_pos.y < 0:
+			tooltip_pos.y = point.y + 25
+		
+		# Draw tooltip background
+		var tooltip_rect = Rect2(tooltip_pos, Vector2(tooltip_width, tooltip_height))
+		draw_rect(tooltip_rect, Color(0.2, 0.2, 0.2, 0.95))
+		draw_rect(tooltip_rect, Color.WHITE, false, 2)  # Border
+		
+		# Draw tooltip text
+		var text_pos = tooltip_pos + Vector2(10, 18)
+		draw_string(font, text_pos, date_str, HORIZONTAL_ALIGNMENT_LEFT, -1, font_size, Color.WHITE)
+		text_pos.y += line_height
+		draw_string(font, text_pos, "ELO: " + str(elo_value), HORIZONTAL_ALIGNMENT_LEFT, -1, font_size, Color.CYAN)
+		
+		# Highlight hovered point
+		draw_circle(point, 6, Color.WHITE)
+		draw_circle(point, 4, line_color)
 	
 	# Display statistics
 	if data.size() > 1:

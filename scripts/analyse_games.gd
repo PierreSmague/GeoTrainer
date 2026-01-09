@@ -181,7 +181,7 @@ func _optimize_duel_data(duel: Dictionary) -> Dictionary:
 	# Extract only essential information
 	var optimized = {
 		"gameId": duel["gameId"],
-		"mapName": duel["options"]["map"]["name"] if duel.has("options") and duel["options"].has("map") else "Unknown",
+		"mapName": duel["options"]["map"]["name"] if duel.has("options") and duel["options"].has("map") and duel["options"]["map"] != null else "Unknown",
 		"isRated": duel["options"]["isRated"] if duel.has("options") else false,
 		"rounds": [],
 		"mode": duel["options"]["competitiveGameMode"],
