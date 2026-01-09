@@ -4,60 +4,144 @@ const duels_detailed := "user://duels_filtered.json"
 const profile := "user://profile.json"
 const countries_polygons := "res://misc/countries_polygon.json"
 const stats_detailed := "user://stats_detailed.json"
+const countries_names_path := "res://misc/countries.json"
 
-@onready var stats_container = $ScrollContainer/VBoxContainer
-@onready var grid_container = GridContainer.new()
+# UI References
+@onready var map_container = $MapContainer
+@onready var metric_selector = $MetricSelector
 
+# Data
 var player_id: String = ""
 var country_geometries: Dictionary = {}
-var exported_stats: Dictionary = {}
+var country_stats: Dictionary = {}
+var current_metric: String = "global_relative_score"
+var hovered_country: String = ""
+var global_min_score := 0.0
+var global_max_score := 0.0
+var country_names: Dictionary = {}
 
-# Alpha-2 to country name mapping
-var country_names = {
-	"us": "United States", "ca": "Canada", "mx": "Mexico", "br": "Brazil", "ar": "Argentina",
-	"cl": "Chile", "pe": "Peru", "co": "Colombia", "ec": "Ecuador", "bo": "Bolivia",
-	"gb": "United Kingdom", "fr": "France", "de": "Germany", "es": "Spain", "it": "Italy",
-	"nl": "Netherlands", "be": "Belgium", "ch": "Switzerland", "at": "Austria", "pl": "Poland",
-	"cz": "Czech Republic", "se": "Sweden", "no": "Norway", "fi": "Finland", "dk": "Denmark",
-	"ru": "Russia", "ua": "Ukraine", "ro": "Romania", "gr": "Greece", "pt": "Portugal",
-	"au": "Australia", "nz": "New Zealand", "jp": "Japan", "cn": "China", "kr": "South Korea",
-	"th": "Thailand", "vn": "Vietnam", "my": "Malaysia", "sg": "Singapore", "id": "Indonesia",
-	"ph": "Philippines", "in": "India", "bd": "Bangladesh", "pk": "Pakistan", "lk": "Sri Lanka",
-	"za": "South Africa", "ke": "Kenya", "ma": "Morocco", "eg": "Egypt", "tn": "Tunisia",
-	"tr": "Turkey", "il": "Israel", "jo": "Jordan", "ae": "UAE", "sa": "Saudi Arabia",
-	"is": "Iceland", "ie": "Ireland", "rs": "Serbia", "hr": "Croatia", "si": "Slovenia",
-	"sk": "Slovakia", "hu": "Hungary", "bg": "Bulgaria", "ee": "Estonia", "lv": "Latvia",
-	"lt": "Lithuania", "by": "Belarus", "md": "Moldova", "al": "Albania", "mk": "North Macedonia",
-	"ba": "Bosnia and Herzegovina", "me": "Montenegro", "xk": "Kosovo", "cy": "Cyprus",
-	"mt": "Malta", "tw": "Taiwan", "hk": "Hong Kong", "mo": "Macau", "mn": "Mongolia",
-	"kz": "Kazakhstan", "uz": "Uzbekistan", "kg": "Kyrgyzstan", "tj": "Tajikistan",
-	"tm": "Turkmenistan", "af": "Afghanistan", "ir": "Iran", "iq": "Iraq", "sy": "Syria",
-	"lb": "Lebanon", "ye": "Yemen", "om": "Oman", "kw": "Kuwait", "bh": "Bahrain", "qa": "Qatar",
-	"np": "Nepal", "bt": "Bhutan", "mm": "Myanmar", "la": "Laos", "kh": "Cambodia", "bn": "Brunei",
-	"tl": "Timor-Leste", "pg": "Papua New Guinea", "sn": "Senegal", "gh": "Ghana", "ng": "Nigeria",
-	"ug": "Uganda", "tz": "Tanzania", "rw": "Rwanda", "et": "Ethiopia", "so": "Somalia",
-	"dj": "Djibouti", "mw": "Malawi", "zm": "Zambia", "zw": "Zimbabwe", "bw": "Botswana",
-	"na": "Namibia", "ao": "Angola", "mz": "Mozambique", "mg": "Madagascar", "uy": "Uruguay",
-	"py": "Paraguay", "ve": "Venezuela", "sr": "Suriname", "gy": "Guyana", "gf": "French Guiana",
-	"gt": "Guatemala", "hn": "Honduras", "sv": "El Salvador", "ni": "Nicaragua", "cr": "Costa Rica",
-	"pa": "Panama", "cu": "Cuba", "do": "Dominican Republic", "jm": "Jamaica", "bs": "Bahamas",
-	"ls": "Laos", "lu": "Luxemburg", "sz": "Eswatini", "cw": "Curaçao", "pr": "Puerto Rico"
-}
+
+# Map rendering
+var map_offset: Vector2 = Vector2.ZERO
+var map_scale: float = 1.0
+var min_lon: float = -180.0
+var max_lon: float = 180.0
+var min_lat: float = -90.0
+var max_lat: float = 90.0
+
+# Colors
+var color_bad = Color(0.8, 0.2, 0.2)      # Red
+var color_neutral = Color(0.6, 0.6, 0.6)  # Gray
+var color_good = Color(0.2, 0.8, 0.2)     # Green
+
 
 func _ready():
+	_setup_ui()
+	_load_country_names()
 	_load_country_geometries()
 	_load_player_id()
 	_load_country_stats()
 
 func _refresh():
+	_setup_ui()
+	_load_country_names()
 	_load_country_geometries()
 	_load_player_id()
 	_load_country_stats()
 
+func _setup_ui():
+	# Create metric selector panel
+	var selector_panel = PanelContainer.new()
+	selector_panel.anchor_left = 0.0
+	selector_panel.anchor_right = 0.0
+	selector_panel.anchor_top = 1.0
+	selector_panel.anchor_bottom = 1.0
+	selector_panel.position = Vector2(20, -300)
+	selector_panel.custom_minimum_size = Vector2(200, 140)
+
+
+	
+	var stylebox = StyleBoxFlat.new()
+	stylebox.bg_color = Color(0.1, 0.1, 0.15, 0.95)
+	stylebox.corner_radius_top_left = 8
+	stylebox.corner_radius_top_right = 8
+	stylebox.corner_radius_bottom_left = 8
+	stylebox.corner_radius_bottom_right = 8
+	selector_panel.add_theme_stylebox_override("panel", stylebox)
+	
+	var vbox = VBoxContainer.new()
+	vbox.add_theme_constant_override("separation", 10)
+	selector_panel.add_child(vbox)
+	
+	var title = Label.new()
+	title.text = "Select Metric"
+	title.add_theme_font_size_override("font_size", 14)
+	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	vbox.add_child(title)
+	
+	var sep = HSeparator.new()
+	vbox.add_child(sep)
+	
+	# Metric buttons
+	_create_metric_button(vbox, "precision", "Your Precision Score")
+	_create_metric_button(vbox, "relative_precision", "Precision vs Opponent")
+	_create_metric_button(vbox, "regionguess", "Regionguess Performance")
+	_create_metric_button(vbox, "global_absolute_score", "Total Score Difference")
+	_create_metric_button(vbox, "global_relative_score", "Score Diff per Round")
+	
+	add_child(selector_panel)
+
+func _load_country_names():
+	var file = FileAccess.open(countries_names_path, FileAccess.READ)
+	if not file:
+		push_error("Cannot open countries.json")
+		return
+
+	country_names = JSON.parse_string(file.get_as_text())
+	file.close()
+
+
+func _create_metric_button(parent: VBoxContainer, metric_id: String, label_text: String):
+	var btn = Button.new()
+	btn.text = label_text
+	btn.custom_minimum_size = Vector2(0, 24)
+	btn.add_theme_font_size_override("font_size", 12)
+	
+	# Style du bouton actif
+	btn.modulate = Color(1,1,1,0.5)  # semi-transparent par défaut
+	btn.pressed.connect(_on_metric_changed.bind(metric_id))
+	parent.add_child(btn)
+	
+	# Stocker le bouton pour mettre à jour son style plus tard
+	if not has_meta("metric_buttons"):
+		set_meta("metric_buttons", [])
+	get_meta("metric_buttons").append({"id": metric_id, "btn": btn})
+
+	# Mettre à jour l'état visuel
+	_update_metric_buttons()
+
+func _update_metric_buttons():
+	var buttons = get_meta("metric_buttons")
+	if buttons == null:
+		return
+	for entry in buttons:
+		var btn = entry["btn"]
+		if entry["id"] == current_metric:
+			btn.modulate = Color(1,1,1,0.9)  # fond plus clair pour actif
+		else:
+			btn.modulate = Color(1,1,1,0.5)  # fond par défaut
+
+
+func _on_metric_changed(metric_id: String):
+	current_metric = metric_id
+	_update_metric_buttons()
+	queue_redraw()
+	print("Metric changed to: ", metric_id)
+
 func _load_country_geometries():
 	var file = FileAccess.open(countries_polygons, FileAccess.READ)
 	if not file:
-		push_error("Cannot open countries.polygon.json")
+		push_error("Cannot open countries_polygon.json")
 		return
 	
 	country_geometries = JSON.parse_string(file.get_as_text())
@@ -71,21 +155,17 @@ func _load_player_id():
 		file.close()
 		if profile_data and profile_data["user"].has("id"):
 			player_id = profile_data["user"]["id"]
-	print("Player ID loaded")
 
 func _load_country_stats():
-	exported_stats.clear()
+	country_stats.clear()
 	
 	if not FileAccess.file_exists(duels_detailed):
 		print("duels_detailed.json file not found")
-		_display_no_data()
 		return
-		
 
 	var file = FileAccess.open(duels_detailed, FileAccess.READ)
 	if not file:
 		push_error("Cannot open duels_detailed.json")
-		_display_no_data()
 		return
 
 	var duels_data = JSON.parse_string(file.get_as_text())
@@ -93,7 +173,6 @@ func _load_country_stats():
 
 	if not duels_data or duels_data.size() == 0:
 		print("No duels found")
-		_display_no_data()
 		return
 
 	# Analyze all duels
@@ -103,14 +182,25 @@ func _load_country_stats():
 	for duel in duels_data:
 		_analyze_duel(duel, player_stats, opponent_stats)
 
-	# Display results
-	_display_country_stats(player_stats, opponent_stats)
+	# Process stats for each country
+	for country in player_stats.keys():
+		_process_country_stats(country, player_stats, opponent_stats)
+		
+	global_min_score = INF
+	global_max_score = -INF
+
+	for c in country_stats.values():
+		global_min_score = min(global_min_score, c["global_absolute_score"])
+		global_max_score = max(global_max_score, c["global_absolute_score"])
+
+
+	queue_redraw()
+	print("Country stats loaded for %d countries" % country_stats.size())
 
 func _analyze_duel(duel, player_stats: Dictionary, opponent_stats: Dictionary):
 	if not duel.has("rounds"):
 		return
 
-	# Process each round with optimized structure
 	for round in duel["rounds"]:
 		var correct_country = round["actualCountry"]
 		
@@ -146,86 +236,7 @@ func _update_stats(stats: Dictionary, correct_country: String, guessed_country: 
 		stats[correct_country]["correct_distance"] += distance
 		stats[correct_country]["correct_score"] += score
 
-func _display_country_stats(player_stats: Dictionary, opponent_stats: Dictionary):
-	# Clear existing children
-	for child in stats_container.get_children():
-		child.queue_free()
-	
-	# Title
-	var title_container = CenterContainer.new()
-	var title = Label.new()
-	title.text = "Country Performance Analysis"
-	title.add_theme_font_size_override("font_size", 22)
-	title_container.add_child(title)
-	stats_container.add_child(title_container)
-	
-	var separator = HSeparator.new()
-	stats_container.add_child(separator)
-	
-	# Create NEW GridContainer each time (don't reuse the member variable)
-	var grid = GridContainer.new()
-	grid.columns = 2
-	grid.add_theme_constant_override("h_separation", 25)
-	grid.add_theme_constant_override("v_separation", 25)
-	stats_container.add_child(grid)
-	
-	# Update the member variable reference
-	grid_container = grid
-	
-	# Collect all countries and sort by rounds played
-	var country_list = []
-	for country in player_stats.keys():
-		var count = player_stats[country]["total"]
-		country_list.append({"code": country, "count": count})
-	
-	country_list.sort_custom(func(a, b): return a["count"] > b["count"])
-	
-	# Display each country
-	for item in country_list:
-		var country = item["code"]
-		_create_country_box(country, player_stats, opponent_stats)
-
-	_save_stats_to_file()
-	
-	print("Saved detailed stats to stats_detailed.json")
-
-func _create_country_box(country: String, player_stats: Dictionary, opponent_stats: Dictionary):
-	var country_box = PanelContainer.new()
-	country_box.custom_minimum_size = Vector2(650, 280)
-
-	var stylebox = StyleBoxFlat.new()
-	stylebox.bg_color = Color(0.15, 0.25, 0.4, 0.3)  # Bleu transparent
-	stylebox.corner_radius_top_left = 12
-	stylebox.corner_radius_top_right = 12
-	stylebox.corner_radius_bottom_left = 12
-	stylebox.corner_radius_bottom_right = 12
-	stylebox.content_margin_left = 15
-	stylebox.content_margin_right = 15
-	stylebox.content_margin_top = 15
-	stylebox.content_margin_bottom = 15
-	country_box.add_theme_stylebox_override("panel", stylebox)
-
-	var box_vbox = VBoxContainer.new()
-	box_vbox.add_theme_constant_override("separation", 10)
-	country_box.add_child(box_vbox)
-
-	# Header
-	var header_hbox = HBoxContainer.new()
-	var country_name = country_names[country.to_lower()] if country_names.has(country.to_lower()) else country
-	var name_label = Label.new()
-	name_label.text = country_name
-	name_label.add_theme_font_size_override("font_size", 24)
-	name_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	header_hbox.add_child(name_label)
-
-	var rounds_label = Label.new()
-	rounds_label.text = "%d rounds" % player_stats[country]["total"]
-	rounds_label.add_theme_color_override("font_color", Color.LIGHT_GRAY)
-	rounds_label.add_theme_font_size_override("font_size", 16)
-	header_hbox.add_child(rounds_label)
-	box_vbox.add_child(header_hbox)
-
-	# Calculate stats
+func _process_country_stats(country: String, player_stats: Dictionary, opponent_stats: Dictionary):
 	var player_correct = player_stats[country]["correct"]
 	var player_total = player_stats[country]["total"]
 	var player_accuracy = (float(player_correct) / player_total) * 100.0 if player_total > 0 else 0.0
@@ -234,185 +245,303 @@ func _create_country_box(country: String, player_stats: Dictionary, opponent_sta
 	var opp_total = opponent_stats[country]["total"] if opponent_stats.has(country) else 0
 	var opp_accuracy = (float(opp_correct) / opp_total) * 100.0 if opp_total > 0 else 0.0
 	
-	# Average distance when correct (in km)
-	var player_avg_dist_km = 0.0
-	var player_avg_score_correct = 0.0
-	var player_avg_score_incorrect = 0.0
-	if player_correct > 0:
-		player_avg_dist_km = (player_stats[country]["correct_distance"] / player_correct) / 1000.0
-		player_avg_score_correct = player_stats[country]["correct_score"] / player_correct
-	if player_total - player_correct > 0:
-		player_avg_score_incorrect = (player_stats[country]["total_score"] - player_stats[country]["correct_score"]) / (player_total - player_correct)
-	else:
-		player_avg_score_incorrect = player_avg_score_correct
-	
-	var opp_avg_dist_km = 0.0
-	var opp_avg_score_correct = 0.0
-	var opp_avg_score_incorrect = 0.0
-	if opponent_stats.has(country) and opp_correct > 0:
-		opp_avg_dist_km = (opponent_stats[country]["correct_distance"] / opp_correct) / 1000.0
-		opp_avg_score_correct = opponent_stats[country]["correct_score"] / opp_correct
-	if opp_total - opp_correct > 0:
-		opp_avg_score_incorrect = (opponent_stats[country]["total_score"] - opponent_stats[country]["correct_score"]) / (opp_total - opp_correct)
-	else:
-		opp_avg_score_incorrect = opp_avg_score_correct
-	
-	# Score stats
+	# Average scores
 	var player_avg_score = float(player_stats[country]["total_score"]) / player_total if player_total > 0 else 0.0
 	var opp_avg_score = float(opponent_stats[country]["total_score"]) / opp_total if opp_total > 0 and opponent_stats.has(country) else 0.0
+	
+	# Regionguess performance (when country found)
+	var player_avg_score_correct = 0.0
+	var opp_avg_score_correct = 0.0
+	if player_correct > 0:
+		player_avg_score_correct = float(player_stats[country]["correct_score"]) / player_correct
+	if opp_correct > 0 and opponent_stats.has(country):
+		opp_avg_score_correct = float(opponent_stats[country]["correct_score"]) / opp_correct
+	
+	var mean_score_correct = (player_avg_score_correct + opp_avg_score_correct) / 2.0 if (player_correct + opp_correct) > 0 else 1.0
+	var regionguess_performance = (player_avg_score_correct - opp_avg_score_correct) / mean_score_correct if mean_score_correct > 0 else 0.0
+	var regionguess_diff = 0.0
+	if player_correct > 0 and opp_correct > 0:
+		regionguess_diff = player_avg_score_correct - opp_avg_score_correct
+	
+	# Score deltas
 	var score_delta = player_avg_score - opp_avg_score
 	var total_score_diff = score_delta * player_total
-
-	# Accuracy section
-	var acc_section = Label.new()
-	acc_section.text = "Country Identification Accuracy"
-	acc_section.add_theme_font_size_override("font_size", 15)
-	acc_section.add_theme_color_override("font_color", Color.LIGHT_GRAY)
-	box_vbox.add_child(acc_section)
-
-	_add_stat_bar(box_vbox, "You:", player_accuracy, Color.CYAN, "%.1f%% (%d/%d)" % [player_accuracy, player_correct, player_total])
-	_add_stat_bar(box_vbox, "Opponent:", opp_accuracy, Color.ORANGE_RED, "%.1f%% (%d/%d)" % [opp_accuracy, opp_correct, opp_total])
-
-	# Average distance section
-	var dist_section = Label.new()
-	dist_section.text = "Average Distance and scores (when country found)"
-	dist_section.add_theme_font_size_override("font_size", 15)
-	dist_section.add_theme_color_override("font_color", Color.LIGHT_GRAY)
-	box_vbox.add_child(dist_section)
-
-	var dist_hbox = HBoxContainer.new()
-	dist_hbox.add_theme_constant_override("separation", 30)
 	
-	var player_dist_label = Label.new()
-	player_dist_label.text = "You: %.1f km" % player_avg_dist_km
-	player_dist_label.add_theme_color_override("font_color", Color.CYAN)
-	player_dist_label.add_theme_font_size_override("font_size", 14)
-	dist_hbox.add_child(player_dist_label)
-	
-	var opp_dist_label = Label.new()
-	opp_dist_label.text = "Opponent: %.1f km" % opp_avg_dist_km
-	opp_dist_label.add_theme_color_override("font_color", Color.ORANGE_RED)
-	opp_dist_label.add_theme_font_size_override("font_size", 14)
-	dist_hbox.add_child(opp_dist_label)
-	
-	box_vbox.add_child(dist_hbox)
-
-	# Score difference section
-	var score_section = Label.new()
-	score_section.text = "Score Performance"
-	score_section.add_theme_font_size_override("font_size", 15)
-	score_section.add_theme_color_override("font_color", Color.LIGHT_GRAY)
-	box_vbox.add_child(score_section)
-
-	var score_avg_hbox = HBoxContainer.new()
-	score_avg_hbox.add_theme_constant_override("separation", 30)
-	
-	var player_score_label = Label.new()
-	player_score_label.text = "You: %.1f points" % player_avg_score
-	player_score_label.add_theme_color_override("font_color", Color.CYAN)
-	player_score_label.add_theme_font_size_override("font_size", 14)
-	score_avg_hbox.add_child(player_score_label)
-	
-	box_vbox.add_child(score_avg_hbox)
-	
-	var opp_score_label = Label.new()
-	opp_score_label.text = "Opponent: %.1f points" % opp_avg_score
-	opp_score_label.add_theme_color_override("font_color", Color.ORANGE_RED)
-	opp_score_label.add_theme_font_size_override("font_size", 14)
-	score_avg_hbox.add_child(opp_score_label)
-	
-	var score_hbox = HBoxContainer.new()
-	score_hbox.add_theme_constant_override("separation", 30)
-	
-	var delta_label = Label.new()
-	delta_label.text = "Avg delta: %+.0f pts/round" % score_delta
-	delta_label.add_theme_font_size_override("font_size", 14)
-	delta_label.add_theme_color_override("font_color", Color.GREEN if score_delta >= 0 else Color.RED)
-	score_hbox.add_child(delta_label)
-	
-	var total_label = Label.new()
-	total_label.text = "Total difference: %+.0f pts" % total_score_diff
-	total_label.add_theme_font_size_override("font_size", 14)
-	total_label.add_theme_color_override("font_color", Color.GREEN if total_score_diff >= 0 else Color.RED)
-	score_hbox.add_child(total_label)
-	
-	box_vbox.add_child(score_hbox)
-
-# --- EXPORT STATS ---
-	var country_code := country
-
-	exported_stats[country_code] = {
-		"precision": {
-			"player": player_accuracy,
-			"opponent": opp_accuracy
-		},
-		"avg_region_km": {
-			"player": player_avg_dist_km,
-			"opponent": opp_avg_dist_km
-		},
-		"avg_score": {
-			"player": player_avg_score,
-			"opponent": opp_avg_score
-		},
-		"avg_score_correct": {
-			"player": player_avg_score_correct,
-			"opponent": opp_avg_score_correct
-		},
-		"avg_score_incorrect": {
-			"player": player_avg_score_incorrect,
-			"opponent": opp_avg_score_incorrect
-		},
-		"score_delta": {
-			"avg": score_delta,
-			"total": total_score_diff
-		}
+	country_stats[country] = {
+		"precision": player_accuracy,
+		"relative_precision": player_accuracy - opp_accuracy,
+		"regionguess_perf": regionguess_performance * 100.0,  # As percentage
+		"regionguess": regionguess_diff,
+		"global_absolute_score": total_score_diff,
+		"global_relative_score": score_delta,
+		"player_accuracy": player_accuracy,
+		"opponent_accuracy": opp_accuracy,
+		"player_avg_score": player_avg_score,
+		"opponent_avg_score": opp_avg_score,
+		"player_avg_score_correct": player_avg_score_correct,
+		"opponent_avg_score_correct": opp_avg_score_correct,
+		"total_rounds": player_total
 	}
 
-	grid_container.add_child(country_box)
+func _input(event):
+	if event is InputEventMouseMotion:
+		var local_pos = get_global_mouse_position() - global_position
+		_check_country_hover(local_pos)
 
-func _add_stat_bar(parent: VBoxContainer, label_text: String, value: float, bar_color: Color, score_text: String):
-	var hbox = HBoxContainer.new()
-	hbox.add_theme_constant_override("separation", 10)
+func _check_country_hover(mouse_pos: Vector2):
+	var old_hovered = hovered_country
+	hovered_country = ""
 	
-	var label = Label.new()
-	label.text = label_text
-	label.custom_minimum_size = Vector2(90, 0)
-	label.add_theme_color_override("font_color", bar_color)
-	hbox.add_child(label)
+	# Check each country polygon
+	for country_code in country_geometries.keys():
+		if not country_stats.has(country_code):
+			continue
+			
+		var geometry = country_geometries[country_code]
+		if _point_in_country(mouse_pos, geometry):
+			hovered_country = country_code
+			break
 	
-	var bar = ProgressBar.new()
-	bar.min_value = 0
-	bar.max_value = 100
-	bar.value = value
-	bar.show_percentage = false
-	bar.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	bar.custom_minimum_size = Vector2(300, 20)
-	bar.self_modulate = bar_color
-	hbox.add_child(bar)
-	
-	var score_label = Label.new()
-	score_label.text = score_text
-	score_label.custom_minimum_size = Vector2(130, 0)
-	score_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
-	hbox.add_child(score_label)
-	
-	parent.add_child(hbox)
+	if old_hovered != hovered_country:
+		queue_redraw()
 
-func _display_no_data():
-	for child in stats_container.get_children():
-		child.queue_free()
-
-	var label = Label.new()
-	label.text = "No data available.\nLoad duels from the Games tab."
-	label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	label.add_theme_font_size_override("font_size", 16)
-	stats_container.add_child(label)
+func _point_in_country(point: Vector2, geometry) -> bool:
+	return _point_in_geometry_recursive(point, geometry)
 	
-func _save_stats_to_file():
-	var file = FileAccess.open(stats_detailed, FileAccess.WRITE)
-	if not file:
-		push_error("Cannot write stats_detailed.json")
+func _point_in_geometry_recursive(point: Vector2, data) -> bool:
+	if data is Array and data.size() > 0:
+		# Cas final : liste de coordonnées [lon, lat]
+		if data[0] is Array and data[0].size() == 2 and typeof(data[0][0]) == TYPE_FLOAT:
+			return _point_in_polygon(point, data)
+		# Sinon : continuer à descendre (MultiPolygon, trous, etc.)
+		for sub in data:
+			if _point_in_geometry_recursive(point, sub):
+				return true
+	elif data is Dictionary and data.has("coordinates"):
+		return _point_in_geometry_recursive(point, data["coordinates"])
+
+	return false
+
+
+func _point_in_polygon(point: Vector2, polygon) -> bool:
+	if typeof(polygon) != TYPE_ARRAY or polygon.size() < 3:
+		return false
+	
+	# Ray casting algorithm
+	var inside = false
+	var j = polygon.size() - 1
+	
+	for i in range(polygon.size()):
+		var coord = polygon[i]
+		if typeof(coord) != TYPE_ARRAY or coord.size() < 2:
+			continue
+			
+		var lonlat_i = _extract_lon_lat(polygon[i])
+		var lonlat_j = _extract_lon_lat(polygon[j])
+
+		if lonlat_i == null or lonlat_j == null:
+			j = i
+			continue
+
+		var xi = _lon_to_x(lonlat_i.x)
+		var yi = _lat_to_y(lonlat_i.y)
+		var xj = _lon_to_x(lonlat_j.x)
+		var yj = _lat_to_y(lonlat_j.y)
+
+		
+		if ((yi > point.y) != (yj > point.y)) and (point.x < (xj - xi) * (point.y - yi) / (yj - yi) + xi):
+			inside = !inside
+		
+		j = i
+	
+	return inside
+
+func _lon_to_x(lon: float) -> float:
+	var map_width = size.x
+	return ((lon - min_lon) / (max_lon - min_lon)) * map_width
+
+func _lat_to_y(lat: float) -> float:
+	var map_height = size.y
+	return map_height - ((lat - min_lat) / (max_lat - min_lat)) * map_height
+
+func _get_country_color(country_code: String) -> Color:
+	# Si le pays n'est pas dans country_names, on ne le colore pas
+	if not country_names.has(country_code.to_lower()):
+		return Color(0.2, 0.2, 0.2) # Gris pour pays non considérés
+
+	if not country_stats.has(country_code):
+		return Color(0.2, 0.2, 0.2) # Gris pour pays sans stats
+
+	var v = country_stats[country_code][current_metric]
+	var t := 0.5
+
+	match current_metric:
+		"precision":
+			t = clamp((v - 50.0) / 50.0, 0.0, 1.0)
+
+		"relative_precision":
+			t = clamp((v + 20.0) / 40.0, 0.0, 1.0)
+
+		"regionguess":
+			t = clamp((v + 200.0) / 400.0, 0.0, 1.0)
+
+		"global_absolute_score":
+			var m = max(abs(global_min_score), abs(global_max_score))
+			t = clamp((v + m) / (2.0 * m), 0.0, 1.0)
+
+		"global_relative_score":
+			t = clamp((v + 500.0) / 1000.0, 0.0, 1.0)
+
+	return color_bad.lerp(color_good, t)
+
+
+func _draw():
+	# Draw background
+	draw_rect(Rect2(Vector2.ZERO, size), Color(0.05, 0.05, 0.1))
+	
+	# Draw all countries
+	for country_code in country_geometries.keys():
+		var color = _get_country_color(country_code)
+		var is_hovered = (country_code == hovered_country)
+		
+		if is_hovered:
+			color = color.lightened(0.3)
+		
+		_draw_country(country_code, color)
+	
+	# Draw tooltip for hovered country
+	if hovered_country != "" and country_stats.has(hovered_country):
+		_draw_tooltip()
+
+func _draw_country(country_code: String, color: Color):
+	var geometry = country_geometries[country_code]
+
+	if geometry is Array:
+		for poly in geometry:
+			_draw_polygon_recursive(poly, color)
+	elif geometry is Dictionary and geometry.has("coordinates"):
+		_draw_polygon_recursive(geometry["coordinates"], color)
+
+func _draw_polygon_recursive(data, color: Color):
+	if data is Array and data.size() > 0:
+		if data[0] is Array and data[0].size() == 2 and typeof(data[0][0]) == TYPE_FLOAT:
+			_draw_polygon_data(data, color)
+		else:
+			for sub in data:
+				_draw_polygon_recursive(sub, color)
+
+
+func _draw_polygon_data(polygon_data, color: Color):
+	if typeof(polygon_data) != TYPE_ARRAY:
 		return
+	
+	var points = PackedVector2Array()
+	for coord in polygon_data:
+		var lonlat = _extract_lon_lat(coord)
+		if lonlat == null:
+			continue
 
-	file.store_string(JSON.stringify(exported_stats, "\t"))
-	file.close()
+		var x = _lon_to_x(lonlat.x)
+		var y = _lat_to_y(lonlat.y)
+		points.append(Vector2(x, y))
+
+	
+	if points.size() >= 3:
+		draw_colored_polygon(points, color)
+		draw_polyline(points, Color.BLACK, 0.5, true)
+
+func _draw_tooltip():
+	if not country_names.has(hovered_country.to_lower()):
+		return # no tooltip for non-streetviewe countries
+		
+	var mouse_pos = get_local_mouse_position()
+	var stats = country_stats[hovered_country]
+	var country_name = country_names[hovered_country.to_lower()] if country_names.has(hovered_country.to_lower()) else hovered_country
+
+	var lines = [
+		{ "text": country_name, "color": Color.WHITE, "underline": false },
+		{ "text": "Rounds: %d" % stats["total_rounds"], "color": Color.WHITE, "underline": false },
+		{ "text": "", "color": Color.WHITE, "underline": false },
+
+		{ "text": "Precision", "color": Color.WHITE, "underline": true },
+		{ "text": "Your precision: %.1f%%" % stats["player_accuracy"], "color": Color.WHITE, "underline": false },
+		{ "text": "Opp precision: %.1f%%" % stats["opponent_accuracy"], "color": Color.WHITE, "underline": false },
+		{
+			"text": "Precision diff: %+.1f%%" % stats["relative_precision"],
+			"color": Color.GREEN if stats["relative_precision"] > 0 else Color.RED if stats["relative_precision"] < 0 else Color.WHITE,
+			"underline": false
+		},
+
+		{ "text": "", "color": Color.WHITE, "underline": false },
+
+		{ "text": "Regionguess", "color": Color.WHITE, "underline": true },
+		{ "text": "Your avg score (found): %.1f" % stats["player_avg_score_correct"], "color": Color.WHITE, "underline": false },
+		{ "text": "Opp avg score (found): %.1f" % stats["opponent_avg_score_correct"], "color": Color.WHITE, "underline": false },
+		{
+			"text": "Diff avg score (found): %+.1f" % stats["regionguess"],
+			"color": Color.GREEN if stats["regionguess"] > 0 else Color.RED if stats["regionguess"] < 0 else Color.WHITE,
+			"underline": false
+		},
+
+		{ "text": "", "color": Color.WHITE, "underline": false },
+
+		{ "text": "Global", "color": Color.WHITE, "underline": true },
+		{ "text": "Your avg score: %.1f" % stats["player_avg_score"], "color": Color.WHITE, "underline": false },
+		{ "text": "Opp avg score: %.1f" % stats["opponent_avg_score"], "color": Color.WHITE, "underline": false },
+		{
+			"text": "Score diff / round: %+.1f" % stats["global_relative_score"],
+			"color": Color.GREEN if stats["global_relative_score"] > 0 else Color.RED if stats["global_relative_score"] < 0 else Color.WHITE,
+			"underline": false
+		},
+		{
+			"text": "Total score diff: %+.0f" % stats["global_absolute_score"],
+			"color": Color.GREEN if stats["global_absolute_score"] > 0 else Color.RED if stats["global_absolute_score"] < 0 else Color.WHITE,
+			"underline": false
+		}
+	]
+
+	# --- Layout ---
+	var font = ThemeDB.fallback_font
+	var font_size = 14
+	var line_height = 18
+	var padding = 10
+	var max_width = 0.0
+
+	for l in lines:
+		var w = font.get_string_size(l["text"], HORIZONTAL_ALIGNMENT_LEFT, -1, font_size).x
+		max_width = max(max_width, w)
+
+	var tooltip_size = Vector2(max_width + padding * 2, lines.size() * line_height + padding * 2)
+	var tooltip_pos = mouse_pos + Vector2(15, -tooltip_size.y / 2)
+
+	if tooltip_pos.x + tooltip_size.x > size.x:
+		tooltip_pos.x = mouse_pos.x - tooltip_size.x - 15
+	tooltip_pos.y = clamp(tooltip_pos.y, 0, size.y - tooltip_size.y)
+
+	var rect = Rect2(tooltip_pos, tooltip_size)
+	draw_rect(rect, Color(0.1, 0.1, 0.15, 0.95))
+	draw_rect(rect, Color.WHITE, false, 2)
+
+	# --- Text ---
+	var y = tooltip_pos.y + padding + font_size
+	for l in lines:
+		draw_string(font, Vector2(tooltip_pos.x + padding, y), l["text"], HORIZONTAL_ALIGNMENT_LEFT, -1, font_size, l["color"])
+		if l["underline"] and l["text"] != "":
+			var text_width = font.get_string_size(l["text"], HORIZONTAL_ALIGNMENT_LEFT, -1, font_size).x
+			draw_line(
+				Vector2(tooltip_pos.x + padding, y + 2),
+				Vector2(tooltip_pos.x + padding + text_width, y + 2),
+				l["color"],
+				1.0
+			)
+		y += line_height
+
+		
+func _extract_lon_lat(coord):
+	# Gère [lon, lat] ou [[lon, lat], ...]
+	if typeof(coord) == TYPE_ARRAY and coord.size() > 0:
+		if typeof(coord[0]) == TYPE_ARRAY:
+			return _extract_lon_lat(coord[0])
+		elif coord.size() >= 2:
+			return Vector2(coord[0], coord[1])
+	return null
