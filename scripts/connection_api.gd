@@ -68,7 +68,4 @@ func _refresh_ui():
 	
 	btn_reset.visible = (
 		has_ncfa
-		and has_profile
-		and has_duels
-		and has_solo
 	)

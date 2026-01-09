@@ -23,6 +23,7 @@ var all_duels: Array = []
 var filter_date_start: int = 0
 var filter_date_end: int = 0
 var filter_mode: String = "NM"
+var is_first_init: bool = true  # Track if it's the first initialization
 
 func _ready():
 	_load_player_id()
@@ -66,21 +67,33 @@ func _load_duels_stats():
 	_init_date_range()
 	
 func _init_date_range():
-	# duels triés du plus récent au plus ancien
-	filter_date_end = all_duels[0]["date"]
-	filter_date_start = all_duels[-1]["date"]
+	# Get min/max dates from duels (sorted from most recent to oldest)
+	var min_date = all_duels[-1]["date"]
+	var max_date = all_duels[0]["date"]
 	
-	date_start_slider.min_value = filter_date_start
-	date_start_slider.max_value = filter_date_end
+	# Only reset to full range on first initialization
+	if is_first_init:
+		filter_date_start = min_date
+		filter_date_end = max_date
+		is_first_init = false
+	
+	# Update slider ranges (always update these)
+	date_start_slider.min_value = min_date
+	date_start_slider.max_value = max_date
 	date_start_slider.step = 86400
-	date_start_slider.value = filter_date_start
+	date_start_slider.value = filter_date_start  # Keep user's choice
 
-	date_end_slider.min_value = filter_date_start
-	date_end_slider.max_value = filter_date_end
+	date_end_slider.min_value = min_date
+	date_end_slider.max_value = max_date
 	date_end_slider.step = 86400
-	date_end_slider.value = filter_date_end
+	date_end_slider.value = filter_date_end  # Keep user's choice
 
-	print("Date range:", filter_date_start, "→", filter_date_end)
+	# Update labels
+	date_start_label.text = format_unix_to_ymd(filter_date_start)
+	date_end_label.text = format_unix_to_ymd(filter_date_end)
+
+	print("Date range:", min_date, "→", max_date)
+	print("Current filter:", filter_date_start, "→", filter_date_end)
 	
 func _on_move_pressed():
 	filter_mode = "Move"
@@ -144,13 +157,13 @@ func format_unix_to_ymd(timestamp: int) -> String:
 	return "%04d-%02d-%02d" % [dt.year, dt.month, dt.day]
 	
 func _update_mode_button_colors():
-	# Tous les boutons en gris par défaut
+	# All buttons gray by default
 	var inactive_color = Color(0.6, 0.6, 0.6)
 	move_btn.self_modulate = inactive_color
 	nm_btn.self_modulate = inactive_color
 	nmpz_btn.self_modulate = inactive_color
 
-	# Bouton actif en bleu
+	# Active button in blue
 	var active_color = Color(0.2, 0.5, 1.0)
 	match filter_mode:
 		"Move":
