@@ -19,6 +19,7 @@ var hovered_country: String = ""
 var global_min_score := 0.0
 var global_max_score := 0.0
 var country_names: Dictionary = {}
+var exported_stats: Dictionary = {}
 
 
 # Map rendering
@@ -185,6 +186,8 @@ func _load_country_stats():
 	# Process stats for each country
 	for country in player_stats.keys():
 		_process_country_stats(country, player_stats, opponent_stats)
+	_save_stats_to_file()
+	print("Saved detailed stats to stats_detailed.json (%d countries)" % exported_stats.size())
 		
 	global_min_score = INF
 	global_max_score = -INF
@@ -282,6 +285,34 @@ func _process_country_stats(country: String, player_stats: Dictionary, opponent_
 		"opponent_avg_score_correct": opp_avg_score_correct,
 		"total_rounds": player_total
 	}
+	
+	exported_stats[country] = {
+	"precision": {
+		"player": player_accuracy,
+		"opponent": opp_accuracy
+	},
+	"avg_region_km": {
+		"player": player_stats[country]["correct_distance"] / player_correct / 1000.0 if player_correct > 0 else 0.0,
+		"opponent": opponent_stats[country]["correct_distance"] / opp_correct / 1000.0 if opp_correct > 0 else 0.0
+	},
+	"avg_score": {
+		"player": player_avg_score,
+		"opponent": opp_avg_score
+	},
+	"avg_score_correct": {
+		"player": player_avg_score_correct,
+		"opponent": opp_avg_score_correct
+	},
+	"avg_score_incorrect": {
+		"player": (player_stats[country]["total_score"] - player_stats[country]["correct_score"]) / max(1, player_total - player_correct),
+		"opponent": (opponent_stats[country]["total_score"] - opponent_stats[country]["correct_score"]) / max(1, opp_total - opp_correct)
+	},
+	"score_delta": {
+		"avg": score_delta,
+		"total": total_score_diff
+	}
+	}
+
 
 func _input(event):
 	if event is InputEventMouseMotion:
@@ -545,3 +576,12 @@ func _extract_lon_lat(coord):
 		elif coord.size() >= 2:
 			return Vector2(coord[0], coord[1])
 	return null
+	
+func _save_stats_to_file():
+	var file = FileAccess.open(stats_detailed, FileAccess.WRITE)
+	if not file:
+		push_error("Cannot write stats_detailed.json")
+		return
+
+	file.store_string(JSON.stringify(exported_stats, "\t"))
+	file.close()
