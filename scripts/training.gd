@@ -10,6 +10,8 @@ extends PanelContainer
 # Store current training data
 
 const COUNTRIES_FILE := "res://misc/countries.json"
+const training_history_file := "user://training_history.json"
+
 
 var selected_mode: String = "Move"
 var selected_country_code: String = ""  # "us", "fr", etc
@@ -20,21 +22,24 @@ var current_training_data = null
 # Confirmation popup reference
 var confirmation_popup: ConfirmationDialog = null
 var pending_validation_data = {}  # Store data while waiting for confirmation
+var country_name_to_code := {}
 
 func _ready():
-	# --- Time slider ---
 	_update_time_label(time_slider.value)
 	time_slider.value_changed.connect(_update_time_label)
+
 	countries_map = _load_countries_mapping()
-	
-	# --- Mode selector ---
+	_build_country_reverse_map()
+
 	_setup_mode_option()
-	
-	# --- Country selector ---
 	_setup_country_option()
-	
-	# --- Confirmation popup for training completion ---
 	_setup_confirmation_popup()
+	
+	
+func _build_country_reverse_map():
+	country_name_to_code.clear()
+	for code in countries_map.keys():
+		country_name_to_code[countries_map[code]] = code
 
 func _update_time_label(value: float):
 	if value <= 0:
@@ -167,10 +172,14 @@ func _on_generate_training_pressed():
 	var training_modules = generate_training_program(total_time)
 	
 	# 5. Get selected country
-	var selected_country = selected_country_name  # Your dropdown variable
+	var selected_country_code := ""
+
+	if selected_country_name != "Let the module decide (recommended)":
+		selected_country_code = country_name_to_code.get(selected_country_name, "")
+
 	
 	# 6. Populate modules with actual content
-	populate_training_modules(training_modules, difficulty_range, selected_country, priorities)
+	populate_training_modules(training_modules, difficulty_range, selected_country_code, priorities)
 	
 	# 7. Print summary for debugging
 	print_program_summary(training_modules, total_time)
@@ -362,14 +371,15 @@ func load_training_resources() -> Dictionary:
 	return json.data
 
 # Get best module for a country within difficulty range
-func get_best_module_for_country(country: String, difficulty_range: Dictionary, resources: Dictionary) -> Dictionary:
+func get_best_module_for_country(country_code: String, difficulty_range: Dictionary, resources: Dictionary) -> Dictionary:
 	var history = load_training_history()
-	var country_name: String = ""
 	
-	if len(country) == 2:
-		country_name = countries_map[country.to_lower()]
-	else:
-		country_name = country
+	# Convert country code to full name for resources.json lookup
+	var country_name = countries_map.get(country_code.to_lower(), "")
+	
+	if country_name == "":
+		push_warning("Cannot convert country code to name: " + country_code)
+		return {}
 	
 	if not resources.has(country_name):
 		push_warning("No resources found for country: " + country_name)
@@ -378,11 +388,12 @@ func get_best_module_for_country(country: String, difficulty_range: Dictionary, 
 	var country_modules = resources[country_name]
 	var valid_modules = []
 	
-	# Get list of completed modules for this country
+	# Get list of completed modules for this country (use uppercase code)
 	var completed_modules = []
-	if history.has(country_name):
-		for resource_name in history[country_name].keys():
-			if history[country_name][resource_name]["completed"]:
+	var normalized_code = country_code.to_upper()
+	if history.has(normalized_code):
+		for resource_name in history[normalized_code].keys():
+			if history[normalized_code][resource_name]["completed"]:
 				completed_modules.append(resource_name)
 	
 	# Filter modules within difficulty range AND not completed
@@ -412,75 +423,96 @@ func get_best_module_for_country(country: String, difficulty_range: Dictionary, 
 	return valid_modules[0]
 
 # Populate modules with actual training content
-func populate_training_modules(modules: Array[TrainingModule], difficulty_range: Dictionary, selected_country: String, priorities: Array) -> void:
+func populate_training_modules(
+	modules: Array[TrainingModule],
+	difficulty_range: Dictionary,
+	selected_country_code: String,
+	priorities: Array
+) -> void:
+
 	var resources = load_training_resources()
-	
 	if resources.is_empty():
 		push_error("Cannot load training resources")
 		return
-	
-	var use_selected_country_first = (selected_country != "Let the module decide (recommended)")
-	var incomplete_modules = get_incomplete_modules()
-	var used_module_keys := {}  # clé unique = country + title
-	
-	
-	var country_index = 0
-	var incomplete_index = 0
-	
+
+	var use_selected_country_first := (selected_country_code != "")
+	var incomplete_modules := get_incomplete_modules()  # country = ISO code
+	var used_module_keys := {}  # "country::title"
+
+	var incomplete_index := 0
+
 	for i in range(modules.size()):
 		var module = modules[i]
-		var country_to_use = ""
-		
-		# Module 1: use selected country if specified
+		var country_code := ""
+
+		# ─────────────────────────────────────
+		# 1️⃣ Country choice
+		# ─────────────────────────────────────
 		if i == 0 and use_selected_country_first:
-			country_to_use = selected_country
-		# Module 2 (or 1 if no selected country): use incomplete module if available
-		elif ((i == 1 and use_selected_country_first) or (i == 0 and not use_selected_country_first)) and incomplete_modules.size() > 0:
-			if incomplete_index < incomplete_modules.size():
-				country_to_use = incomplete_modules[incomplete_index]["country"]
-				incomplete_index += 1
-			else:
-				# No incomplete modules, use priorities
-				country_to_use = select_country_by_probability(priorities)
+			country_code = selected_country_code
+
+		elif incomplete_index < incomplete_modules.size():
+			country_code = incomplete_modules[incomplete_index]["country"]
+			incomplete_index += 1
+
 		else:
-			country_to_use = select_country_by_probability(priorities)
-		
-		# Get best module for this country
+			country_code = select_country_by_probability(priorities)
+
+		# Sécurité
+		if country_code == "":
+			push_warning("Empty country code, skipping module " + str(i + 1))
+			continue
+
+		# ─────────────────────────────────────
+		# 2️⃣ Selecting module
+		# ─────────────────────────────────────
 		var training_module := {}
 		var attempts := 0
-		const MAX_ATTEMPTS := 5
+		const MAX_ATTEMPTS := 6
 
 		while attempts < MAX_ATTEMPTS:
-			training_module = get_best_module_for_country(country_to_use, difficulty_range, resources)
+			training_module = get_best_module_for_country(
+				country_code,
+				difficulty_range,
+				resources
+			)
 
 			if training_module.is_empty():
 				break
 
-			var module_key = country_to_use + "::" + training_module.get("title", "")
+			var module_key = country_code + "::" + training_module.get("title", "")
 
 			if not used_module_keys.has(module_key):
 				used_module_keys[module_key] = true
-				break  # module valide et unique
+				break
 
-			# Sinon, on retente avec un autre pays
-			country_to_use = select_country_by_probability(priorities)
+			# Retenter avec un autre pays
+			country_code = select_country_by_probability(priorities)
 			attempts += 1
 
 		if training_module.is_empty() or attempts == MAX_ATTEMPTS:
-			push_warning("Skipping module " + str(i + 1) + " - no unique content available")
+			push_warning("Skipping module " + str(i + 1) + " (no unique content)")
 			continue
-		
-		# Populate theory tile (document URL)
+
+		# ─────────────────────────────────────
+		# 3️⃣ Filling module
+		# ─────────────────────────────────────
 		module.theory_tile.training_type = training_module.get("title", "")
-		module.theory_tile.country = country_to_use
+		module.theory_tile.country = country_code
 		module.theory_tile.url = training_module.get("url", "")
-		
-		# Populate practice tile (map URL)
+
 		module.practice_tile.training_type = training_module.get("title", "")
-		module.practice_tile.country = country_to_use
+		module.practice_tile.country = country_code
 		module.practice_tile.url = training_module.get("map", "")
-		
-		print("Module ", i + 1, " assigned: ", country_to_use, " - ", training_module["title"])
+
+		print(
+			"Module ",
+			i + 1,
+			" assigned: ",
+			country_code,
+			" - ",
+			training_module.get("title", "")
+		)
 
 # Select country probabilistically based on scores
 func select_country_by_probability(priorities: Array) -> String:
@@ -550,13 +582,13 @@ func display_training_modules(training_data: Dictionary):
 			modules_container.add_child(row_spacer)
 
 
-# Create a single module card with two tiles
+# Create a single module card with two tiles (UPDATED)
 func create_module_card(module: TrainingModule, index: int) -> PanelContainer:
 	# Main card container
 	var card = PanelContainer.new()
 	card.name = "ModuleCard" + str(index)
 	
-	# Add custom theme/style (optional)
+	# Add custom theme/style
 	var style = StyleBoxFlat.new()
 	style.bg_color = Color(0.2, 0.2, 0.25)
 	style.border_width_left = 4
@@ -579,8 +611,11 @@ func create_module_card(module: TrainingModule, index: int) -> PanelContainer:
 	var header = HBoxContainer.new()
 	content.add_child(header)
 	
+	# Convert country code to full name for display
+	var country_display_name = countries_map.get(module.theory_tile.country.to_lower(), module.theory_tile.country)
+	
 	var country_label = Label.new()
-	country_label.text = "Module " + str(index + 1) + ": " + module.theory_tile.country + " - " + module.theory_tile.training_type
+	country_label.text = "Module " + str(index + 1) + ": " + country_display_name + " - " + module.theory_tile.training_type
 	country_label.add_theme_font_size_override("font_size", 20)
 	country_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	header.add_child(country_label)
@@ -684,9 +719,9 @@ func _on_validation_confirmed():
 	
 	print("Module ", module_index + 1, " completed FULLY!")
 	
-	# Update training history with completed = true
+	# module.theory_tile.country is already an uppercase ISO code
 	update_training_entry(
-		countries_map[module.theory_tile.country.to_lower()],
+		module.theory_tile.country,
 		module.theory_tile.training_type,
 		module.total_duration,
 		true  # Completed fully
@@ -704,9 +739,9 @@ func _on_validation_partial():
 	
 	print("Module ", module_index + 1, " completed PARTIALLY")
 	
-	# Update training history with completed = false
+	# module.theory_tile.country is already an uppercase ISO code
 	update_training_entry(
-		countries_map[module.theory_tile.country.to_lower()],
+		module.theory_tile.country,
 		module.theory_tile.training_type,
 		module.total_duration,
 		false  # Not fully completed
@@ -749,26 +784,28 @@ func mark_module_as_completed(card: PanelContainer, fully_completed: bool):
 	else:
 		validate_btn.text = "⚠ Partially Done"
 
-# Update or create training entry with new structure
-func update_training_entry(country: String, resource_name: String, duration_minutes: int, completed: bool):
+func update_training_entry(country_code: String, resource_name: String, duration_minutes: int, completed: bool):
 	var history = load_training_history()
 	
 	# Get current date as Unix timestamp
 	var current_date = Time.get_unix_time_from_system()
 	
+	# Normalize country code to uppercase
+	var normalized_code = country_code.to_upper()
+	
 	# Ensure country exists in history
-	if not history.has(country):
-		history[country] = {}
+	if not history.has(normalized_code):
+		history[normalized_code] = {}
 	
 	# Check if resource exists for this country
-	if history[country].has(resource_name):
-		var entry = history[country][resource_name]
+	if history[normalized_code].has(resource_name):
+		var entry = history[normalized_code][resource_name]
 		entry["last_training_date"] = current_date
 		entry["total_time_minutes"] += duration_minutes
 		entry["completed"] = completed
 	else:
 		# Create new resource entry
-		history[country][resource_name] = {
+		history[normalized_code][resource_name] = {
 			"last_training_date": current_date,
 			"total_time_minutes": duration_minutes,
 			"completed": completed
@@ -776,7 +813,7 @@ func update_training_entry(country: String, resource_name: String, duration_minu
 	
 	# Save to file
 	if save_training_history(history):
-		print("Training history updated for ", country, " - ", resource_name)
+		print("Training history updated for ", normalized_code, " - ", resource_name)
 	else:
 		push_error("Failed to save training history")
 		
@@ -785,12 +822,13 @@ func get_incomplete_modules() -> Array:
 	var history = load_training_history()
 	var incomplete = []
 	
-	for country in history.keys():
-		for resource_name in history[country].keys():
-			var entry = history[country][resource_name]
+	for country_code in history.keys():
+		# country_code is already uppercase ISO
+		for resource_name in history[country_code].keys():
+			var entry = history[country_code][resource_name]
 			if not entry["completed"]:
 				incomplete.append({
-					"country": country,
+					"country": country_code.to_upper(),  # Keep uppercase
 					"resource_name": resource_name,
 					"last_date": entry["last_training_date"]
 				})
@@ -802,43 +840,67 @@ func get_incomplete_modules() -> Array:
 	
 # Load training history from file
 func load_training_history() -> Dictionary:
-	var file_path = "user://training_history.json"
-	
-	if not FileAccess.file_exists(file_path):
+	if not FileAccess.file_exists(training_history_file):
 		return {}
-	
-	var file = FileAccess.open(file_path, FileAccess.READ)
-	if file == null:
-		push_error("Cannot open training_history.json")
+
+	var file = FileAccess.open(training_history_file, FileAccess.READ)
+	if not file:
 		return {}
-	
-	var json_string = file.get_as_text()
+
+	var parsed = JSON.parse_string(file.get_as_text())
 	file.close()
-	
-	if json_string.is_empty():
-		return {}
-	
-	var json = JSON.new()
-	var parse_result = json.parse(json_string)
-	
-	if parse_result != OK:
-		push_error("JSON parse error in training_history: " + json.get_error_message())
-		return {}
-	
-	return json.data
+
+	if parsed is Dictionary:
+		return normalize_training_history(parsed)
+
+	return {}
+
+
+# Normalize all keys to uppercase ISO codes
+func normalize_training_history(history: Dictionary) -> Dictionary:
+	var normalized := {}
+
+	for key in history.keys():
+		var country_code := ""
+		
+		# Check if key is already an ISO code (2-3 chars)
+		if key.length() <= 3:
+			# Normalize to uppercase
+			country_code = key.to_upper()
+		else:
+			# It's a full country name, find the ISO code
+			for code in countries_map.keys():
+				if countries_map[code] == key:
+					country_code = code.to_upper()
+					break
+		
+		if country_code == "":
+			push_warning("Unknown country in training history: " + key)
+			continue
+
+		# Merge modules under normalized code
+		if not normalized.has(country_code):
+			normalized[country_code] = {}
+
+		for module_name in history[key].keys():
+			if not normalized[country_code].has(module_name):
+				normalized[country_code][module_name] = history[key][module_name]
+			else:
+				# Keep the most recent version
+				var existing_date = normalized[country_code][module_name]["last_training_date"]
+				var new_date = history[key][module_name]["last_training_date"]
+				if new_date > existing_date:
+					normalized[country_code][module_name] = history[key][module_name]
+
+	return normalized
 
 
 # Save training history to file
-func save_training_history(history: Dictionary) -> bool:
-	var file_path = "user://training_history.json"
-	var file = FileAccess.open(file_path, FileAccess.WRITE)
-	
-	if file == null:
-		push_error("Cannot write to training_history.json")
-		return false
-	
-	var json_string = JSON.stringify(history, "\t")
-	file.store_string(json_string)
+func save_training_history(history: Dictionary):
+	var file = FileAccess.open(training_history_file, FileAccess.WRITE)
+	if not file:
+		push_error("Cannot save training history")
+		return
+
+	file.store_string(JSON.stringify(history, "\t"))
 	file.close()
-	
-	return true
