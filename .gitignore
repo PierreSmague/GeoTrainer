@@ -1,3 +1,10 @@
 # Godot 4+ specific ignores
 .godot/
 /android/
+*.exe
+*.dmg
+*.app
+*.zip
+
+# Mac OS specific ignores
+.DS_Store
