@@ -1,0 +1,14 @@
+class_name FilePaths
+
+const NCFA = "user://ncfa.txt"
+const PROFILE = "user://profile.json"
+const DUELS = "user://duels.json"
+const SOLO = "user://solo.json"
+const DUELS_DETAILED = "user://duels_detailed.json"
+const DUELS_FILTERED = "user://duels_filtered.json"
+const SOLO_DETAILED = "user://solo_detailed.json"
+const STATS_DETAILED = "user://stats_detailed.json"
+const TRAINING_HISTORY = "user://training_history.json"
+const COUNTRIES = "res://misc/countries.json"
+const COUNTRIES_POLYGON = "res://misc/countries_polygon.json"
+const RESOURCES = "res://misc/resources.json"
