@@ -1,9 +1,6 @@
 extends Button
 
 const BASE_URL := "https://www.geoguessr.com/api/v4/feed/private"
-const NCFA_PATH := "user://ncfa.txt"
-const DUELS_PATH := "user://duels.json"
-const DUELS_DETAILED_PATH := "user://duels_detailed.json"
 
 @onready var http: HTTPRequest = HTTPRequest.new()
 
@@ -18,22 +15,17 @@ func _ready():
 	http.request_completed.connect(_on_feed_response)
 
 func _on_pressed():
-	_load_ncfa()
+	ncfa = FileManager.load_text(FilePaths.NCFA).strip_edges()
 	last_known_id = _load_last_duel_id()
 	new_duel_ids.clear()
 	pagination_token = ""
 	_fetch_page()
 
-func _load_ncfa():
-	ncfa = FileAccess.open(NCFA_PATH, FileAccess.READ).get_as_text().strip_edges()
-
 func _load_last_duel_id() -> String:
-	if not FileAccess.file_exists(DUELS_PATH):
-		return ""
-	var f = FileAccess.open(DUELS_PATH, FileAccess.READ)
-	var data = JSON.parse_string(f.get_as_text())
-	f.close()
-	return data[0] if data and data.size() > 0 else ""
+	var data = FileManager.load_json(FilePaths.DUELS)
+	if data and data is Array and data.size() > 0:
+		return data[0]
+	return ""
 
 func _fetch_page():
 	var url = BASE_URL
@@ -74,31 +66,16 @@ func _finalize_update():
 	if new_duel_ids.is_empty():
 		return
 
-	# --- Update duels.json (prepend)
-	var duels := []
-	if FileAccess.file_exists(DUELS_PATH):
-		var f = FileAccess.open(DUELS_PATH, FileAccess.READ)
-		var parsed = JSON.parse_string(f.get_as_text())
-		duels = parsed if parsed is Array else []
-		f.close()
+	var duels = FileManager.load_json(FilePaths.DUELS, [])
+	if not duels is Array:
+		duels = []
 
 	duels = new_duel_ids + duels
-	FileAccess.open(DUELS_PATH, FileAccess.WRITE).store_string(JSON.stringify(duels, "\t"))
+	FileManager.save_json(FilePaths.DUELS, duels)
 
-	# --- Trigger analysis ONLY for new duels
-	var analyzer = _find_node("AnalyzeGames")
+	var analyzer = NodeUtils.find_by_name(get_tree().root, "AnalyzeGames")
 	analyzer._analyze_all_games(new_duel_ids.size(), 0)
-	
-	get_parent().get_parent()._refresh_ui()
 
-func _find_node(name: String) -> Node:
-	return _find_node_rec(get_tree().root, name)
-
-func _find_node_rec(n: Node, name: String) -> Node:
-	if n.name == name:
-		return n
-	for c in n.get_children():
-		var r = _find_node_rec(c, name)
-		if r:
-			return r
-	return null
+	var api_node = NodeUtils.find_by_name(get_tree().root, "Connection API")
+	if api_node and api_node.has_method("_refresh_ui"):
+		api_node._refresh_ui()

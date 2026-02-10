@@ -1,22 +1,9 @@
 extends Node
 class_name DeterminePriorities
 
-const STATS_FILE := "user://stats_detailed.json"
-
 func load_and_compute() -> Array:
-	if not FileAccess.file_exists(STATS_FILE):
-		push_error("stats_detailed.json not found")
-		return []
-
-	var file = FileAccess.open(STATS_FILE, FileAccess.READ)
-	if not file:
-		push_error("Cannot open stats_detailed.json")
-		return []
-
-	var stats: Variant = JSON.parse_string(file.get_as_text())
-	file.close()
-
-	if stats == null or stats.is_empty():
+	var stats = FileManager.load_json(FilePaths.STATS_DETAILED)
+	if stats == null or not stats is Dictionary or stats.is_empty():
 		return []
 
 	return _compute_priorities(stats)
@@ -28,9 +15,6 @@ func load_and_compute() -> Array:
 func _compute_priorities(stats: Dictionary) -> Array:
 	var priorities: Array = []
 
-	# --------------------------------------------------------
-	# Occurrences & frequency (normalized by total rounds)
-	# --------------------------------------------------------
 	var total_rounds := 0.0
 
 	for c in stats.values():
@@ -47,14 +31,11 @@ func _compute_priorities(stats: Dictionary) -> Array:
 	for c in stats.values():
 		c["frequency"] = c["occurences"] / total_rounds
 
-	# --------------------------------------------------------
-	# Priority scores
-	# --------------------------------------------------------
 	for country in stats.keys():
 		var c = stats[country]
 		var freq: float = c["frequency"]
 
-		# ---------------- Identification ----------------
+		# Identification
 		var potential_precision :float= (100.0 - c.precision.player) / 100.0
 		var delta_precision :float= (c.precision.player - c.precision.opponent) / 100.0
 		var penalty_precision :float= (
@@ -74,7 +55,7 @@ func _compute_priorities(stats: Dictionary) -> Array:
 				"score": int(round(precision_priority))
 			})
 
-		# ---------------- Regionguess ----------------
+		# Regionguess
 		var potential_regionguess :float= 5000.0 - c.avg_score_correct.player
 		var delta_regionguess :float= (
 			c.avg_score_correct.player
@@ -85,7 +66,7 @@ func _compute_priorities(stats: Dictionary) -> Array:
 
 		if delta_regionguess < 0:
 			regionguess_priority -= 5.0 * freq * delta_regionguess
-			
+
 		if c.avg_score_correct.player == 0:
 			regionguess_priority = 0
 
@@ -96,9 +77,6 @@ func _compute_priorities(stats: Dictionary) -> Array:
 				"score": int(round(regionguess_priority))
 			})
 
-	# --------------------------------------------------------
-	# Sort
-	# --------------------------------------------------------
 	priorities.sort_custom(func(a, b):
 		return a.score > b.score
 	)

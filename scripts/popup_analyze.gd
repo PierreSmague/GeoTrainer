@@ -14,30 +14,25 @@ var total_solos = 0
 func _ready():
 	_load_duels_count()
 	_load_solos_count()
-	
 	button_validate.pressed.connect(_on_validate_pressed)
-	
+
 func _refresh():
 	_load_duels_count()
 	_load_solos_count()
 
 func _load_duels_count():
-	var file = FileAccess.open("user://duels.json", FileAccess.READ)
-	if file:
-		var duels = JSON.parse_string(file.get_as_text())
-		total_duels = duels.size() if duels else 0
-		file.close()
+	var duels = FileManager.load_json(FilePaths.DUELS)
+	if duels and duels is Array:
+		total_duels = duels.size()
 		label_total_duels.text = "Total: " + str(total_duels)
 		spin_box_duels.max_value = total_duels
 		spin_box_duels.min_value = 0
 		spin_box_duels.value = min(10, total_duels)
 
 func _load_solos_count():
-	var file = FileAccess.open("user://solo.json", FileAccess.READ)
-	if file:
-		var solos = JSON.parse_string(file.get_as_text())
-		total_solos = solos.size() if solos else 0
-		file.close()
+	var solos = FileManager.load_json(FilePaths.SOLO)
+	if solos and solos is Array:
+		total_solos = solos.size()
 		label_total_solos.text = "Total: " + str(total_solos)
 		spin_box_solos.max_value = total_solos
 		spin_box_solos.min_value = 0
