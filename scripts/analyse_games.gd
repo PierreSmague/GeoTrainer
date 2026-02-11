@@ -13,6 +13,7 @@ var solos_queue: Array = []
 var total_games: int = 0
 
 var country_geometries: Dictionary = {}
+var is_incremental: bool = false
 
 @onready var progress_popup = $ProgressPopup
 @onready var progress_bar = $ProgressPopup/VBoxContainer/ProgressBar
@@ -37,7 +38,8 @@ func _on_button_pressed():
 	var popup = $Popup_analyze
 	popup.popup_centered()
 
-func _analyze_all_games(n_duels: int, n_solos: int):
+func _analyze_all_games(n_duels: int, n_solos: int, incremental: bool = false):
+	is_incremental = incremental
 	ncfa_token = FileManager.load_text(FilePaths.NCFA).strip_edges()
 
 	duels_queue = _load_first_n_games(FilePaths.DUELS, n_duels) if n_duels > 0 else []
@@ -227,10 +229,18 @@ func _save_current_type():
 		return
 
 	var output_file = FilePaths.DUELS_DETAILED if is_analyzing_duels else FilePaths.SOLO_DETAILED
-	FileManager.save_json(output_file, detailed_data)
 
-	if is_analyzing_duels:
-		FileManager.save_json(FilePaths.DUELS_FILTERED, detailed_data)
+	if is_incremental:
+		var existing = FileManager.load_json(output_file, [])
+		if existing is Array:
+			detailed_data = detailed_data + existing
+		FileManager.save_json(output_file, detailed_data)
+		if is_analyzing_duels:
+			FileManager.save_json(FilePaths.DUELS_FILTERED, detailed_data)
+	else:
+		FileManager.save_json(output_file, detailed_data)
+		if is_analyzing_duels:
+			FileManager.save_json(FilePaths.DUELS_FILTERED, detailed_data)
 
 	print("✓ %d %s sauvegardés" % [
 		detailed_data.size(),
