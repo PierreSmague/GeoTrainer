@@ -74,7 +74,7 @@ func _finalize_update():
 	FileManager.save_json(FilePaths.DUELS, duels)
 
 	var analyzer = NodeUtils.find_by_name(get_tree().root, "AnalyzeGames")
-	analyzer._analyze_all_games(new_duel_ids.size(), 0)
+	analyzer._analyze_all_games(new_duel_ids.size(), 0, true)
 
 	var api_node = NodeUtils.find_by_name(get_tree().root, "Connection API")
 	if api_node and api_node.has_method("_refresh_ui"):

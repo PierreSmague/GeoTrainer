@@ -21,9 +21,14 @@ var filter_date_start: int = 0
 var filter_date_end: int = 0
 var filter_mode: String = "NM"
 var is_first_init: bool = true
+var confirm_dialog: ConfirmationDialog
 
 func _ready():
 	player_id = FileManager.load_player_id()
+	confirm_dialog = ConfirmationDialog.new()
+	confirm_dialog.title = "Confirm filtering?"
+	confirm_dialog.confirmed.connect(_apply_filter)
+	add_child(confirm_dialog)
 	_load_duels_stats()
 
 func _refresh():
@@ -80,9 +85,14 @@ func _on_nmpz_pressed():
 func _on_filter_pressed():
 	if all_duels.is_empty():
 		return
+	var date_from = FileManager.unix_to_ymd(filter_date_start)
+	var date_to = FileManager.unix_to_ymd(filter_date_end)
+	confirm_dialog.dialog_text = "Mode: %s\nFrom: %s\nTo: %s" % [filter_mode, date_from, date_to]
+	confirm_dialog.popup_centered()
 
+func _apply_filter():
 	var filtered_duels := []
-	var wanted_mode :String = MODE_MAP[filter_mode]
+	var wanted_mode: String = MODE_MAP[filter_mode]
 
 	for duel in all_duels:
 		var duel_date: int = duel["date"]
