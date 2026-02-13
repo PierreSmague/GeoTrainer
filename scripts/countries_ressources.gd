@@ -6,6 +6,7 @@ extends ScrollContainer
 @onready var doc_item_scene = preload("res://ui/doc_item/DocItem.tscn")
 
 var all_docs = {}
+var flag_texture: Texture2D = null
 
 func _ready():
 	all_docs = FileManager.load_json(FilePaths.RESOURCES, {})
@@ -16,6 +17,27 @@ func _ready():
 	for doc in docs:
 		var map_url = doc.get("map", "")
 		add_doc(doc.title, doc.difficulty, doc.usefulness, doc.url, map_url)
+
+	_load_flag()
+
+func _load_flag():
+	var countries_map = FileManager.load_json(FilePaths.COUNTRIES, {})
+	var code = GeoUtils.country_name_to_code(country_name, countries_map)
+	if code == "":
+		return
+	var path = FilePaths.FLAGS_DIR + code + ".svg"
+	if ResourceLoader.exists(path):
+		flag_texture = load(path)
+		queue_redraw()
+
+func _draw():
+	if flag_texture == null:
+		return
+	var tex_size = flag_texture.get_size()
+	if tex_size.x == 0 or tex_size.y == 0:
+		return
+	var draw_size = size
+	draw_texture_rect(flag_texture, Rect2(Vector2.ZERO, draw_size), false, Color(1, 1, 1, 0.08))
 
 func _sort_documents(docs: Array) -> Array:
 	var sorted_docs = docs.duplicate()
