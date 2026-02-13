@@ -10,6 +10,10 @@ var global_min_score := 0.0
 var global_max_score := 0.0
 var country_names: Dictionary = {}
 var exported_stats: Dictionary = {}
+var ranking_vbox: VBoxContainer = null
+
+# Layout
+const RANKING_PANEL_WIDTH := 220.0
 
 # Map rendering
 var map_offset: Vector2 = Vector2.ZERO
@@ -77,6 +81,36 @@ func _setup_ui():
 
 	add_child(selector_panel)
 
+	# Ranking panel (right side, outside map area)
+	var ranking_panel = PanelContainer.new()
+	ranking_panel.anchor_left = 1.0
+	ranking_panel.anchor_right = 1.0
+	ranking_panel.anchor_top = 0.0
+	ranking_panel.anchor_bottom = 1.0
+	ranking_panel.offset_left = -RANKING_PANEL_WIDTH
+	ranking_panel.offset_right = 0
+	ranking_panel.offset_top = 0
+	ranking_panel.offset_bottom = 0
+
+	var ranking_style = StyleBoxFlat.new()
+	ranking_style.bg_color = Color(0.1, 0.1, 0.15, 0.95)
+	ranking_style.content_margin_left = 10
+	ranking_style.content_margin_right = 10
+	ranking_style.content_margin_top = 10
+	ranking_style.content_margin_bottom = 10
+	ranking_panel.add_theme_stylebox_override("panel", ranking_style)
+
+	var scroll = ScrollContainer.new()
+	scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	scroll.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	ranking_panel.add_child(scroll)
+
+	ranking_vbox = VBoxContainer.new()
+	ranking_vbox.add_theme_constant_override("separation", 2)
+	ranking_vbox.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	scroll.add_child(ranking_vbox)
+	add_child(ranking_panel)
+
 func _create_metric_button(parent: VBoxContainer, metric_id: String, label_text: String):
 	var btn = Button.new()
 	btn.text = label_text
@@ -105,8 +139,84 @@ func _update_metric_buttons():
 func _on_metric_changed(metric_id: String):
 	current_metric = metric_id
 	_update_metric_buttons()
+	_update_ranking_panel()
 	queue_redraw()
 	print("Metric changed to: ", metric_id)
+
+func _update_ranking_panel():
+	if ranking_vbox == null:
+		return
+	for child in ranking_vbox.get_children():
+		child.queue_free()
+
+	# Filter countries with >= 3 rounds
+	var valid_countries: Array = []
+	for code in country_stats.keys():
+		var stats = country_stats[code]
+		if stats["total_rounds"] >= 3:
+			valid_countries.append(code)
+
+	if valid_countries.is_empty():
+		return
+
+	valid_countries.sort_custom(func(a, b): return country_stats[a][current_metric] > country_stats[b][current_metric])
+
+	var top10 = valid_countries.slice(0, mini(10, valid_countries.size()))
+	var worst10_start = maxi(valid_countries.size() - 10, 0)
+	var worst10 = valid_countries.slice(worst10_start)
+	worst10.reverse()
+
+	_add_ranking_section("Top 10", top10, Color(0.3, 0.9, 0.3))
+
+	var spacer = Control.new()
+	spacer.custom_minimum_size = Vector2(0, 8)
+	ranking_vbox.add_child(spacer)
+
+	_add_ranking_section("Worst 10", worst10, Color(0.9, 0.3, 0.3))
+
+func _add_ranking_section(title_text: String, codes: Array, value_color: Color):
+	var title = Label.new()
+	title.text = title_text
+	title.add_theme_font_size_override("font_size", 14)
+	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	ranking_vbox.add_child(title)
+
+	var sep = HSeparator.new()
+	ranking_vbox.add_child(sep)
+
+	for code in codes:
+		var row = HBoxContainer.new()
+
+		var name_label = Label.new()
+		var display_name = country_names.get(code.to_lower(), code)
+		name_label.text = display_name
+		name_label.add_theme_font_size_override("font_size", 12)
+		name_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		name_label.clip_text = true
+		row.add_child(name_label)
+
+		var val_label = Label.new()
+		val_label.text = _format_metric_value(country_stats[code][current_metric])
+		val_label.add_theme_font_size_override("font_size", 12)
+		val_label.add_theme_color_override("font_color", value_color)
+		val_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
+		row.add_child(val_label)
+
+		ranking_vbox.add_child(row)
+
+func _format_metric_value(value: float) -> String:
+	match current_metric:
+		"precision":
+			return "%.1f%%" % value
+		"relative_precision":
+			return "%+.1f%%" % value
+		"regionguess":
+			return "%+.0f" % value
+		"global_absolute_score":
+			return "%+.0f" % value
+		"global_relative_score":
+			return "%+.1f" % value
+	return "%.1f" % value
 
 func _load_country_stats():
 	country_stats.clear()
@@ -129,6 +239,7 @@ func _load_country_stats():
 		global_min_score = min(global_min_score, c["global_absolute_score"])
 		global_max_score = max(global_max_score, c["global_absolute_score"])
 
+	_update_ranking_panel()
 	queue_redraw()
 	print("Country stats loaded for %d countries" % country_stats.size())
 
@@ -189,8 +300,11 @@ func _point_in_polygon(point: Vector2, polygon) -> bool:
 		j = i
 	return inside
 
+func _map_width() -> float:
+	return size.x - RANKING_PANEL_WIDTH
+
 func _lon_to_x(lon: float) -> float:
-	return ((lon - min_lon) / (max_lon - min_lon)) * size.x
+	return ((lon - min_lon) / (max_lon - min_lon)) * _map_width()
 
 func _lat_to_y(lat: float) -> float:
 	return size.y - ((lat - min_lat) / (max_lat - min_lat)) * size.y
@@ -220,7 +334,7 @@ func _get_country_color(country_code: String) -> Color:
 	return color_bad.lerp(color_good, t)
 
 func _draw():
-	draw_rect(Rect2(Vector2.ZERO, size), Color(0.05, 0.05, 0.1))
+	draw_rect(Rect2(Vector2.ZERO, Vector2(_map_width(), size.y)), Color(0.05, 0.05, 0.1))
 
 	for country_code in country_geometries.keys():
 		var color = _get_country_color(country_code)
@@ -320,7 +434,7 @@ func _draw_tooltip():
 	var tooltip_size = Vector2(max_width + padding * 2, lines.size() * line_height + padding * 2)
 	var tooltip_pos = mouse_pos + Vector2(15, -tooltip_size.y / 2)
 
-	if tooltip_pos.x + tooltip_size.x > size.x:
+	if tooltip_pos.x + tooltip_size.x > _map_width():
 		tooltip_pos.x = mouse_pos.x - tooltip_size.x - 15
 	tooltip_pos.y = clamp(tooltip_pos.y, 0, size.y - tooltip_size.y)
 
