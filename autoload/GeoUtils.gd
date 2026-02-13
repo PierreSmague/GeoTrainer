@@ -1,5 +1,21 @@
 class_name GeoUtils
 
+## Creates a TextureRect with the country flag, or null if not found.
+## icon_size is the height in pixels (width auto-scales).
+static func create_flag_icon(country_code: String, icon_size: float = 20.0) -> TextureRect:
+	var path = FilePaths.FLAGS_DIR + country_code.to_lower() + ".svg"
+	if not ResourceLoader.exists(path):
+		return null
+	var tex = load(path)
+	if tex == null:
+		return null
+	var icon = TextureRect.new()
+	icon.texture = tex
+	icon.expand_mode = TextureRect.EXPAND_FIT_HEIGHT
+	icon.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT
+	icon.custom_minimum_size = Vector2(icon_size * 1.5, icon_size)
+	return icon
+
 static func point_in_polygon_latlon(lat: float, lng: float, polygon: Array) -> bool:
 	var inside = false
 	var j = polygon.size() - 1

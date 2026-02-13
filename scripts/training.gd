@@ -194,6 +194,10 @@ func create_module_card(module: TrainingGenerator.TrainingModule, index: int) ->
 	var header = HBoxContainer.new()
 	content.add_child(header)
 
+	var flag = GeoUtils.create_flag_icon(module.theory_tile.country, 24.0)
+	if flag:
+		header.add_child(flag)
+
 	var country_display_name = countries_map.get(module.theory_tile.country.to_lower(), module.theory_tile.country)
 	var country_label = Label.new()
 	country_label.text = "Module " + str(index + 1) + ": " + country_display_name + " - " + module.theory_tile.training_type

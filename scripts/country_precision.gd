@@ -186,6 +186,11 @@ func _add_ranking_section(title_text: String, codes: Array, value_color: Color):
 
 	for code in codes:
 		var row = HBoxContainer.new()
+		row.add_theme_constant_override("separation", 6)
+
+		var flag = GeoUtils.create_flag_icon(code, 16.0)
+		if flag:
+			row.add_child(flag)
 
 		var name_label = Label.new()
 		var display_name = country_names.get(code.to_lower(), code)

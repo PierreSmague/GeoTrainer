@@ -38,6 +38,10 @@ func _display_priorities():
 		rank_label.custom_minimum_size.x = 30
 		row.add_child(rank_label)
 
+		var flag = GeoUtils.create_flag_icon(p.country, 18.0)
+		if flag:
+			row.add_child(flag)
+
 		var country_display :String = p.country.to_lower()
 		if country_names.has(country_display):
 			country_display = country_names[country_display]
