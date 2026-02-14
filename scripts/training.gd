@@ -175,16 +175,16 @@ func create_module_card(module: TrainingGenerator.TrainingModule, index: int) ->
 	var card = PanelContainer.new()
 	card.name = "ModuleCard" + str(index)
 	var style = StyleBoxFlat.new()
-	style.bg_color = Color(0.2, 0.2, 0.25)
+	style.bg_color = ThemeManager.BG_SURFACE
 	style.border_width_left = 4
 	style.border_width_top = 4
 	style.border_width_right = 4
 	style.border_width_bottom = 4
-	style.border_color = Color(0.4, 0.6, 0.8)
-	style.corner_radius_top_left = 8
-	style.corner_radius_top_right = 8
-	style.corner_radius_bottom_left = 8
-	style.corner_radius_bottom_right = 8
+	style.border_color = ThemeManager.ACCENT
+	style.corner_radius_top_left = 12
+	style.corner_radius_top_right = 12
+	style.corner_radius_bottom_left = 12
+	style.corner_radius_bottom_right = 12
 	card.add_theme_stylebox_override("panel", style)
 
 	var content = VBoxContainer.new()
@@ -193,6 +193,10 @@ func create_module_card(module: TrainingGenerator.TrainingModule, index: int) ->
 
 	var header = HBoxContainer.new()
 	content.add_child(header)
+
+	var flag = GeoUtils.create_flag_icon(module.theory_tile.country, 24.0)
+	if flag:
+		header.add_child(flag)
 
 	var country_display_name = countries_map.get(module.theory_tile.country.to_lower(), module.theory_tile.country)
 	var country_label = Label.new()
@@ -222,11 +226,11 @@ func create_tile(tile: TrainingGenerator.TrainingTile, header_text: String) -> P
 	var tile_panel = PanelContainer.new()
 	tile_panel.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	var style = StyleBoxFlat.new()
-	style.bg_color = Color(0.15, 0.15, 0.2)
-	style.corner_radius_top_left = 5
-	style.corner_radius_top_right = 5
-	style.corner_radius_bottom_left = 5
-	style.corner_radius_bottom_right = 5
+	style.bg_color = Color(0.086, 0.086, 0.145)  # #161625
+	style.corner_radius_top_left = 8
+	style.corner_radius_top_right = 8
+	style.corner_radius_bottom_left = 8
+	style.corner_radius_bottom_right = 8
 	tile_panel.add_theme_stylebox_override("panel", style)
 
 	var tile_content = VBoxContainer.new()
@@ -299,19 +303,19 @@ func _on_validation_partial():
 func mark_module_as_completed(card: PanelContainer, fully_completed: bool):
 	var style = StyleBoxFlat.new()
 	if fully_completed:
-		style.bg_color = Color(0.2, 0.3, 0.2)
-		style.border_color = Color(0.3, 0.7, 0.3)
+		style.bg_color = Color(0.082, 0.125, 0.082)  # #152015
+		style.border_color = ThemeManager.SUCCESS
 	else:
-		style.bg_color = Color(0.3, 0.25, 0.15)
-		style.border_color = Color(0.8, 0.6, 0.2)
+		style.bg_color = Color(0.122, 0.102, 0.063)  # #1F1A10
+		style.border_color = ThemeManager.WARNING
 	style.border_width_left = 4
 	style.border_width_top = 4
 	style.border_width_right = 4
 	style.border_width_bottom = 4
-	style.corner_radius_top_left = 8
-	style.corner_radius_top_right = 8
-	style.corner_radius_bottom_left = 8
-	style.corner_radius_bottom_right = 8
+	style.corner_radius_top_left = 12
+	style.corner_radius_top_right = 12
+	style.corner_radius_bottom_left = 12
+	style.corner_radius_bottom_right = 12
 	card.add_theme_stylebox_override("panel", style)
 
 	var header = card.get_child(0).get_child(0)

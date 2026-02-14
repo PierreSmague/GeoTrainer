@@ -1,5 +1,41 @@
 class_name GeoUtils
 
+## Returns the 2-letter country code for a given display name, or "" if not found.
+static func country_name_to_code(display_name: String, countries_map: Dictionary) -> String:
+	var name_lower = display_name.to_lower()
+	for code in countries_map:
+		if countries_map[code].to_lower() == name_lower:
+			return code
+	# Handle common mismatches between display names and countries.json
+	var aliases := {
+		"bosnia": "ba", "czechia": "cz", "czech republic": "cz",
+		"faroe islands": "fo", "gibraltar": "gi", "isle of man": "im",
+		"hong kong": "hk", "macau": "mo", "south korea": "kr",
+		"north macedonia": "mk", "san marino": "sm", "liechtenstein": "li",
+		"andorra": "ad", "bermuda": "bm", "greenland": "gl",
+		"us virgin islands": "vi", "american samoa": "as",
+		"christmas island": "cx", "cocos island": "cc",
+		"northern mariana islands": "mp", "puerto rico": "pr",
+		"sao tome & principe": "st",
+	}
+	return aliases.get(name_lower, "")
+
+## Creates a TextureRect with the country flag, or null if not found.
+## icon_size is the height in pixels (width auto-scales).
+static func create_flag_icon(country_code: String, icon_size: float = 20.0) -> TextureRect:
+	var path = FilePaths.FLAGS_DIR + country_code.to_lower() + ".svg"
+	if not ResourceLoader.exists(path):
+		return null
+	var tex = load(path)
+	if tex == null:
+		return null
+	var icon = TextureRect.new()
+	icon.texture = tex
+	icon.expand_mode = TextureRect.EXPAND_FIT_HEIGHT
+	icon.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT
+	icon.custom_minimum_size = Vector2(icon_size * 1.5, icon_size)
+	return icon
+
 static func point_in_polygon_latlon(lat: float, lng: float, polygon: Array) -> bool:
 	var inside = false
 	var j = polygon.size() - 1

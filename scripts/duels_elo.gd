@@ -3,8 +3,8 @@ extends Control
 var data: Array = []
 var dates: Array = []
 var chart_title: String = "Duels - ELO Evolution"
-var line_color: Color = Color.CYAN
-var moving_avg_color: Color = Color(1.0, 0.5, 0.0)
+var line_color: Color = ThemeManager.ACCENT_SEC
+var moving_avg_color: Color = ThemeManager.WARNING
 var padding: int = 60
 var player_id: String = ""
 var moving_avg_period: int = 10
@@ -143,7 +143,7 @@ func _draw():
 
 	var range_val = max_val - min_val
 
-	draw_rect(Rect2(Vector2.ZERO, chart_size), Color(0.1, 0.1, 0.1, 0.5))
+	draw_rect(Rect2(Vector2.ZERO, chart_size), Color(ThemeManager.BG_SURFACE.r, ThemeManager.BG_SURFACE.g, ThemeManager.BG_SURFACE.b, 0.5))
 
 	var title_pos = Vector2(chart_size.x / 2, 25)
 	draw_string(ThemeDB.fallback_font, title_pos, chart_title, HORIZONTAL_ALIGNMENT_CENTER, -1, 20, Color.WHITE)
@@ -164,7 +164,7 @@ func _draw():
 
 		var grid_start = Vector2(padding, y)
 		var grid_end = Vector2(chart_size.x - padding, y)
-		draw_line(grid_start, grid_end, Color(0.3, 0.3, 0.3, 0.5), 1)
+		draw_line(grid_start, grid_end, Color(ThemeManager.BORDER.r, ThemeManager.BORDER.g, ThemeManager.BORDER.b, 0.5), 1)
 
 		var label_pos = Vector2(10, y + 5)
 		draw_string(ThemeDB.fallback_font, label_pos, str(int(value)), HORIZONTAL_ALIGNMENT_LEFT, -1, 14, Color.WHITE)
@@ -218,13 +218,13 @@ func _draw():
 			tooltip_pos.y = point.y + 25
 
 		var tooltip_rect = Rect2(tooltip_pos, Vector2(tooltip_width, tooltip_height))
-		draw_rect(tooltip_rect, Color(0.2, 0.2, 0.2, 0.95))
-		draw_rect(tooltip_rect, Color.WHITE, false, 2)
+		draw_rect(tooltip_rect, Color(ThemeManager.BG_SURFACE.r, ThemeManager.BG_SURFACE.g, ThemeManager.BG_SURFACE.b, 0.95))
+		draw_rect(tooltip_rect, ThemeManager.ACCENT, false, 2)
 
 		var text_pos = tooltip_pos + Vector2(10, 18)
 		draw_string(font, text_pos, date_str, HORIZONTAL_ALIGNMENT_LEFT, -1, font_size, Color.WHITE)
 		text_pos.y += line_height
-		draw_string(font, text_pos, "ELO: " + str(elo_value), HORIZONTAL_ALIGNMENT_LEFT, -1, font_size, Color.CYAN)
+		draw_string(font, text_pos, "ELO: " + str(elo_value), HORIZONTAL_ALIGNMENT_LEFT, -1, font_size, ThemeManager.ACCENT_SEC)
 
 		draw_circle(point, 6, Color.WHITE)
 		draw_circle(point, 4, line_color)
