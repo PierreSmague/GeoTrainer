@@ -53,11 +53,11 @@ func _setup_ui():
 	selector_panel.custom_minimum_size = Vector2(200, 140)
 
 	var stylebox = StyleBoxFlat.new()
-	stylebox.bg_color = Color(0.1, 0.1, 0.15, 0.95)
-	stylebox.corner_radius_top_left = 8
-	stylebox.corner_radius_top_right = 8
-	stylebox.corner_radius_bottom_left = 8
-	stylebox.corner_radius_bottom_right = 8
+	stylebox.bg_color = Color(ThemeManager.BG_SURFACE.r, ThemeManager.BG_SURFACE.g, ThemeManager.BG_SURFACE.b, 0.95)
+	stylebox.corner_radius_top_left = 12
+	stylebox.corner_radius_top_right = 12
+	stylebox.corner_radius_bottom_left = 12
+	stylebox.corner_radius_bottom_right = 12
 	selector_panel.add_theme_stylebox_override("panel", stylebox)
 
 	var vbox = VBoxContainer.new()
@@ -93,7 +93,7 @@ func _setup_ui():
 	ranking_panel.offset_bottom = 0
 
 	var ranking_style = StyleBoxFlat.new()
-	ranking_style.bg_color = Color(0.1, 0.1, 0.15, 0.95)
+	ranking_style.bg_color = Color(ThemeManager.BG_SURFACE.r, ThemeManager.BG_SURFACE.g, ThemeManager.BG_SURFACE.b, 0.95)
 	ranking_style.content_margin_left = 10
 	ranking_style.content_margin_right = 10
 	ranking_style.content_margin_top = 10
@@ -166,13 +166,13 @@ func _update_ranking_panel():
 	var worst10 = valid_countries.slice(worst10_start)
 	worst10.reverse()
 
-	_add_ranking_section("Top 10", top10, Color(0.3, 0.9, 0.3))
+	_add_ranking_section("Top 10", top10, ThemeManager.SUCCESS)
 
 	var spacer = Control.new()
 	spacer.custom_minimum_size = Vector2(0, 8)
 	ranking_vbox.add_child(spacer)
 
-	_add_ranking_section("Worst 10", worst10, Color(0.9, 0.3, 0.3))
+	_add_ranking_section("Worst 10", worst10, ThemeManager.ERROR)
 
 func _add_ranking_section(title_text: String, codes: Array, value_color: Color):
 	var title = Label.new()
@@ -339,7 +339,7 @@ func _get_country_color(country_code: String) -> Color:
 	return color_bad.lerp(color_good, t)
 
 func _draw():
-	draw_rect(Rect2(Vector2.ZERO, Vector2(_map_width(), size.y)), Color(0.05, 0.05, 0.1))
+	draw_rect(Rect2(Vector2.ZERO, Vector2(_map_width(), size.y)), ThemeManager.BG_MAIN)
 
 	for country_code in country_geometries.keys():
 		var color = _get_country_color(country_code)
@@ -444,8 +444,8 @@ func _draw_tooltip():
 	tooltip_pos.y = clamp(tooltip_pos.y, 0, size.y - tooltip_size.y)
 
 	var rect = Rect2(tooltip_pos, tooltip_size)
-	draw_rect(rect, Color(0.1, 0.1, 0.15, 0.95))
-	draw_rect(rect, Color.WHITE, false, 2)
+	draw_rect(rect, Color(ThemeManager.BG_SURFACE.r, ThemeManager.BG_SURFACE.g, ThemeManager.BG_SURFACE.b, 0.95))
+	draw_rect(rect, ThemeManager.ACCENT, false, 2)
 
 	var y = tooltip_pos.y + padding + font_size
 	for l in lines:

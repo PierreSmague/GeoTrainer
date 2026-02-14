@@ -121,12 +121,12 @@ func _on_date_end_changed(value: float):
 	date_end_label.text = FileManager.unix_to_ymd(filter_date_end)
 
 func _update_mode_button_colors():
-	var inactive_color = Color(0.6, 0.6, 0.6)
+	var inactive_color = ThemeManager.TEXT_SECONDARY
 	move_btn.self_modulate = inactive_color
 	nm_btn.self_modulate = inactive_color
 	nmpz_btn.self_modulate = inactive_color
 
-	var active_color = Color(0.2, 0.5, 1.0)
+	var active_color = ThemeManager.ACCENT
 	match filter_mode:
 		"Move":
 			move_btn.self_modulate = active_color
