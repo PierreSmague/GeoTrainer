@@ -2,8 +2,8 @@ extends Control
 
 var data: Array = []
 var chart_title: String = ""
-var line_color: Color = Color.GREEN
-var trend_color: Color = Color.ORANGE
+var line_color: Color = ThemeManager.ACCENT_SEC
+var trend_color: Color = ThemeManager.WARNING
 var padding: int = 60
 var player_id: String = ""
 
@@ -100,7 +100,7 @@ func _draw():
 	var max_val = 5000.0
 	var range_val = max_val - min_val
 
-	draw_rect(Rect2(Vector2.ZERO, chart_size), Color(0.1, 0.1, 0.1, 0.5))
+	draw_rect(Rect2(Vector2.ZERO, chart_size), Color(ThemeManager.BG_SURFACE.r, ThemeManager.BG_SURFACE.g, ThemeManager.BG_SURFACE.b, 0.5))
 
 	var title_pos = Vector2(chart_size.x / 2, 25)
 	draw_string(ThemeDB.fallback_font, title_pos, chart_title, HORIZONTAL_ALIGNMENT_CENTER, -1, 20, Color.WHITE)
@@ -118,7 +118,7 @@ func _draw():
 
 		var grid_start = Vector2(padding, y)
 		var grid_end = Vector2(chart_size.x - padding, y)
-		draw_line(grid_start, grid_end, Color(0.3, 0.3, 0.3, 0.5), 1)
+		draw_line(grid_start, grid_end, Color(ThemeManager.BORDER.r, ThemeManager.BORDER.g, ThemeManager.BORDER.b, 0.5), 1)
 
 		var label_pos = Vector2(10, y + 5)
 		draw_string(ThemeDB.fallback_font, label_pos, str(value), HORIZONTAL_ALIGNMENT_LEFT, -1, 14, Color.WHITE)
