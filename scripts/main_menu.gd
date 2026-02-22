@@ -15,6 +15,12 @@ func _ready():
 	# Build header bar
 	_build_header()
 
+	# Add IA Analyze tab
+	var ia_tab = Control.new()
+	ia_tab.name = "IA Analyze"
+	ia_tab.set_script(load("res://scripts/ia_analyze.gd"))
+	$Tabs.add_child(ia_tab)
+
 	# Tab initialisation
 	$Tabs.tab_changed.connect(_on_tab_changed)
 
@@ -76,3 +82,5 @@ func _on_tab_changed(tab_index):
 			print("Resources selected")
 		3:
 			print("Stats selected")
+		4:
+			print("IA Analyze selected")
