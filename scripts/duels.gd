@@ -3,7 +3,7 @@ extends TabContainer
 const MODE_MAP := {
 	"Move": "StandardDuels",
 	"NM": "NoMoveDuels",
-	"NMPZ": "NMPZDuels"
+	"NMPZ": "NmpzDuels"
 }
 
 @onready var duels_elo_chart = $ELO
