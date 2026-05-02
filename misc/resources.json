@@ -490,6 +490,13 @@
       "map": "https://www.geoguessr.com/maps/6735f43f5c3b14a0f1607bce"
     },
     {
+      "title": "Infrastructures",
+      "difficulty": 2,
+      "usefulness": 2,
+      "url": "https://docs.google.com/document/d/1xSx1BBLwOWTRRubMtaaFIK4KlCHSSxkjEmTGz9YM9ng/edit?tab=t.0",
+      "map": "https://www.geoguessr.com/maps/6735f43f5c3b14a0f1607bce"
+    },
+    {
       "title": "Plonk It - Identify",
       "difficulty": 2,
       "usefulness": 4,
@@ -2721,7 +2728,7 @@
       "title": "Unique roads",
       "difficulty": 3,
       "usefulness": 4,
-      "url": "https://images.squarespace-cdn.com/content/v1/60f6054f4e76b03092956de8/3970854e-491d-4420-be47-c5f70d9c1d46/Bolivia_Unique_Roads.png?format=2500w",
+      "url": "https://www.plonkit.net/bolivia#3-18",
       "map": "https://www.geoguessr.com/maps/642d6e2e0b7bbe7e4a4b939b"
     },
     {
@@ -3224,6 +3231,13 @@
       "map": "https://www.geoguessr.com/maps/64db7dec1f789a98ce84a1c1"
     },
     {
+      "title": "RMRG Bangladesh",
+      "difficulty": 4,
+      "usefulness": 5,
+      "url": "https://rmrg.me/guides/bangladesh/",
+      "map": "https://www.geoguessr.com/maps/699e180b593fd22dd4eb2548"
+    },
+    {
       "title": "20 largest cities",
       "difficulty": 2,
       "usefulness": 2,
@@ -3609,6 +3623,13 @@
   ],
   "Indonesia": [
     {
+      "title": "RMRG Indonesia",
+      "difficulty": 5,
+      "usefulness": 5,
+      "url": "https://rmrg.me/guides/indonesia/",
+      "map": "https://www.geoguessr.com/maps/619086606e5572000185a1db"
+    },
+    {
       "title": "Regionguessing Indonesia By Architecture",
       "difficulty": 3,
       "usefulness": 4,
@@ -3628,13 +3649,6 @@
       "usefulness": 5,
       "url": "https://learnablemeta.com/maps/674e3a3ec04532f1eaa44d77",
       "map": "https://www.geoguessr.com/maps/674e3a3ec04532f1eaa44d77"
-    },
-    {
-      "title": "RMRG Guide",
-      "difficulty": 4,
-      "usefulness": 5,
-      "url": "Comming Soon",
-      "map": "https://www.geoguessr.com/maps/619086606e5572000185a1db"
     },
     {
       "title": "Introduction to Utility Poles",
@@ -4311,7 +4325,7 @@
       "difficulty": 4,
       "usefulness": 4,
       "url": "https://docs.google.com/document/d/1drp1udLAXFNOMDvU0V6pLS2wLakmXujMepTUlkIbc_k/edit?tab=t.0#heading=h.z2rb6cdzjwej",
-      "map": "https://www.geoguessr.com/maps/62e309bfac02fca31aa404b8"
+      "map": "https://www.geoguessr.com/maps/6447040b0517cbd5807a5145"
     },
     {
       "title": "A Learnable Russia +",
@@ -4325,28 +4339,28 @@
       "difficulty": 3,
       "usefulness": 4,
       "url": "https://docs.google.com/document/d/1KMRVfyEDF5hwYRkCCDVjaNh7XCy3xcbpTnRfybU0DMU/edit?tab=t.0",
-      "map": "https://www.geoguessr.com/maps/62e309bfac02fca31aa404b8"
+      "map": "https://www.geoguessr.com/maps/6814c2eee755f1777c294b5f"
     },
     {
       "title": "Russia short antenna",
       "difficulty": 4,
       "usefulness": 5,
       "url": "https://docs.google.com/document/d/1KMRVfyEDF5hwYRkCCDVjaNh7XCy3xcbpTnRfybU0DMU/edit?tab=t.0",
-      "map": "https://www.geoguessr.com/maps/62e309bfac02fca31aa404b8"
+      "map": "https://www.geoguessr.com/maps/648e44776830d3fddaaba394"
     },
     {
       "title": "Russia long antenna",
       "difficulty": 5,
       "usefulness": 4,
       "url": "https://docs.google.com/document/d/1KMRVfyEDF5hwYRkCCDVjaNh7XCy3xcbpTnRfybU0DMU/edit?tab=t.0",
-      "map": "https://www.geoguessr.com/maps/62e309bfac02fca31aa404b8"
+      "map": "https://www.geoguessr.com/maps/66a8617b784f155ddbccc736"
     },
     {
       "title": "Smudges",
       "difficulty": 3,
       "usefulness": 4,
       "url": "https://docs.google.com/document/d/14LO_Z0jeWKEdxjj51Xwg2oiKtc8nMqdleaTYWRMEQFs/edit?tab=t.0#heading=h.z2rb6cdzjwej",
-      "map": "https://www.geoguessr.com/maps/62e309bfac02fca31aa404b8"
+      "map": "https://www.geoguessr.com/maps/64ac92283544b29754f2a2f5"
     },
     {
       "title": "Oblasts flags",
@@ -4494,6 +4508,13 @@
     }
   ],
   "Taiwan": [
+    {
+      "title": "RMRG Taiwan",
+      "difficulty": 5,
+      "usefulness": 5,
+      "url": "https://rmrg.me/guides/taiwan/",
+      "map": "https://www.geoguessr.com/maps/63f420f9f1482fc046350710"
+    },
     {
       "title": "Electric pole plate letter",
       "difficulty": 2,
@@ -4870,6 +4891,13 @@
       "difficulty": 3,
       "usefulness": 4,
       "url": "https://docs.google.com/spreadsheets/d/168hfqIXWec5iesSCowa0Z83_6tXVhJmBpUqQfL4Bh_g/edit?gid=1877676936#gid=1877676936",
+      "map": "https://www.geoguessr.com/maps/638188a2ce5dad8d44eb9cae"
+    },
+    {
+      "title": "Extensive Guide",
+      "difficulty": 4,
+      "usefulness": 5,
+      "url": "https://docs.google.com/document/d/1RFuMD_hNikWzUQhld4h4s9EMTTfpCmiN6OiJmznHmYc/edit?tab=t.0#heading=h.7kv29371q5u4",
       "map": "https://www.geoguessr.com/maps/638188a2ce5dad8d44eb9cae"
     },
     {
